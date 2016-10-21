@@ -399,12 +399,11 @@ void set_flag_z(BYTE inReg) {
 }
 
 /*
-
 To do
 1:Check
 2:Complete comments
-3.MOVE
-4.CAY
+3.CHECK MOVE 
+4.CAY (CHECK) 
 5.MYA
 7.CSA
 8.LX
@@ -437,7 +436,7 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-	case 0x2A:
+ 	case 0x2A:
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
@@ -681,7 +680,7 @@ void Group_1(BYTE opcode) {
 		//LDX Begins Here 
 	case 0x0E: //LDX Immidiate #
 		data = fetch();
-		Registers[REGISTER_X] = data;
+		Index_Registers[REGISTER_X] = data;
 		break;
 
 	case 0x1E: //LDX abs
@@ -689,7 +688,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_X] = Memory[address];
+			Index_Registers[REGISTER_X] = Memory[address];
 		}
 
 		break;
@@ -700,7 +699,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_X] = Memory[address];
+			Index_Registers[REGISTER_X] = Memory[address];
 		}
 		break;
 
@@ -710,7 +709,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_X] = Memory[address];
+			Index_Registers[REGISTER_X] = Memory[address];
 		}
 
 		break;
@@ -724,7 +723,7 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_X] = Memory[address];
+			Index_Registers[REGISTER_X] = Memory[address];
 		}
 		break;
 
@@ -737,7 +736,7 @@ void Group_1(BYTE opcode) {
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_X] = Memory[address];
+			Index_Registers[REGISTER_X] = Memory[address];
 		}
 		break;
 
@@ -749,7 +748,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -759,7 +758,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -770,7 +769,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -783,7 +782,7 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 
 		break;
@@ -797,13 +796,13 @@ void Group_1(BYTE opcode) {
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 		//LDY Begins Here 
 	case 0x0F: //LDY Immidiate #
 		data = fetch();
-		Registers[REGISTER_Y] = data;
+		Index_Registers[REGISTER_Y] = data;
 		break;
 
 	case 0x1F: //LDY abs
@@ -811,7 +810,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_Y] = Memory[address];
+			Index_Registers[REGISTER_Y] = Memory[address];
 		}
 
 		break;
@@ -822,7 +821,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_Y] = Memory[address];
+			Index_Registers[REGISTER_Y] = Memory[address];
 		}
 		break;
 
@@ -832,7 +831,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_Y] = Memory[address];
+			Index_Registers[REGISTER_Y] = Memory[address];
 		}
 
 		break;
@@ -846,7 +845,7 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_Y] = Memory[address];
+			Index_Registers[REGISTER_Y] = Memory[address];
 		}
 		break;
 
@@ -859,7 +858,7 @@ void Group_1(BYTE opcode) {
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_Y] = Memory[address];
+			Index_Registers[REGISTER_Y] = Memory[address];
 		}
 		break;
 		//STOY BEGINS
@@ -868,7 +867,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_Y];
+			Memory[address] = Index_Registers[REGISTER_Y];
 		}
 		break;
 
@@ -878,7 +877,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_Y];
+			Memory[address] = Index_Registers[REGISTER_Y];
 		}
 		break;
 
@@ -889,7 +888,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_Y];
+			Memory[address] = Index_Registers[REGISTER_Y];
 		}
 		break;
 
@@ -902,7 +901,7 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_Y];
+			Memory[address] = Index_Registers[REGISTER_Y];
 		}
 
 		break;
@@ -916,8 +915,13 @@ void Group_1(BYTE opcode) {
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_Y];
+			Memory[address] = Index_Registers[REGISTER_Y];
 		}
+		break;
+		//CAY 
+		//CHECK 
+	case 0xF0: 
+		Registers[REGISTER_A]  = Index_Registers[REGISTER_Y];
 		break;
 	}
 
@@ -967,7 +971,11 @@ void Group_2_Move(BYTE opcode)
 	case 0x0A:
 		destReg = REGISTER_M;
 		break;
-		//DOES THIS GO IN THE SWITCH???
+
+
+	default:
+
+		//Implied default 
 		if (destReg == REGISTER_M) {
 			address = Registers[REGISTER_L];
 			address += (WORD)Registers[REGISTER_H] << 4;
@@ -978,8 +986,6 @@ void Group_2_Move(BYTE opcode)
 		else {
 			Registers[destReg] = Registers[sourceReg];
 		}
-
-	default:
 		break;
 
 	}
@@ -1019,73 +1025,6 @@ void Group_2_Move(BYTE opcode)
 	{
 
 
-		//LODS
-	case 0x20:
-		data = fetch();
-		StackPointer = data << 8; StackPointer += fetch();
-		break;
-
-	case 0x30:
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
-		break;
-
-	case 0x40:
-		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
-		break;
-
-	case 0x50:
-		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
-
-		break;
-
-	case  0x60:
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
-		break;
-
-	case 0x70:
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
-
-		break;
-
 
 		//STORX BEGINS
 	case 0xBC:
@@ -1093,7 +1032,7 @@ void Group_2_Move(BYTE opcode)
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -1103,7 +1042,7 @@ void Group_2_Move(BYTE opcode)
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -1114,7 +1053,7 @@ void Group_2_Move(BYTE opcode)
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -1127,7 +1066,7 @@ void Group_2_Move(BYTE opcode)
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 
 		break;
@@ -1141,7 +1080,7 @@ void Group_2_Move(BYTE opcode)
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_X];
+			Memory[address] = Index_Registers[REGISTER_X];
 		}
 		break;
 
@@ -1526,7 +1465,7 @@ void building(int args, _TCHAR** argv)
 		Memory[TEST_ADDRESS_10],
 		Memory[TEST_ADDRESS_11],
 		Memory[TEST_ADDRESS_12]
-		);
+	);
 	sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 }
 
@@ -1650,7 +1589,7 @@ void test_and_mark() {
 						Memory[TEST_ADDRESS_10],
 						Memory[TEST_ADDRESS_11],
 						Memory[TEST_ADDRESS_12]
-						);
+					);
 					sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 				}
 			}
