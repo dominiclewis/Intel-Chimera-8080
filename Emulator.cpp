@@ -412,6 +412,12 @@ void Group_1(BYTE opcode) {
 	WORD data = 0;
 	switch (opcode) {
 
+
+
+		//LDAA
+		/*
+		Loads Memory into accumulator 
+		*/
 	case 0x0A: //LDAA Immidiate #
 		data = fetch();
 		Registers[REGISTER_A] = data;
@@ -427,7 +433,7 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-	case 0x2A:
+	case 0x2A://LDAA abs,X
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
@@ -448,7 +454,7 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-	case 0x4A:
+	case 0x4A:  //(in ) 
 
 		HB = fetch();
 		LB = fetch();
@@ -461,7 +467,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0x5A: //indirect x
+	case 0x5A: //(indirect) x
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -473,23 +479,26 @@ void Group_1(BYTE opcode) {
 			Registers[REGISTER_A] = Memory[address];
 		}
 		break;
+
 		//LDAB
+		/*
+		Loads Memory into Accumulator 
+		*/
 	case 0x0B: //LDAB Immidiate #
 		data = fetch();
 		Registers[REGISTER_B] = data;
 		break;
 
-	case 0x1B: //LDAB abs
+	case 0x1B: //LDAB abs 
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_B] = Memory[address];
 		}
-
 		break;
 
-	case 0x2B:
+	case 0x2B: //LDAB abs, X 
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
@@ -510,7 +519,7 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-	case 0x4B:
+	case 0x4B: //(ind)
 
 		HB = fetch();
 		LB = fetch();
@@ -523,7 +532,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0x5B: //indirect x
+	case 0x5B: //(indirect) x
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -535,13 +544,15 @@ void Group_1(BYTE opcode) {
 			Registers[REGISTER_B] = Memory[address];
 		}
 		break;
-
-		//ABA (Adds Accumulator B to Accumulator  ) 
 
 
 
 		//STORA BEGINS
-	case 0xBA:
+
+		/*
+		Stores Accumulator
+		*/
+	case 0xBA:  //abs
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
@@ -550,7 +561,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0xCA:
+	case 0xCA:   //abs,X
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
@@ -560,7 +571,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0xDA:
+	case 0xDA:  //abss, Y
 
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
@@ -572,7 +583,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-	case 0xEA:
+	case 0xEA: //(ind)
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -585,7 +596,7 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-	case 0xFA:
+	case 0xFA: //ind,X
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -598,27 +609,32 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-		//MVI #
+		//MVI 
+	//L,#	
 	case 0x1C:
 		data = fetch();
 		Registers[REGISTER_L] = data;
 		break;
 
-	case 0x1D:
+	case 0x1D: //H,#
 		data = fetch();
 		Registers[REGISTER_H] = data;
 		break;
-		
-		//LX  (CHECK) 
+
+		//LX  
+
 	case 0x0C: //LH,# IMMEDIATE
 		data = fetch();
 		Registers[REGISTER_L] = data;
+
 		break;
+
 
 	case 0x0D:  //LH,# IMMEDIUATE
 		data = fetch();
-		Registers[REGISTER_L] = data; 
-		break; 
+		Registers[REGISTER_H] = data;
+	//Register[REGISTER_L] = data 
+		break;
 
 		//CSA 
 		/*
@@ -626,7 +642,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xF2: //impl
 		Registers[REGISTER_A] = Flags;
-		break; 
+		break;
 
 
 		//STORB 
@@ -933,7 +949,7 @@ void Group_1(BYTE opcode) {
 		break;
 		//CAY 
 		/*
-		Transfer Accumulator(REG A) to Register Y 
+		Transfer Accumulator(REG A) to Register Y
 		*/
 	case 0xF0:  //impl
 		Index_Registers[REGISTER_Y] = Registers[REGISTER_A];
@@ -941,21 +957,21 @@ void Group_1(BYTE opcode) {
 
 		//MYA 
 		/*
-		Transfers register Y to Accumulater(Reg A) 
+		Transfers register Y to Accumulater(Reg A)
 		*/
 	case 0xF1:   //impl 
 		Registers[REGISTER_A] = Index_Registers[REGISTER_Y];
-		break; 
+		break;
 
 		//ABA 
 		/*
-		Adds Accumulator B into Accumlator A 
+		Adds Accumulator B into Accumlator A
 		Refer to PDF to refresh on Flags if need be
 		*/
 	case 0xF3: //impl 
 		Registers[REGISTER_A] += Registers[REGISTER_B];
 		Flags = FLAG_Z + FLAG_N + FLAG_C;
-		break; 
+		break;
 		//SBA
 		/*
 		Subtracts Accumulator B from Accumulator A
@@ -964,7 +980,7 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] -= Registers[REGISTER_B];
 
 		Flags = FLAG_Z + FLAG_N + FLAG_C;
-		break; 
+		break;
 		//AAB
 		/*
 		Adds Accumulator A into Accumulator B
@@ -978,13 +994,13 @@ void Group_1(BYTE opcode) {
 		Subtracts Accumulator A from Accumulator B
 		*/
 	case 0xF6: //impl
-		Registers[REGISTER_B] -+ Registers[REGISTER_A];
+		Registers[REGISTER_B] - +Registers[REGISTER_A];
 		Flags = FLAG_Z + FLAG_N + FLAG_C;
 		break;
 
 
 		//LODS
-	
+
 	case 0x20: //#
 		data = fetch();
 		StackPointer = data << 8; StackPointer += fetch();
@@ -1010,7 +1026,7 @@ void Group_1(BYTE opcode) {
 			StackPointer += Memory[address + 1];
 		}
 		break;
-	
+
 	case 0x50: //abs,Y
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
@@ -1033,7 +1049,7 @@ void Group_1(BYTE opcode) {
 			StackPointer = (WORD)Memory[address] << 8;
 			StackPointer += Memory[address + 1];
 		}
-		break; 
+		break;
 
 	case 0x70: //ind,X
 		HB = fetch();
@@ -1048,55 +1064,59 @@ void Group_1(BYTE opcode) {
 			StackPointer += Memory[address + 1];
 			break;
 		}
-		
-		/*
-		//STOS 
-		FIX THIS
-	case 0x6A:
+
+
+		//STOS  CHECK
+
+		case 0x6A:
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = StackPointer;
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+		//Memory[address] = StackPointer;
+			StackPointer = Memory[address];
 		}
 		break;
 
-	case 0x7A:
+		case 0x7A:
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = StackPointer;
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+		//Memory[address] = StackPointer;
+			StackPointer = Memory[address];
 		}
 		break;
 
-	case 0x8A:
+		case 0x8A:
 
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = StackPointer;
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+		//Memory[address] = StackPointer;
+			StackPointer = Memory[address];
 		}
 		break;
 
 
-	case 0x9A:
+		case 0x9A:
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = StackPointer;
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+	//	Memory[address] = StackPointer;
+			StackPointer = Memory[address];
 		}
 
 		break;
 
-	case 0xAA:
+		case 0xAA:
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -1104,11 +1124,12 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = StackPointer;
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+		//Memory[address] = StackPointer;
+			StackPointer = Memory[address];
 		}
 		break;
-		*/ 
+		
 	}
 
 
@@ -1125,8 +1146,8 @@ void Group_2_Move(BYTE opcode)
 	//BYTE destination = opcode >> 4;
 	//SWAP below
 
-	BYTE source = opcode >> 4; 
-	BYTE destination = opcode & 0x0F; 
+	BYTE source = opcode >> 4;
+	BYTE destination = opcode & 0x0F;
 	//CHECK IF LB AND HB IS USED 
 	BYTE LB = 0;
 	BYTE HB = 0;
@@ -1164,9 +1185,9 @@ void Group_2_Move(BYTE opcode)
 
 
 	default:
-		
+
 		//Implied default 
-	
+
 		if (destReg == REGISTER_M) {
 			address = Registers[REGISTER_L];
 			address += (WORD)Registers[REGISTER_H] << 4;
@@ -1177,7 +1198,7 @@ void Group_2_Move(BYTE opcode)
 		else {
 			Registers[destReg] = Registers[sourceReg];
 		}
-	
+
 		break;
 
 	}
@@ -1217,7 +1238,7 @@ void Group_2_Move(BYTE opcode)
 	{
 
 	default:
-		break;
+	break;
 
 	}
 	*/
@@ -1228,7 +1249,7 @@ void Group_2_Move(BYTE opcode)
 void execute(BYTE opcode)
 {
 
-	if    (((opcode >= 0x6B) && (opcode <= 0x6F))
+	if (((opcode >= 0x6B) && (opcode <= 0x6F))
 		|| ((opcode >= 0x7B) && (opcode <= 0x7F))
 		|| ((opcode >= 0x8B) && (opcode <= 0x8F))
 		|| ((opcode >= 0x9B) && (opcode <= 0x9F))
@@ -1598,7 +1619,7 @@ void building(int args, _TCHAR** argv)
 		Memory[TEST_ADDRESS_10],
 		Memory[TEST_ADDRESS_11],
 		Memory[TEST_ADDRESS_12]
-		);
+	);
 	sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 }
 
@@ -1722,7 +1743,7 @@ void test_and_mark() {
 						Memory[TEST_ADDRESS_10],
 						Memory[TEST_ADDRESS_11],
 						Memory[TEST_ADDRESS_12]
-						);
+					);
 					sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 				}
 			}
@@ -1786,7 +1807,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 
 		case 'T':
-			//case 't':
+		case 't':
 			test_and_mark();
 			break;
 
