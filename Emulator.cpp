@@ -416,7 +416,7 @@ void Group_1(BYTE opcode) {
 
 		//LDAA
 		/*
-		Loads Memory into accumulator 
+		Loads Memory into accumulator
 		*/
 	case 0x0A: //LDAA Immidiate #
 		data = fetch();
@@ -482,7 +482,7 @@ void Group_1(BYTE opcode) {
 
 		//LDAB
 		/*
-		Loads Memory into Accumulator 
+		Loads Memory into Accumulator
 		*/
 	case 0x0B: //LDAB Immidiate #
 		data = fetch();
@@ -610,7 +610,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 		//MVI 
-	//L,#	
+		//L,#	
 	case 0x1C:
 		data = fetch();
 		Registers[REGISTER_L] = data;
@@ -633,7 +633,7 @@ void Group_1(BYTE opcode) {
 	case 0x0D:  //LH,# IMMEDIUATE
 		data = fetch();
 		Registers[REGISTER_H] = data;
-	//Register[REGISTER_L] = data 
+		//Register[REGISTER_L] = data 
 		break;
 
 		//CSA 
@@ -1066,43 +1066,42 @@ void Group_1(BYTE opcode) {
 		}
 
 
-		//STOS  CHECK
 
-		case 0x6A:
+	case 0x6A:
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-		//Memory[address] = StackPointer;
+			//Memory[address] = StackPointer;
 			StackPointer = Memory[address];
 		}
 		break;
 
-		case 0x7A:
+	case 0x7A:
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-		//Memory[address] = StackPointer;
+			//Memory[address] = StackPointer;
 			StackPointer = Memory[address];
 		}
 		break;
 
-		case 0x8A:
+	case 0x8A:
 
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-		//Memory[address] = StackPointer;
+			//Memory[address] = StackPointer;
 			StackPointer = Memory[address];
 		}
 		break;
 
 
-		case 0x9A:
+	case 0x9A:
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -1110,13 +1109,13 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-	//	Memory[address] = StackPointer;
+			//	Memory[address] = StackPointer;
 			StackPointer = Memory[address];
 		}
 
 		break;
 
-		case 0xAA:
+	case 0xAA:
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -1125,11 +1124,11 @@ void Group_1(BYTE opcode) {
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-		//Memory[address] = StackPointer;
+			//Memory[address] = StackPointer;
 			StackPointer = Memory[address];
 		}
 		break;
-		
+
 	}
 
 
@@ -1185,9 +1184,7 @@ void Group_2_Move(BYTE opcode)
 
 
 	default:
-
-		//Implied default 
-
+		
 		if (destReg == REGISTER_M) {
 			address = Registers[REGISTER_L];
 			address += (WORD)Registers[REGISTER_H] << 4;
@@ -1198,7 +1195,7 @@ void Group_2_Move(BYTE opcode)
 		else {
 			Registers[destReg] = Registers[sourceReg];
 		}
-
+		
 		break;
 
 	}
@@ -1227,6 +1224,18 @@ void Group_2_Move(BYTE opcode)
 		break;
 
 	default:
+
+		if (destReg == REGISTER_M) {
+			address = Registers[REGISTER_L];
+			address += (WORD)Registers[REGISTER_H] << 4;
+			if (address >= 0 && address <= MEMORY_SIZE) {
+				Memory[address] = Registers[sourceReg];
+			}
+		}
+		else {
+			Registers[destReg] = Registers[sourceReg];
+		}
+
 		break;
 
 	}
