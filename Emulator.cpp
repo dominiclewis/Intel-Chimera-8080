@@ -1426,15 +1426,83 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
+		//OR 
+		/*
+		Register bitewise inclusive or with Accumulator
+		*/
+
+	case 0x36: //A-L 
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_L];
+
+		temp_word = (WORD)param1 | (WORD)param2;
+
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break;
 
 
+	case 0x46: // A-H
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_H];
 
+		temp_word = (WORD)param1 | (WORD)param2;
 
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
 
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break; 
+	
+	case 0x56: //A-M
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_M];
 
+		temp_word = (WORD)param1 | (WORD)param2;
 
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
 
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break;
 
+	case 0x66: //B-L
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_L];
+
+		temp_word = (WORD)param1 | (WORD)param2;
+
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+	case 0x76: //B-H
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_H];
+
+		temp_word = (WORD)param1 | (WORD)param2;
+
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_H] = (BYTE)temp_word;
+		break;
+	
+	case 0x86: //B-M 
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_M];
+
+		temp_word = (WORD)param1 | (WORD)param2;
+
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_M] = (BYTE)temp_word;
+		break;
 
 
 	}
