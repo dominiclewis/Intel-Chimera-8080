@@ -418,7 +418,7 @@ void Group_1(BYTE opcode) {
 	BYTE HB = 0;
 	WORD address = 0;
 	WORD data = 0;
-	WORD temp_word; 
+	WORD temp_word;
 	BYTE param1;
 	BYTE param2;
 	switch (opcode) {
@@ -1140,14 +1140,14 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-//ADC
+		//ADC
 		/*
 		Register added to Accumulator with Carry
 		*/
 	case 0x31:  // A - L   (L moved to A) 
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
-		temp_word = (WORD)param1 + (WORD)param2; 
+		temp_word = (WORD)param1 + (WORD)param2;
 		if ((Flags & FLAG_C) != 0)
 		{
 			temp_word++;
@@ -1166,7 +1166,7 @@ void Group_1(BYTE opcode) {
 		set_flag_z((BYTE)temp_word);
 		Registers[REGISTER_A] = (BYTE)temp_word;
 
-		break; 
+		break;
 
 	case 0x41:   // A-H
 		param1 = Registers[REGISTER_A];
@@ -1189,7 +1189,7 @@ void Group_1(BYTE opcode) {
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
 		Registers[REGISTER_A] = (BYTE)temp_word;
-		break; 
+		break;
 
 	case 0x51: // A-M	
 		param1 = Registers[REGISTER_A];
@@ -1300,9 +1300,9 @@ void Group_1(BYTE opcode) {
 		}
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
-		break; 
+		break;
 
-	 
+
 	case 0x45: //A-H
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_H];
@@ -1345,7 +1345,7 @@ void Group_1(BYTE opcode) {
 		set_flag_z((BYTE)temp_word);
 		break;
 
-	
+
 	case 0x75: //B-H
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
@@ -1359,7 +1359,7 @@ void Group_1(BYTE opcode) {
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
 		break;
-		
+
 	case 0x85: //B-M
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
@@ -1385,51 +1385,44 @@ Transfer from one register to another
 */
 void Group_2_Move(BYTE opcode)
 {
-
-	//Source and destination variables
-	//BYTE source = opcode & 0x0F;
-	//BYTE destination = opcode >> 4;
-	//SWAP below
+	//Variables for source and destination
 	BYTE source = opcode >> 4;
 	BYTE destination = opcode & 0x0F;
-	//CHECK IF LB AND HB IS USED 
-	BYTE LB = 0;
-	BYTE HB = 0;
-	//Temp variables for registers
 
+	//Temporary variables for registers
 	int destReg = 0;
 	int sourceReg = 0;
 
-
+	BYTE LB = 0;
+	BYTE HB = 0;
 	WORD address = 0;
 	WORD data = 0;
 
 
-	switch (destination) { //destination is dest I believe
-
-	case 0x06:
+	switch (destination)
+	{
+	case 0x0B:
 		destReg = REGISTER_A;
 		break;
 
-	case 0x07:
+	case 0x0C:
 		destReg = REGISTER_B;
 		break;
 
-	case 0x08:
+	case 0x0D:
 		destReg = REGISTER_L;
 		break;
 
-	case 0x09:
+	case 0x0E:
 		destReg = REGISTER_H;
 		break;
 
-	case 0x0A:
+	case 0x0F:
 		destReg = REGISTER_M;
 		break;
 
-
 	default:
-
+		Registers[destReg] = Registers[sourceReg];
 		if (destReg == REGISTER_M) {
 			address = Registers[REGISTER_L];
 			address += (WORD)Registers[REGISTER_H] << 4;
@@ -1440,64 +1433,51 @@ void Group_2_Move(BYTE opcode)
 		else {
 			Registers[destReg] = Registers[sourceReg];
 		}
-
 		break;
 
 	}
 
-
-	switch (source) {
-
-	case 0x0B:
+	switch (source)
+	{
+	case 0x06:
 		sourceReg = REGISTER_A;
 		break;
 
-	case 0x0C:
+	case 0x07:
 		sourceReg = REGISTER_B;
 		break;
 
-	case 0x0D:
+	case 0x08:
 		sourceReg = REGISTER_L;
 		break;
 
-	case 0x0E:
+	case 0x09:
 		sourceReg = REGISTER_H;
 		break;
 
-	case 0x0F:
+	case 0x0A:
 		sourceReg = REGISTER_M;
 		break;
 
 	default:
-
-		if (destReg == REGISTER_M) {
+		Registers[sourceReg] = Registers[destReg];
+		if (sourceReg == REGISTER_M) {
 			address = Registers[REGISTER_L];
 			address += (WORD)Registers[REGISTER_H] << 4;
 			if (address >= 0 && address <= MEMORY_SIZE) {
-				Memory[address] = Registers[sourceReg];
+				Memory[address] = Registers[destReg];
 			}
 		}
 		else {
-			Registers[destReg] = Registers[sourceReg];
+			Registers[sourceReg] = Registers[destReg];
 		}
-
 		break;
 
 	}
 
 	Registers[destReg] = Registers[sourceReg];
-	/*
-	IS THIS NEEDED!!!???
-	switch (opcode)
-	{
-
-	default:
-	break;
-
-	}
-	*/
-
 }
+
 
 void execute(BYTE opcode)
 {
@@ -1872,7 +1852,7 @@ void building(int args, _TCHAR** argv)
 		Memory[TEST_ADDRESS_10],
 		Memory[TEST_ADDRESS_11],
 		Memory[TEST_ADDRESS_12]
-	);
+		);
 	sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 }
 
@@ -1996,7 +1976,7 @@ void test_and_mark() {
 						Memory[TEST_ADDRESS_10],
 						Memory[TEST_ADDRESS_11],
 						Memory[TEST_ADDRESS_12]
-					);
+						);
 					sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 				}
 			}
