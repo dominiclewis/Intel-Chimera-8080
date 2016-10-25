@@ -445,13 +445,19 @@ BYTE subWithCarry(BYTE inReg1, BYTE inReg2)
 	return (BYTE)result;
 }
 
-
 BYTE addWithCarry(BYTE inReg1, BYTE inReg2)
 {
 	WORD result;
 	BYTE carry = Flags & FLAG_C;
 	result = inReg1 + inReg2 + carry;
 	set_all_flags(inReg1, inReg2, result);
+	return (BYTE)result;
+}
+
+BYTE subRegs(BYTE inReg1, BYTE inReg2)
+{
+	WORD result = inReg1 - inReg2;
+	set_all_flags(inReg1, ~inReg2 + 1, result);
 	return (BYTE)result;
 }
 
@@ -1391,6 +1397,45 @@ void Group_1(BYTE opcode) {
 	case 0x82: //B-M
 		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
+
+		//SUB
+		/*
+		Register Subtracted to Accumulator 
+		*/
+	case 0x34:  // A-L  
+		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_L]);
+		break;
+
+	case 0x44:   //A-H
+		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_H]);
+		break;
+
+	case 0x54: //A-M
+		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_M]);
+		break; 
+	
+	case 0x64:	//B-L
+		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_L]);
+		break;
+
+	case 0x74: //B-H
+		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_H]);
+		break;
+
+	case 0x84:  //B-M 
+		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
+		break;
+
+
+
+
+
+
+
+
+
+
+
 
 	}
 
