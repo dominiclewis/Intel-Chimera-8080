@@ -436,6 +436,14 @@ BYTE addRegs(BYTE inReg1, BYTE inReg2)
 	return (BYTE)result;
 }
 
+BYTE subWithCarry(BYTE inReg1, BYTE inReg2)
+{
+	WORD result;
+	BYTE carry = Flags & FLAG_C;
+	result = inReg1 - inReg2 - carry;
+	set_all_flags(inReg1, ~inReg2 + 1, result);			//reg 2 is data fetched				
+	return (BYTE)result;
+}
 
 
 
@@ -1438,9 +1446,39 @@ void Group_1(BYTE opcode) {
 		Flags = Flags | FLAG_I;
 		break;
 
-	}
+		//SBC
+		/*
+		Register subtracted to Accumulator with Carry
+		*/
+	case 0x32: //A-L   A minus L 
+		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_L]);
+		break;
+
+	case 0x42: //A-H
+		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_H]);
+		break;
 
 	
+	case 0x52: //A-M 
+		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_M]);
+		break;
+
+	case 0x62: //B-L
+		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_L]);
+		break;
+
+	case 0x72: // B-H
+		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_H]);
+		break;
+
+	
+	case 0x82: //B-M
+		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
+		break;
+	}
+
+
+
 	
 
 }
