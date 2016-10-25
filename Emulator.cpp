@@ -1489,7 +1489,7 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 
-		Registers[REGISTER_H] = (BYTE)temp_word;
+		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 	
 	case 0x86: //B-M 
@@ -1501,8 +1501,9 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 
-		Registers[REGISTER_M] = (BYTE)temp_word;
+		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
+
 
 
 	}
