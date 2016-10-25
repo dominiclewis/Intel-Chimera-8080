@@ -1504,8 +1504,149 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
+	//AND
+	/*
+	Register bitwise and with Accumulator
+	*/
 
+	case 0x37: //A-L
 
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_L];
+
+		temp_word = (WORD)param1 & (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word; 
+			break;
+
+	case 0x47: //A-H
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_H];
+
+		temp_word = (WORD)param1 & (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break;
+
+	case 0x57: // A-M
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_M];
+
+		temp_word = (WORD)param1 & (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break;
+
+	case 0x67://B - L 
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_L];
+
+		temp_word = (WORD)param1 & (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+	case 0x77: //B-H
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_H];
+
+		temp_word = (WORD)param1 & (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		
+		break;
+
+	case 0x87: //B-M
+
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_M];
+
+		temp_word = (WORD)param1 & (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+	
+	//XOR 
+	/*
+	Register Bitwise exclusive or with Accumulator
+	*/
+	case 0x38: // A-L
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_L];
+
+		temp_word = (WORD)param1 ^ (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break; 
+
+	case 0x48: //A-H
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_H];
+
+		temp_word = (WORD)param1 ^ (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break; 
+
+	case 0x58: //A-M
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_M];
+
+		temp_word = (WORD)param1 ^ (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break;
+
+	case 0x68: //B-L
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_L];
+
+		temp_word = (WORD)param1 ^ (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+	case 0x78: //B-H
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_H];
+
+		temp_word = (WORD)param1 ^ (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+	case 0x88: //B-M
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_M];
+
+		temp_word = (WORD)param1 ^ (WORD)param2;
+		set_flag_z((WORD)temp_word);
+		set_flag_n((WORD)temp_word);
+
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
 	}
 
 
