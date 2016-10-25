@@ -38,11 +38,11 @@ char trc_file[MAX_BUFFER_SIZE];
 #define FLAG_Z  0x04 //0000 0100
 #define FLAG_N  0x02 //0000 0010
 #define FLAG_C  0x01 //0000 0001
-#define REGISTER_M  4
-#define REGISTER_A	3
-#define REGISTER_B	2
-#define REGISTER_H	1   //HIGHBYTE  (ON)
-#define REGISTER_L	0	//LOWBYTE   (OFF)
+#define REGISTER_M 4
+#define REGISTER_A 3
+#define REGISTER_B 2
+#define REGISTER_H 1   //HIGHBYTE  (ON)
+#define REGISTER_L 0	//LOWBYTE   (OFF)
 #define REGISTER_X 0
 #define REGISTER_Y 1
 
@@ -387,26 +387,22 @@ void set_flag_z(BYTE inReg) {
 	BYTE reg;
 	reg = inReg;
 
-	if ((reg & 0x80) != 0) // msbit set 
-	{
-		Flags = Flags | FLAG_Z;
+	if (reg == 0x00) {
+		Flags = Flags | FLAG_Z; //set
 	}
 	else
 	{
-		Flags = Flags & (0xFF - FLAG_Z);
-	}
+		Flags = Flags & (~FLAG_Z); //reset
+}
 }
 void set_flag_n(WORD inReg) {
 	BYTE reg;
 	reg = inReg;
-
-	if ((reg & 0x80) != 0) // msbit set
-	{
-		Flags = Flags | FLAG_N;
+	if ((reg & 0x80) == 0x80) {
+		Flags = Flags | FLAG_N;	//set N
 	}
-	else
-	{
-		Flags = Flags & (0xFF - FLAG_N);
+	else{
+		Flags = Flags & (~FLAG_N); //reset N 
 	}
 
 }
@@ -1148,23 +1144,18 @@ void Group_1(BYTE opcode) {
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
 		temp_word = (WORD)param1 + (WORD)param2;
-		if ((Flags & FLAG_C) != 0)
-		{
+		if ((Flags & FLAG_C) != 0) {
 			temp_word++;
 		}
-		//set a single bit
-		if (temp_word >= 0x100)
-		{
-			Flags = Flags | FLAG_C;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
 		}
-		else // clear single bit 
-		{
-			Flags = Flags & (0xFF - FLAG_C);
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 		}
-
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
-		Registers[REGISTER_A] = (BYTE)temp_word;
+			set_flag_n((BYTE)temp_word);
+			set_flag_z((BYTE)temp_word);
+			Registers[REGISTER_A] = (BYTE)temp_word;
 
 		break;
 
@@ -1172,44 +1163,36 @@ void Group_1(BYTE opcode) {
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_H];
 		temp_word = (WORD)param1 + (WORD)param2;
-		if ((Flags & FLAG_C) != 0)
-		{
+		if ((Flags & FLAG_C) != 0) {
 			temp_word++;
 		}
-		//set a single bit
-		if (temp_word >= 0x100)
-		{
-			Flags = Flags | FLAG_C;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
 		}
-		else // clear single bit 
-		{
-			Flags = Flags & (0xFF - FLAG_C);
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 		}
-
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
 		Registers[REGISTER_A] = (BYTE)temp_word;
-		break;
+
+
+
+
 
 	case 0x51: // A-M	
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
 		temp_word = (WORD)param1 + (WORD)param2;
-
-		if ((Flags & FLAG_C) != 0)
-		{
+		if ((Flags & FLAG_C) != 0) {
 			temp_word++;
 		}
-		//set a single bit
-		if (temp_word >= 0x100)
-		{
-			Flags = Flags | FLAG_C;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
 		}
-		else // clear single bit 
-		{
-			Flags = Flags & (0xFF - FLAG_C);
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 		}
-
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
 		Registers[REGISTER_A] = (BYTE)temp_word;
@@ -1220,20 +1203,15 @@ void Group_1(BYTE opcode) {
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_L];
 		temp_word = (WORD)param1 + (WORD)param2;
-		if ((Flags & FLAG_C) != 0)
-		{
+		if ((Flags & FLAG_C) != 0) {
 			temp_word++;
 		}
-		//set a single bit
-		if (temp_word >= 0x100)
-		{
-			Flags = Flags | FLAG_C;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
 		}
-		else // clear single bit 
-		{
-			Flags = Flags & (0xFF - FLAG_C);
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 		}
-
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
 		Registers[REGISTER_B] = (BYTE)temp_word;
@@ -1244,18 +1222,14 @@ void Group_1(BYTE opcode) {
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
 		temp_word = (WORD)param1 + (WORD)param2;
-		if ((Flags & FLAG_C) != 0)
-		{
+		if ((Flags & FLAG_C) != 0) {
 			temp_word++;
 		}
-		//set a single bit
-		if (temp_word >= 0x100)  //if it is greater than 8 bits
-		{
-			Flags = Flags | FLAG_C;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
 		}
-		else // clear single bit 
-		{
-			Flags = Flags & (0xFF - FLAG_C);
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 		}
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
@@ -1266,20 +1240,15 @@ void Group_1(BYTE opcode) {
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
 		temp_word = (WORD)param1 + (WORD)param2;
-		if ((Flags & FLAG_C) != 0)
-		{
+		if ((Flags & FLAG_C) != 0) {
 			temp_word++;
 		}
-		//set a single bit
-		if (temp_word >= 0x100)
-		{
-			Flags = Flags | FLAG_C;   //Setting a flag 
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
 		}
-		else // clear single bit 
-		{
-			Flags = Flags & (0xFF - FLAG_C);
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 		}
-
 		set_flag_n((BYTE)temp_word);
 		set_flag_z((BYTE)temp_word);
 		Registers[REGISTER_B] = (BYTE)temp_word;
