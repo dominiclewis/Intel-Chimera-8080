@@ -401,11 +401,42 @@ void set_flag_n(WORD inReg) {
 	if ((reg & 0x80) == 0x80) {
 		Flags = Flags | FLAG_N;	//set N
 	}
-	else{
+	else {
 		Flags = Flags & (~FLAG_N); //reset N 
 	}
-
 }
+//CHECK
+void set_flag_c(WORD result)
+{
+	if (result >= 0x100)	//doesnt fit in byte
+		Flags = Flags | FLAG_C;
+	else
+		Flags = Flags & (~FLAG_C);
+}
+
+//CHECK HOW MANY FLAGS ARE BEING USED
+void set_all_flags(BYTE inReg1, BYTE inReg2, WORD result)
+{
+	
+	set_flag_c(result);
+	set_flag_n(result);
+	set_flag_z(result);
+}
+void set_three_flags(WORD result)
+{
+	set_flag_c(result);
+	set_flag_n(result);
+	set_flag_z(result);
+}
+
+BYTE addRegs(BYTE inReg1, BYTE inReg2)
+{
+	WORD result = inReg1 + inReg2;
+	set_all_flags(inReg1, inReg2, result);
+	return (BYTE)result;
+}
+
+
 
 
 //Group 1 = Loading Information/Data
@@ -976,17 +1007,17 @@ void Group_1(BYTE opcode) {
 		Refer to PDF to refresh on Flags if need be
 		*/
 	case 0xF3: //impl 
-		Registers[REGISTER_A] += Registers[REGISTER_B];
-		Flags = FLAG_Z + FLAG_N + FLAG_C;
+		data = Registers[REGISTER_A] + Registers[REGISTER_B];
+		Registers[REGISTER_A] = (BYTE)data;
+		set_three_flags(data);
 		break;
-		//SBA
 		/*
 		Subtracts Accumulator B from Accumulator A
 		*/
 	case 0xF4: //impl 
-		Registers[REGISTER_A] -= Registers[REGISTER_B];
-
-		Flags = FLAG_Z + FLAG_N + FLAG_C;
+		data = Registers[REGISTER_A] - Registers[REGISTER_B];
+		Registers[REGISTER_A] = (BYTE)data; 
+		set_three_flags(data);
 		break;
 		//AAB
 		/*
@@ -1343,6 +1374,38 @@ void Group_1(BYTE opcode) {
 		set_flag_z((BYTE)temp_word);
 		break;
 
+		//ADD
+		/*
+		Register is added to accumulator    FLAGS INVOLVED
+		*/
+	case 0x33: // A- L (L is stored in A) 
+		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_L]);
+		break;
+	
+	case 0x43:	//A - H 
+		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_H]);
+		break;
+	
+	case 0x53:  //A-M
+		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_M]);
+		break; 
+	
+	case 0x63: //B-L 
+		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_L]);
+		break;
+	
+	case 0x73:  //B-H
+		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_H]);
+		break;
+	
+	case 0x83:   //B-M
+		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
+		break;
+		//SBA
+		/*
+		Subtracts Accumulator B from Accumulator A
+		*/
+	
 
 	}
 
