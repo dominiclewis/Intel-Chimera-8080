@@ -389,27 +389,38 @@ void set_flag_z(BYTE inReg) {
 
 	if ((reg & 0x80) != 0) // msbit set 
 	{
+		Flags = Flags | FLAG_Z;
+	}
+	else
+	{
+		Flags = Flags & (0xFF - FLAG_Z);
+	}
+}
+void set_flag_n(WORD inReg) {
+	BYTE reg;
+	reg = inReg;
+
+	if ((reg & 0x80) != 0) // msbit set
+	{
 		Flags = Flags | FLAG_N;
 	}
 	else
 	{
 		Flags = Flags & (0xFF - FLAG_N);
 	}
+
 }
 
-/*
-To do
-1:Check report length
-2:Complete comments
-3.CHECK MOVE
-13. Look into the register M stuff, use the slides and implement if necessary . The slides contains the relevant thing for it. This goes after initial switch but check if possible with Emmanuele.
-*/
+
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
 	BYTE LB = 0;
 	BYTE HB = 0;
 	WORD address = 0;
 	WORD data = 0;
+	WORD temp_word; 
+	BYTE param1;
+	BYTE param2;
 	switch (opcode) {
 
 
@@ -1129,6 +1140,241 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
+//ADC
+		/*
+		Register added to Accumulator with Carry
+		*/
+	case 0x31:  // A - L   (L moved to A) 
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_L];
+		temp_word = (WORD)param1 + (WORD)param2; 
+		if ((Flags & FLAG_C) != 0)
+		{
+			temp_word++;
+		}
+		//set a single bit
+		if (temp_word >= 0x100)
+		{
+			Flags = Flags | FLAG_C;
+		}
+		else // clear single bit 
+		{
+			Flags = Flags & (0xFF - FLAG_C);
+		}
+
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		Registers[REGISTER_A] = (BYTE)temp_word;
+
+		break; 
+
+	case 0x41:   // A-H
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_H];
+		temp_word = (WORD)param1 + (WORD)param2;
+		if ((Flags & FLAG_C) != 0)
+		{
+			temp_word++;
+		}
+		//set a single bit
+		if (temp_word >= 0x100)
+		{
+			Flags = Flags | FLAG_C;
+		}
+		else // clear single bit 
+		{
+			Flags = Flags & (0xFF - FLAG_C);
+		}
+
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break; 
+
+	case 0x51: // A-M	
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_M];
+		temp_word = (WORD)param1 + (WORD)param2;
+
+		if ((Flags & FLAG_C) != 0)
+		{
+			temp_word++;
+		}
+		//set a single bit
+		if (temp_word >= 0x100)
+		{
+			Flags = Flags | FLAG_C;
+		}
+		else // clear single bit 
+		{
+			Flags = Flags & (0xFF - FLAG_C);
+		}
+
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		Registers[REGISTER_A] = (BYTE)temp_word;
+
+		break;
+
+	case 0x61: //B-L	
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_L];
+		temp_word = (WORD)param1 + (WORD)param2;
+		if ((Flags & FLAG_C) != 0)
+		{
+			temp_word++;
+		}
+		//set a single bit
+		if (temp_word >= 0x100)
+		{
+			Flags = Flags | FLAG_C;
+		}
+		else // clear single bit 
+		{
+			Flags = Flags & (0xFF - FLAG_C);
+		}
+
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+
+	case 0x71:  //B-H
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_H];
+		temp_word = (WORD)param1 + (WORD)param2;
+		if ((Flags & FLAG_C) != 0)
+		{
+			temp_word++;
+		}
+		//set a single bit
+		if (temp_word >= 0x100)  //if it is greater than 8 bits
+		{
+			Flags = Flags | FLAG_C;
+		}
+		else // clear single bit 
+		{
+			Flags = Flags & (0xFF - FLAG_C);
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+	case 0x81:   // B - M
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_M];
+		temp_word = (WORD)param1 + (WORD)param2;
+		if ((Flags & FLAG_C) != 0)
+		{
+			temp_word++;
+		}
+		//set a single bit
+		if (temp_word >= 0x100)
+		{
+			Flags = Flags | FLAG_C;   //Setting a flag 
+		}
+		else // clear single bit 
+		{
+			Flags = Flags & (0xFF - FLAG_C);
+		}
+
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		Registers[REGISTER_B] = (BYTE)temp_word;
+		break;
+
+
+		//CMP
+		/*Register compared to Accumulator*/
+	case 0x35: // A-L
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_L];
+		temp_word = (WORD)param1 - (WORD)param2;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
+		}
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		break; 
+
+	 
+	case 0x45: //A-H
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_H];
+		temp_word = (WORD)param1 - (WORD)param2;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
+		}
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		break;
+
+	case 0x55: //A-M
+		param1 = Registers[REGISTER_A];
+		param2 = Registers[REGISTER_M];
+		temp_word = (WORD)param1 - (WORD)param2;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
+		}
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		break;
+
+	case 0x65: //B-L
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_L];
+		temp_word = (WORD)param1 - (WORD)param2;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
+		}
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		break;
+
+	
+	case 0x75: //B-H
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_H];
+		temp_word = (WORD)param1 - (WORD)param2;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
+		}
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		break;
+		
+	case 0x85: //B-M
+		param1 = Registers[REGISTER_B];
+		param2 = Registers[REGISTER_M];
+		temp_word = (WORD)param1 - (WORD)param2;
+		if (temp_word >= 0x100) {
+			Flags = Flags | FLAG_C; // Set carry flag
+		}
+		else {
+			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+		}
+		set_flag_n((BYTE)temp_word);
+		set_flag_z((BYTE)temp_word);
+		break;
+
+
 	}
 
 
@@ -1144,7 +1390,6 @@ void Group_2_Move(BYTE opcode)
 	//BYTE source = opcode & 0x0F;
 	//BYTE destination = opcode >> 4;
 	//SWAP below
-
 	BYTE source = opcode >> 4;
 	BYTE destination = opcode & 0x0F;
 	//CHECK IF LB AND HB IS USED 
@@ -1184,7 +1429,7 @@ void Group_2_Move(BYTE opcode)
 
 
 	default:
-		
+
 		if (destReg == REGISTER_M) {
 			address = Registers[REGISTER_L];
 			address += (WORD)Registers[REGISTER_H] << 4;
@@ -1195,7 +1440,7 @@ void Group_2_Move(BYTE opcode)
 		else {
 			Registers[destReg] = Registers[sourceReg];
 		}
-		
+
 		break;
 
 	}
@@ -1253,7 +1498,6 @@ void Group_2_Move(BYTE opcode)
 	*/
 
 }
-
 
 void execute(BYTE opcode)
 {
