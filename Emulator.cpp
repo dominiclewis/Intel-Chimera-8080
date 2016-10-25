@@ -1011,6 +1011,7 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = (BYTE)data;
 		set_three_flags(data);
 		break;
+		//SBA
 		/*
 		Subtracts Accumulator B from Accumulator A
 		*/
@@ -1024,16 +1025,18 @@ void Group_1(BYTE opcode) {
 		Adds Accumulator A into Accumulator B
 		*/
 	case 0xF5: //impl
-		Registers[REGISTER_B] += Registers[REGISTER_A];
-		Flags = FLAG_Z + FLAG_N + FLAG_C;
+		data = Registers[REGISTER_B] + Registers[REGISTER_A]; // Sets data to equal the sum of two registers added together
+		Registers[REGISTER_B] = (BYTE)data; //Set the register to equal the sum done above (cast into a byte incase)
+		set_three_flags(data);	//Set all of the flags by passing the sum to it which bitwise operations will be carried out on
 		break;
 		//SAB
 		/*
 		Subtracts Accumulator A from Accumulator B
 		*/
 	case 0xF6: //impl
-		Registers[REGISTER_B] - +Registers[REGISTER_A];
-		Flags = FLAG_Z + FLAG_N + FLAG_C;
+		data = Registers[REGISTER_B] - Registers[REGISTER_A];
+		Registers[REGISTER_B] = (BYTE)data;
+		set_three_flags(data);
 		break;
 
 
@@ -1401,14 +1404,44 @@ void Group_1(BYTE opcode) {
 	case 0x83:   //B-M
 		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
-		//SBA
-		/*
-		Subtracts Accumulator B from Accumulator A
-		*/
 	
+	//CLC CHECK
+		/*
+		Clears Carry flag 
+		*/
+	case 0x05: //impl
+		Flags = (Flags & (~FLAG_C));
+		break;
+
+	 //STC
+		/*
+		Set Carry flag 
+		*/
+	case 0x06: 
+		Flags = Flags | FLAG_C;
+		break; 
+	
+		//CLI
+		/*
+		Clear Interrupt flag 
+		*/
+	case 0x07: 
+		Flags = (Flags & (~FLAG_I));
+		break;
+
+		//STI
+		/*
+		Set Interupt flag
+		*/
+
+	case 0x08:
+		Flags = Flags | FLAG_I;
+		break;
 
 	}
 
+	
+	
 
 }
 /*
