@@ -1817,6 +1817,88 @@ void Group_1(BYTE opcode) {
 			halt = true;
 			break;
 
+			//REPEAT
+
+			//DEC
+			/*
+			Decrement Memory or
+				Accumulator
+			*/
+		case 0xA1: //ABS
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			if (address >= 0 && address < MEMORY_SIZE) {
+				Memory[address] --;
+
+			}
+			set_flag_z((WORD)Memory[address]);
+			set_flag_n((WORD)Memory[address]);
+			break;
+
+		case 0xB1://abs,x
+			address += Index_Registers[REGISTER_X];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			if (address >= 0 && address < MEMORY_SIZE) {
+				Memory[address] --;
+			}
+			set_flag_z((WORD)Memory[address]);
+			set_flag_n((WORD)Memory[address]);
+			break;
+
+		case 0xC1:  //abs Y
+			address += Index_Registers[REGISTER_Y];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			if (address >= 0 && address < MEMORY_SIZE) {
+				Memory[address] --;
+			}
+
+			set_flag_z((WORD)Memory[address]);
+			set_flag_n((WORD)Memory[address]);
+			break;
+			//DECA
+			/*
+			Decrement Memory or Accumulator
+			*/
+		case 0xD1: //A (impl)
+			Registers[REGISTER_A]--;
+			set_flag_z((WORD)Registers[REGISTER_A]);
+			set_flag_n((WORD)Registers[REGISTER_A]);
+			break;
+
+			//DECB
+			/*
+			Increment Memory or Accumulator
+			*/
+		case 0xE1: //B (impl)
+			Registers[REGISTER_B]--;
+			set_flag_z((WORD)Registers[REGISTER_B]);
+			set_flag_n((WORD)Registers[REGISTER_B]);
+			break;
+
+			//DECX
+			/*
+			Decrements Register X
+			*/
+		case 0x01:  //impl 
+			Index_Registers[REGISTER_X]--;
+			set_flag_z((WORD)Index_Registers[REGISTER_X]);
+			break;
+
+
+
+			//DEY
+			/*
+			Deccrements Register Y
+			*/
+		case 0x03:  //impl 
+			Index_Registers[REGISTER_Y]--;
+			set_flag_z((WORD)Index_Registers[REGISTER_Y]);
+			break;
 	}
 
 
