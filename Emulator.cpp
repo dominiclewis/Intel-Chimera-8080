@@ -1899,11 +1899,23 @@ void Group_1(BYTE opcode) {
 			Index_Registers[REGISTER_Y]--;
 			set_flag_z((WORD)Index_Registers[REGISTER_Y]);
 			break;
+
+			//NOP
+			/*
+			No Operating (STOP/Halt?)
+			*/
+		case 0x2C://impl
+			halt = true;
+
+			
+			break;
+
 	}
 
 
+	
 
-
+	
 
 
 
