@@ -393,7 +393,7 @@ void set_flag_z(BYTE inReg) {
 	else
 	{
 		Flags = Flags & (~FLAG_Z); //reset
-}
+	}
 }
 void set_flag_n(WORD inReg) {
 	BYTE reg;
@@ -417,7 +417,7 @@ void set_flag_c(WORD result)
 
 void set_all_flags(BYTE inReg1, BYTE inReg2, WORD result) //SEND REGISTERS AND DATA 
 {
-	
+
 	set_flag_c(result);
 	set_flag_n(result);
 	set_flag_z(result);
@@ -1041,7 +1041,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xF4: //impl 
 		data = Registers[REGISTER_A] - Registers[REGISTER_B];
-		Registers[REGISTER_A] = (BYTE)data; 
+		Registers[REGISTER_A] = (BYTE)data;
 		set_three_flags(data);
 		break;
 		//AAB
@@ -1193,31 +1193,31 @@ void Group_1(BYTE opcode) {
 			StackPointer = Memory[address];
 		}
 		break;
-	
+
 		//NEW ADC
 	case 0x31:  // A - L   (L moved to A) 
 		Registers[REGISTER_A] = addWithCarry(Registers[REGISTER_A], Registers[REGISTER_L]);
-		break; 
+		break;
 
 	case 0x41:   // A-H
 		Registers[REGISTER_A] = addWithCarry(Registers[REGISTER_A], Registers[REGISTER_H]);
-		break; 
+		break;
 	case 0x51: //A-M
 		Registers[REGISTER_A] = addWithCarry(Registers[REGISTER_A], Registers[REGISTER_M]);
-		break; 
-	
+		break;
+
 	case 0x61: //B-L 
 		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_L]);
-		break; 
+		break;
 
 	case 0x71: //B-H
 		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_H]);
-		break; 
+		break;
 
 	case 0x81: // B-M
 		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
-	
+
 
 		//CMP
 		/*Register compared to Accumulator*/
@@ -1314,48 +1314,48 @@ void Group_1(BYTE opcode) {
 	case 0x33: // A- L (L is stored in A) 
 		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
-	
+
 	case 0x43:	//A - H 
 		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
-	
+
 	case 0x53:  //A-M
 		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_M]);
-		break; 
-	
+		break;
+
 	case 0x63: //B-L 
 		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
-	
+
 	case 0x73:  //B-H
 		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
-	
+
 	case 0x83:   //B-M
 		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
-	
-	//CLC CHECK
+
+		//CLC CHECK
 		/*
-		Clears Carry flag 
+		Clears Carry flag
 		*/
 	case 0x05: //impl
 		Flags = (Flags & (~FLAG_C));
 		break;
 
-	 //STC
+		//STC
 		/*
-		Set Carry flag 
+		Set Carry flag
 		*/
-	case 0x06: 
+	case 0x06:
 		Flags = Flags | FLAG_C;
-		break; 
-	
+		break;
+
 		//CLI
 		/*
-		Clear Interrupt flag 
+		Clear Interrupt flag
 		*/
-	case 0x07: 
+	case 0x07:
 		Flags = (Flags & (~FLAG_I));
 		break;
 
@@ -1380,7 +1380,7 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
-	
+
 	case 0x52: //A-M 
 		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
@@ -1393,14 +1393,14 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
-	
+
 	case 0x82: //B-M
 		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
 		//SUB
 		/*
-		Register Subtracted to Accumulator 
+		Register Subtracted to Accumulator
 		*/
 	case 0x34:  // A-L  
 		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_L]);
@@ -1412,8 +1412,8 @@ void Group_1(BYTE opcode) {
 
 	case 0x54: //A-M
 		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_M]);
-		break; 
-	
+		break;
+
 	case 0x64:	//B-L
 		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
@@ -1454,8 +1454,8 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)temp_word);
 
 		Registers[REGISTER_A] = (BYTE)temp_word;
-		break; 
-	
+		break;
+
 	case 0x56: //A-M
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
@@ -1491,7 +1491,7 @@ void Group_1(BYTE opcode) {
 
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
-	
+
 	case 0x86: //B-M 
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
@@ -1504,10 +1504,10 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
-	//AND
-	/*
-	Register bitwise and with Accumulator
-	*/
+		//AND
+		/*
+		Register bitwise and with Accumulator
+		*/
 
 	case 0x37: //A-L
 
@@ -1518,8 +1518,8 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 
-		Registers[REGISTER_A] = (BYTE)temp_word; 
-			break;
+		Registers[REGISTER_A] = (BYTE)temp_word;
+		break;
 
 	case 0x47: //A-H
 		param1 = Registers[REGISTER_A];
@@ -1563,7 +1563,7 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)temp_word);
 
 		Registers[REGISTER_B] = (BYTE)temp_word;
-		
+
 		break;
 
 	case 0x87: //B-M
@@ -1577,11 +1577,11 @@ void Group_1(BYTE opcode) {
 
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
-	
-	//XOR 
-	/*
-	Register Bitwise exclusive or with Accumulator
-	*/
+
+		//XOR 
+		/*
+		Register Bitwise exclusive or with Accumulator
+		*/
 	case 0x38: // A-L
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
@@ -1591,7 +1591,7 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)temp_word);
 
 		Registers[REGISTER_A] = (BYTE)temp_word;
-		break; 
+		break;
 
 	case 0x48: //A-H
 		param1 = Registers[REGISTER_A];
@@ -1602,7 +1602,7 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)temp_word);
 
 		Registers[REGISTER_A] = (BYTE)temp_word;
-		break; 
+		break;
 
 	case 0x58: //A-M
 		param1 = Registers[REGISTER_A];
@@ -1670,7 +1670,7 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
-	
+
 	case 0x59: //A-M
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
@@ -1687,8 +1687,8 @@ void Group_1(BYTE opcode) {
 		temp_word = (WORD)param1 & (WORD)param2;
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-		break; 
-	
+		break;
+
 	case 0x79: //B-H
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
@@ -1697,7 +1697,7 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
-	
+
 	case 0x89: //B-M
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
@@ -1705,14 +1705,126 @@ void Group_1(BYTE opcode) {
 		temp_word = (WORD)param1 & (WORD)param2;
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-		break; 
+		break;
 
+	//ORIA 
+		/*
+		Data biutwise inclusive or with Accumlator 
+		*/
+	case 0x97: //#
+		data = fetch();
+		Registers[REGISTER_A] |= data;
+		set_three_flags(Registers[REGISTER_A]);
+		break;
+	
+
+		//ORIB 
+		/*
+		Data bitwise inclusive or with Accumulator
+		*/
+		
+	case 0x98: //#
+		data = fetch();
+		Registers[REGISTER_B] |= data;
+		set_three_flags(Registers[REGISTER_B]);
+		break;
+		
+
+		//INC
+		/*
+		Increment memory or Accumulator
+		*/
+	case 0xA0: //ABS
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] ++; 
+			
+		}
+		set_flag_z((WORD)Memory[address]);
+		set_flag_n((WORD)Memory[address]);
+		break;
+	case 0xB0://abs,x
+		address += Index_Registers[REGISTER_X];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] ++; 
+		}
+		set_flag_z((WORD)Memory[address]);
+		set_flag_n((WORD)Memory[address]);
+		break;
+
+	case 0xC0:  //abs Y
+		address += Index_Registers[REGISTER_Y];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] ++;
+		}
+
+		set_flag_z((WORD)Memory[address]);
+		set_flag_n((WORD)Memory[address]);
+		break;
+		//INCA
+		/*
+		Increment Memory or Accumulator 
+		*/
+		case 0xD0: //A (impl)
+			Registers[REGISTER_A]++; 
+			set_flag_z((WORD)Registers[REGISTER_A]);
+			set_flag_n((WORD)Registers[REGISTER_A]);
+		break;
+
+		//INCB 
+		/*
+			Increment Memory or Accumulator 
+			*/
+		case 0xE0: //B (impl)
+			Registers[REGISTER_B]++; 
+			set_flag_z((WORD)Registers[REGISTER_B]);
+			set_flag_n((WORD)Registers[REGISTER_B]);
+		break;
+
+		//INCX 
+		/*
+		Increments Register X 
+		*/
+		case 0x02:  //impl 
+			Index_Registers[REGISTER_X]++; 
+			set_flag_z((WORD)Index_Registers[REGISTER_X]);
+			break; 
+		
+
+
+	//INCY
+			/*
+			Increments Register Y
+			*/
+		case 0x04:  //impl 
+			Index_Registers[REGISTER_Y]++;
+			set_flag_z((WORD)Index_Registers[REGISTER_Y]);
+			break;
+
+	//HLT
+			/*
+			Wait for interupt 
+			*/
+		case 0x2D:
+			halt = true;
+			break;
 
 	}
 
 
 
-	
+
+
+
+
 
 }
 /*
