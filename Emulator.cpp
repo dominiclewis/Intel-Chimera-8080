@@ -461,6 +461,23 @@ BYTE subRegs(BYTE inReg1, BYTE inReg2)
 	return (BYTE)result;
 }
 
+BYTE rotateRightCarry(BYTE inReg)
+{
+	BYTE result, carry = 0x00;
+	WORD data;
+	if ((Flags & FLAG_C) == 0x01)
+		carry = 0x80;			//set bit 7 if c is set
+	data = (inReg >> 1) | carry;
+	if ((inReg & 0x01) == 0x01)
+	{
+		data = data | 0x100;	//to trigger carry if lsb is set
+	}
+	result = (BYTE)data;
+	set_three_flags(data);
+	return result;
+
+}
+
 
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
@@ -472,6 +489,7 @@ void Group_1(BYTE opcode) {
 	WORD temp_word;
 	BYTE param1;
 	BYTE param2;
+	BYTE carry = 0;
 	switch (opcode) {
 
 
@@ -1707,28 +1725,28 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)temp_word);
 		break;
 
-	//ORIA 
+		//ORIA 
 		/*
-		Data biutwise inclusive or with Accumlator 
+		Data biutwise inclusive or with Accumlator
 		*/
 	case 0x97: //#
 		data = fetch();
 		Registers[REGISTER_A] |= data;
 		set_three_flags(Registers[REGISTER_A]);
 		break;
-	
+
 
 		//ORIB 
 		/*
 		Data bitwise inclusive or with Accumulator
 		*/
-		
+
 	case 0x98: //#
 		data = fetch();
 		Registers[REGISTER_B] |= data;
 		set_three_flags(Registers[REGISTER_B]);
 		break;
-		
+
 
 		//INC
 		/*
@@ -1739,8 +1757,8 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] ++; 
-			
+			Memory[address] ++;
+
 		}
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
@@ -1751,7 +1769,7 @@ void Group_1(BYTE opcode) {
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] ++; 
+			Memory[address] ++;
 		}
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
@@ -1771,151 +1789,256 @@ void Group_1(BYTE opcode) {
 		break;
 		//INCA
 		/*
-		Increment Memory or Accumulator 
+		Increment Memory or Accumulator
 		*/
-		case 0xD0: //A (impl)
-			Registers[REGISTER_A]++; 
-			set_flag_z((WORD)Registers[REGISTER_A]);
-			set_flag_n((WORD)Registers[REGISTER_A]);
+	case 0xD0: //A (impl)
+		Registers[REGISTER_A]++;
+		set_flag_z((WORD)Registers[REGISTER_A]);
+		set_flag_n((WORD)Registers[REGISTER_A]);
 		break;
 
 		//INCB 
 		/*
-			Increment Memory or Accumulator 
-			*/
-		case 0xE0: //B (impl)
-			Registers[REGISTER_B]++; 
-			set_flag_z((WORD)Registers[REGISTER_B]);
-			set_flag_n((WORD)Registers[REGISTER_B]);
+		Increment Memory or Accumulator
+		*/
+	case 0xE0: //B (impl)
+		Registers[REGISTER_B]++;
+		set_flag_z((WORD)Registers[REGISTER_B]);
+		set_flag_n((WORD)Registers[REGISTER_B]);
 		break;
 
 		//INCX 
 		/*
-		Increments Register X 
+		Increments Register X
 		*/
-		case 0x02:  //impl 
-			Index_Registers[REGISTER_X]++; 
-			set_flag_z((WORD)Index_Registers[REGISTER_X]);
-			break; 
+	case 0x02:  //impl 
+		Index_Registers[REGISTER_X]++;
+		set_flag_z((WORD)Index_Registers[REGISTER_X]);
+		break;
+
+
+
+		//INCY
+		/*
+		Increments Register Y
+		*/
+	case 0x04:  //impl 
+		Index_Registers[REGISTER_Y]++;
+		set_flag_z((WORD)Index_Registers[REGISTER_Y]);
+		break;
+
+		//HLT
+		/*
+		Wait for interupt
+		*/
+	case 0x2D:
+		halt = true;
+		break;
+
+		//REPEAT
+
+		//DEC
+		/*
+		Decrement Memory or
+		Accumulator
+		*/
+	case 0xA1: //ABS
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] --;
+
+		}
+		set_flag_z((WORD)Memory[address]);
+		set_flag_n((WORD)Memory[address]);
+		break;
+
+	case 0xB1://abs,x
+		address += Index_Registers[REGISTER_X];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] --;
+		}
+		set_flag_z((WORD)Memory[address]);
+		set_flag_n((WORD)Memory[address]);
+		break;
+
+	case 0xC1:  //abs Y
+		address += Index_Registers[REGISTER_Y];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] --;
+		}
+
+		set_flag_z((WORD)Memory[address]);
+		set_flag_n((WORD)Memory[address]);
+		break;
+		//DECA
+		/*
+		Decrement Memory or Accumulator
+		*/
+	case 0xD1: //A (impl)
+		Registers[REGISTER_A]--;
+		set_flag_z((WORD)Registers[REGISTER_A]);
+		set_flag_n((WORD)Registers[REGISTER_A]);
+		break;
+
+		//DECB
+		/*
+		Increment Memory or Accumulator
+		*/
+	case 0xE1: //B (impl)
+		Registers[REGISTER_B]--;
+		set_flag_z((WORD)Registers[REGISTER_B]);
+		set_flag_n((WORD)Registers[REGISTER_B]);
+		break;
+
+		//DECX
+		/*
+		Decrements Register X
+		*/
+	case 0x01:  //impl 
+		Index_Registers[REGISTER_X]--;
+		set_flag_z((WORD)Index_Registers[REGISTER_X]);
+		break;
+
+
+
+		//DEY
+		/*
+		Deccrements Register Y
+		*/
+	case 0x03:  //impl 
+		Index_Registers[REGISTER_Y]--;
+		set_flag_z((WORD)Index_Registers[REGISTER_Y]);
+		break;
+
+		//NOP
+		/*
+		No Operating (STOP/Halt?)
+		*/
+	case 0x2C://impl
+		halt = true;
+
+		break;
+	
+		
+		//RRC (abs)
+		/*
+		Rotate right through carry Memory or Accumulator 
+	   */
+	case 0xA2: //abs
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8 ) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Flags & FLAG_C) == 0x01) {
+				carry = 0x80;
+			}
+
+			data = (Memory[address] >> 1) | carry;
+
+			if ((Memory[address] & 0x01) == 0x01) {
+				data = data | 0x100;
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+	case 0xB2: //abs,x 
+		HB = fetch();
+		LB = fetch();
+		address += Index_Registers[REGISTER_X];
+
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Flags & FLAG_C) == 0x01) {
+				carry = 0x80;
+			}
+			data = (Memory[address] >> 1) | carry;
+			if ((Memory[address] & 0x01) == 0x01) {
+				data = data | 0x100;
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+
+	case 0xC2://abs, Y
+		HB = fetch();
+		LB = fetch();
+		address += Index_Registers[REGISTER_Y];
+
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Flags & FLAG_C) == 0x01) {
+				carry = 0x80;
+			}
+			data = (Memory[address] >> 1) | carry;
+			if ((Memory[address] & 0x01) == 0x01) {
+				data = data | 0x100;
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break; 
+
+
+	//RRCA
+		/*
+		Rotate right through carry memory or accumulator
+		*/
+	case 0xD2: //A
+		
+		Registers[REGISTER_A] = rotateRightCarry(Registers[REGISTER_A]);
+
+		break; 
 		
 
 
-	//INCY
-			/*
-			Increments Register Y
-			*/
-		case 0x04:  //impl 
-			Index_Registers[REGISTER_Y]++;
-			set_flag_z((WORD)Index_Registers[REGISTER_Y]);
-			break;
+	//RCBB
+		/*
+			Rotate right through carry memory or accumulator
+		*/
 
-	//HLT
-			/*
-			Wait for interupt 
-			*/
-		case 0x2D:
-			halt = true;
-			break;
+	case 0xE2: //B 
 
-			//REPEAT
+		Registers[REGISTER_B] = rotateRightCarry(Registers[REGISTER_B]);
+		break;
 
-			//DEC
-			/*
-			Decrement Memory or
-				Accumulator
-			*/
-		case 0xA1: //ABS
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			if (address >= 0 && address < MEMORY_SIZE) {
-				Memory[address] --;
+		//RLC 
+		/*
+		Rotate left through carry Memory or Accumulator
+		*/
 
-			}
-			set_flag_z((WORD)Memory[address]);
-			set_flag_n((WORD)Memory[address]);
-			break;
+	case 0xA3://abs
 
-		case 0xB1://abs,x
-			address += Index_Registers[REGISTER_X];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			if (address >= 0 && address < MEMORY_SIZE) {
-				Memory[address] --;
-			}
-			set_flag_z((WORD)Memory[address]);
-			set_flag_n((WORD)Memory[address]);
-			break;
+		break;
 
-		case 0xC1:  //abs Y
-			address += Index_Registers[REGISTER_Y];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			if (address >= 0 && address < MEMORY_SIZE) {
-				Memory[address] --;
-			}
+	case 0xB3://abs,x
 
-			set_flag_z((WORD)Memory[address]);
-			set_flag_n((WORD)Memory[address]);
-			break;
-			//DECA
-			/*
-			Decrement Memory or Accumulator
-			*/
-		case 0xD1: //A (impl)
-			Registers[REGISTER_A]--;
-			set_flag_z((WORD)Registers[REGISTER_A]);
-			set_flag_n((WORD)Registers[REGISTER_A]);
-			break;
+		break;
 
-			//DECB
-			/*
-			Increment Memory or Accumulator
-			*/
-		case 0xE1: //B (impl)
-			Registers[REGISTER_B]--;
-			set_flag_z((WORD)Registers[REGISTER_B]);
-			set_flag_n((WORD)Registers[REGISTER_B]);
-			break;
+	case 0xC3: //abs, y 
 
-			//DECX
-			/*
-			Decrements Register X
-			*/
-		case 0x01:  //impl 
-			Index_Registers[REGISTER_X]--;
-			set_flag_z((WORD)Index_Registers[REGISTER_X]);
-			break;
+		break;
 
-
-
-			//DEY
-			/*
-			Deccrements Register Y
-			*/
-		case 0x03:  //impl 
-			Index_Registers[REGISTER_Y]--;
-			set_flag_z((WORD)Index_Registers[REGISTER_Y]);
-			break;
-
-			//NOP
-			/*
-			No Operating (STOP/Halt?)
-			*/
-		case 0x2C://impl
-			halt = true;
-
-			
-			break;
 
 	}
 
 
-	
 
-	
+
+
+
+
 
 
 
