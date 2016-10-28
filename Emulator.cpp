@@ -514,6 +514,33 @@ BYTE rotateRight(BYTE inReg)
 	return result;
 }
 
+WORD getAbsAd() {
+	BYTE LB = 0;
+	BYTE HB = 0;
+	WORD address = 0;
+
+	HB = fetch();
+	LB = fetch();
+	address += (WORD)((WORD)HB << 8) + LB;
+
+	return address; 
+}
+
+BYTE shiftRight(BYTE inReg)
+{
+	WORD data = 0;
+		BYTE result = 0;
+
+	if ((inReg & 0x01) != 0)
+		data = (inReg >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+	else
+		data = inReg >> 1;
+	result = (BYTE)data;
+	set_three_flags(data);
+	return result;
+}
+
+
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
 	BYTE LB = 0;
@@ -2034,6 +2061,7 @@ void Group_1(BYTE opcode) {
 
 		Registers[REGISTER_A] = rotateRightCarry(Registers[REGISTER_A]);
 
+
 		break;
 
 
@@ -2202,14 +2230,67 @@ void Group_1(BYTE opcode) {
 			LB = fetch();
 			address += (WORD)((WORD)HB << 8) + LB;
 
-			data = (WORD)address << 1; //shift it left 
-			Memory[address] = (BYTE)data; //just do memory as if accumulator different opcode will be used
+			if (address >= 0 && address < MEMORY_SIZE) {
+				data = (WORD)Memory[address] << 1 ; //Shift
+
+				Memory[address] = (BYTE)data; 
+			}
+
 			set_three_flags(data); 
+			break;
+
+		case 0xB4:  //abs x 
+			address += Index_Registers[REGISTER_X];
+
+			address += getAbsAd();
+
+
+			if (address >= 0 && address < MEMORY_SIZE) {
+				data = (WORD)Memory[address] << 1; //Shift
+
+				Memory[address] = (BYTE)data;
+			}
+
+			set_three_flags(data);
 
 			break;
 
+		case 0xC4:  //abs y 
+			address += Index_Registers[REGISTER_Y];
+
+			address += getAbsAd();
 
 
+			if (address >= 0 && address < MEMORY_SIZE) {
+				data = (WORD)Memory[address] << 1; //Shift
+
+				Memory[address] = (BYTE)data;
+			}
+
+			set_three_flags(data);
+			break; 
+	
+
+		//SALA
+			/*
+			Arithmetic shift Left memory or Accumulator
+			*/
+		case 0xD4: //A
+			
+			data = Registers[REGISTER_A] << 1;
+			Registers[REGISTER_A] = (BYTE)data;
+			set_three_flags(data);
+			break;
+
+		//SALAB
+			/*
+			Arithmetic shift left Memory or AAccumulator 
+			*/
+		case 0xE4:
+			data = Registers[REGISTER_B] << 1;
+			Registers[REGISTER_B] = (BYTE)data;
+			set_three_flags(data);
+			break; 
 	}
 
 
