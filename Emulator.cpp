@@ -502,6 +502,18 @@ BYTE rotateLeft(BYTE inReg)
 
 	return result;
 }
+BYTE rotateRight(BYTE inReg)
+{
+	BYTE result;
+	result = inReg >> 1;
+	if ((inReg & 0x01) == 0x01)
+		result = result | 0x80;
+
+	set_flag_z(result);
+	set_flag_n(result);
+	return result;
+}
+
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
 	BYTE LB = 0;
@@ -2114,8 +2126,74 @@ void Group_1(BYTE opcode) {
 			address += (WORD)((WORD)HB << 8) + LB;
 			Memory[address] = rotateLeft(Memory[address]);
 			break;
-	}
 
+
+	//ROLA
+	/*
+	Rotate left without carry Memory or Accumlator
+	*/
+
+		case 0xD8: //A
+			Registers[REGISTER_A] = rotateLeft(Registers[REGISTER_A]);
+			break; 
+
+	//ROLB
+	/*
+	Rotate left without carry memory or accumulator
+	*/
+		case 0xE8:
+			Registers[REGISTER_B] = rotateLeft(Registers[REGISTER_B]);
+			break; 
+
+
+			//RR
+			/*
+			Rotate right without carry memory or Accumulator
+			*/
+		case 0xA9: //abs 
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			Memory[address] = rotateRight(Memory[address]);
+			break;
+		
+	
+		case 0xB9: //abs,x
+
+			address += Index_Registers[REGISTER_X];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			Memory[address] = rotateRight(Memory[address]);
+			break;
+
+		case 0xC9: //abs,Y
+
+			address += Index_Registers[REGISTER_Y];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			Memory[address] = rotateRight(Memory[address]);
+			break;
+
+
+		//RRA 
+			/*
+			Rotate right wihtout carry memory or accumulator 
+			*/
+		case 0xD9://A
+			Registers[REGISTER_A] = rotateRight(Registers[REGISTER_A]);
+			break;
+			//RRB 
+			/*
+			Rotate right wihtout carry memory or accumulator
+			*/
+		case 0xE9://B
+			Registers[REGISTER_B] = rotateRight(Registers[REGISTER_B]);
+			break;
+
+
+	}
 
 
 
