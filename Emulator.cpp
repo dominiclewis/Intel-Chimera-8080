@@ -478,7 +478,27 @@ BYTE rotateRightCarry(BYTE inReg)
 
 }
 
+BYTE rotateLeftCarry(BYTE inReg)
+{
+	BYTE result, carry;
+	carry = Flags & FLAG_C;
+	WORD data = (WORD)(inReg << 1) | carry;
+	result = (BYTE)data;
+	set_three_flags(data);
 
+	return result;
+}
+
+BYTE rotateLeft(BYTE inReg)
+{
+	BYTE result;
+	result = inReg << 1;
+	if ((inReg & 0x80) == 0x80)
+	result = result | 0x01;
+	set_three_flags(result);
+
+	return result;
+}
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
 	BYTE LB = 0;
@@ -1926,16 +1946,16 @@ void Group_1(BYTE opcode) {
 		halt = true;
 
 		break;
-	
-		
+
+
 		//RRC (abs)
 		/*
-		Rotate right through carry Memory or Accumulator 
-	   */
+		Rotate right through carry Memory or Accumulator
+		*/
 	case 0xA2: //abs
 		HB = fetch();
 		LB = fetch();
-		address += (WORD)((WORD)HB << 8 ) + LB;
+		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE) {
 			if ((Flags & FLAG_C) == 0x01) {
 				carry = 0x80;
@@ -1988,24 +2008,24 @@ void Group_1(BYTE opcode) {
 			Memory[address] = (BYTE)data;
 		}
 		set_three_flags(data);
-		break; 
+		break;
 
 
-	//RRCA
+		//RRCA
 		/*
 		Rotate right through carry memory or accumulator
 		*/
 	case 0xD2: //A
-		
+
 		Registers[REGISTER_A] = rotateRightCarry(Registers[REGISTER_A]);
 
-		break; 
-		
+		break;
 
 
-	//RCBB
+
+		//RCBB
 		/*
-			Rotate right through carry memory or accumulator
+		Rotate right through carry memory or accumulator
 		*/
 
 	case 0xE2: //B 
@@ -2017,20 +2037,51 @@ void Group_1(BYTE opcode) {
 		/*
 		Rotate left through carry Memory or Accumulator
 		*/
-
+		
 	case 0xA3://abs
-
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		//grab the address
+		Memory[address] = rotateLeftCarry(Memory[address]);
 		break;
-
+	
 	case 0xB3://abs,x
+		address += Index_Registers[REGISTER_X];
 
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+
+		Memory[address] = rotateLeftCarry(Memory[address]);
 		break;
 
 	case 0xC3: //abs, y 
+		address += Index_Registers[REGISTER_Y];
+
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+	
+		Memory[address] = rotateLeftCarry(Memory[address]);
 
 		break;
 
+		//RLCA
+		/*
+		Rotate left through carry memory or Accumulator
+		*/
+	case 0xD3://A
+		Registers[REGISTER_A] = rotateLeftCarry(Registers[REGISTER_A]);
+		break;
 
+		//RLCB
+		/*
+		Rotate left through carry memory or accumulator 
+		*/
+	case 0xE3: //B
+		Registers[REGISTER_B] = rotateLeftCarry(Registers[REGISTER_B]);
+		break; 
 	}
 
 
