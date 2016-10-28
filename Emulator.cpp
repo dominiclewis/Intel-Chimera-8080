@@ -526,19 +526,6 @@ WORD getAbsAd() {
 	return address; 
 }
 
-BYTE shiftRight(BYTE inReg)
-{
-	WORD data = 0;
-		BYTE result = 0;
-
-	if ((inReg & 0x01) != 0)
-		data = (inReg >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-	else
-		data = inReg >> 1;
-	result = (BYTE)data;
-	set_three_flags(data);
-	return result;
-}
 
 
 //Group 1 = Loading Information/Data
@@ -2291,6 +2278,23 @@ void Group_1(BYTE opcode) {
 			Registers[REGISTER_B] = (BYTE)data;
 			set_three_flags(data);
 			break; 
+
+			//SAR
+			/*
+			Arithmetic shift right memory or accumulator
+			*/
+
+		case 0xA5: //abs
+
+
+		case 0xB5: //abs,X
+
+			break;
+
+		case 0xC5: //abs,y
+
+			break; 
+
 	}
 
 
