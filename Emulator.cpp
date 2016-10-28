@@ -2193,6 +2193,23 @@ void Group_1(BYTE opcode) {
 			break;
 
 
+		//SAL
+			/*
+			Arithmetic Shift left Memory or Accumulator
+			*/
+		case 0xA4:	//abs
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+
+			data = (WORD)address << 1; //shift it left 
+			Memory[address] = (BYTE)data; //just do memory as if accumulator different opcode will be used
+			set_three_flags(data); 
+
+			break;
+
+
+
 	}
 
 
