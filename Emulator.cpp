@@ -466,11 +466,11 @@ BYTE rotateRightCarry(BYTE inReg)
 	BYTE result, carry = 0x00;
 	WORD data;
 	if ((Flags & FLAG_C) == 0x01)
-		carry = 0x80;			//set bit 7 if c is set
+		carry = 0x80;		
 	data = (inReg >> 1) | carry;
 	if ((inReg & 0x01) == 0x01)
 	{
-		data = data | 0x100;	//to trigger carry if lsb is set
+		data = data | 0x100;	
 	}
 	result = (BYTE)data;
 	set_three_flags(data);
@@ -484,8 +484,8 @@ BYTE rotateLeftCarry(BYTE inReg)
 	carry = Flags & FLAG_C;
 	WORD data = (WORD)(inReg << 1) | carry;
 	result = (BYTE)data;
-	set_three_flags(data);
 
+	set_three_flags(data);
 	return result;
 }
 
@@ -495,7 +495,10 @@ BYTE rotateLeft(BYTE inReg)
 	result = inReg << 1;
 	if ((inReg & 0x80) == 0x80)
 	result = result | 0x01;
-	set_three_flags(result);
+
+
+	set_flag_z(result);
+	set_flag_n(result);
 
 	return result;
 }
@@ -2082,6 +2085,35 @@ void Group_1(BYTE opcode) {
 	case 0xE3: //B
 		Registers[REGISTER_B] = rotateLeftCarry(Registers[REGISTER_B]);
 		break; 
+
+		//ROL
+		/*
+		Rotate left without carry Memory or Accumlator
+		*/
+
+		case 0xA8: //Abs 
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			Memory[address] = rotateLeft(Memory[address]);
+		break;
+
+		case 0xB8:  //abs ,X
+		
+			address += Index_Registers[REGISTER_X];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			Memory[address] = rotateLeft(Memory[address]);
+			break; 
+
+		case 0xC8: //abs, y
+			address += Index_Registers[REGISTER_Y];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			Memory[address] = rotateLeft(Memory[address]);
+			break;
 	}
 
 
