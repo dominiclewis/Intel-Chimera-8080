@@ -2594,9 +2594,72 @@ void Group_1(BYTE opcode) {
 				set_three_flags(data);
 
 				break;
-	
+				//PUSH
+				/*
+				Push Register onto the stack
+				*/
+
+				case 0xBE: //A
+					
+					Memory[StackPointer] = Registers[REGISTER_A];
+					StackPointer--;
+				break;
+
+				case 0xCE: //B
+					Memory[StackPointer] = Registers[REGISTER_B];
+					StackPointer--;
+					break;
+				
+				case 0xDE: //FL
+					Memory[StackPointer] = Flags; 
+					StackPointer--;
+					break;
+
+				case 0xEE: //L
+					Memory[StackPointer] = Registers[REGISTER_L];
+					StackPointer--;
+					break;
+				case 0xFE: //H
+					Memory[StackPointer] = Registers[REGISTER_H];
+					StackPointer--;
+					break;
+
+					//POP
+					/*
+					Pop the top of the
+					Stack into the Register
+					*/
+
+				case 0xBF://A
+					StackPointer++;
+
+					Registers[REGISTER_A] = Memory[StackPointer];
+				
+					break;
+				case 0xCF: //B
+					StackPointer++;
+
+					Registers[REGISTER_B] = Memory[StackPointer];
+					break;
+
+				case 0xDF: //FL
+					StackPointer++;
+					Flags = Memory[StackPointer];
+					break;
+
+				case 0xEF: //L
+					StackPointer++; 
+					Registers[REGISTER_L] = Memory[StackPointer];
+					break;
+
+				case 0xFF: //H
+					StackPointer++;
+					Registers[REGISTER_H] = Memory[StackPointer];
+						break;
 				}
 
+			
+				
 
 
 
