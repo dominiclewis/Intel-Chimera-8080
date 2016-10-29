@@ -2532,22 +2532,75 @@ void Group_1(BYTE opcode) {
 				}
 				set_three_flags(data);
 				break; 
-			//CPIA
-			/*
-			Data compared to Accumultor
-			*/
-		case 0x95 :  //#, A
+	
+				//COM
 
-			HB = fetch();
+				/*
+				Negate memory or accumulator 
+				*/
 
-			
-			data = (WORD)Registers[REGISTER_A] - (WORD)HB;
+			case 0xA7: //abs 
+			//get ab address
+				address = getAbsAd();
+				data = ~Memory[address];
 
-			set_all_flags(Registers[REGISTER_A], ~HB + 1, data);
-			break;
+				if (address >= 0 && address < MEMORY_SIZE) {
+					Memory[address] = (BYTE)data;
+					
+				}
+				set_three_flags(data);
+				break;
 
+			case 0xB7: //abs X
+				address += Index_Registers[REGISTER_X];
+				address += getAbsAd();
+				data = ~Memory[address];
 
-	}
+				if (address >= 0 && address < MEMORY_SIZE) {
+					Memory[address] = (BYTE)data;
+
+				}
+				set_three_flags(data);
+				break; 
+
+			case 0xC7: //abs Y 
+				address += Index_Registers[REGISTER_Y];
+				address += getAbsAd();
+				data = ~Memory[address];
+
+				if (address >= 0 && address < MEMORY_SIZE) {
+					Memory[address] = (BYTE)data;
+
+				}
+				set_three_flags(data);
+				break;
+		
+				//COMA
+				/*
+				Negate Memory or Accumulator
+				*/
+			case 0xD7: //A
+
+				data = ~Registers[REGISTER_A];
+				if (address >= 0 && address < MEMORY_SIZE) {
+				Registers[REGISTER_A] = (BYTE)data;
+
+				}
+				set_three_flags(data);
+				break;
+				
+				//COMB
+			case 0xE7: //B 
+				data = ~Registers[REGISTER_B];
+				if (address >= 0 && address < MEMORY_SIZE) {
+					Registers[REGISTER_B] = (BYTE)data;
+
+				}
+				set_three_flags(data);
+
+				break;
+	
+				}
 
 
 
