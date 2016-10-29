@@ -2656,6 +2656,28 @@ void Group_1(BYTE opcode) {
 					StackPointer++;
 					Registers[REGISTER_H] = Memory[StackPointer];
 						break;
+
+						//JMP
+						/*
+						Loads Memory into programCounter
+						*/
+
+				case 0x10: //abs
+					address = getAbsAd();
+
+					ProgramCounter = address;
+					break;
+
+					//JSR
+					/*
+					Jump to Subroutine
+					*/
+
+				case 0x21:
+			
+					break;
+
+
 				}
 
 			
