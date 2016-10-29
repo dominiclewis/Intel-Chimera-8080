@@ -680,7 +680,7 @@ void Group_1(BYTE opcode) {
 		/*
 		Stores Accumulator
 		*/
-	case 0xBA:  //abs
+	case 0xBA: //STORA (abs)
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
@@ -689,7 +689,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0xCA:   //abs,X
+	case 0xCA: //STORA (abs,X)
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
@@ -699,8 +699,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0xDA:  //abss, Y
-
+	case 0xDA: //STORA (abs,Y)
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
 		LB = fetch();
@@ -710,8 +709,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-
-	case 0xEA: //(ind)
+	case 0xEA: //STORA ((ind))
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -721,10 +719,9 @@ void Group_1(BYTE opcode) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_A];
 		}
-
 		break;
 
-	case 0xFA: //ind,X
+	case 0xFA: //STORA ((ind,X))
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -736,7 +733,7 @@ void Group_1(BYTE opcode) {
 			Memory[address] = Registers[REGISTER_A];
 		}
 		break;
-
+		
 		//MVI 
 		//L,#	
 	case 0x1C:
@@ -774,7 +771,7 @@ void Group_1(BYTE opcode) {
 
 
 		//STORB 
-	case 0xBB:
+	case 0xBB: //STORB (abs)
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
@@ -783,7 +780,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0xCB:
+	case 0xCB: //STORB (abs,X)
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
@@ -793,8 +790,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	case 0xDB:
-
+	case 0xDB: //STORB (abs,Y)
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
 		LB = fetch();
@@ -804,8 +800,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-
-	case 0xEB:
+	case 0xEB: //STORB ((ind))
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -815,10 +810,9 @@ void Group_1(BYTE opcode) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_B];
 		}
-
 		break;
 
-	case 0xFB:
+	case 0xFB: //STORB ((ind,X))
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -1081,6 +1075,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xF0:  //impl
 		Index_Registers[REGISTER_Y] = Registers[REGISTER_A];
+		set_flag_n(Index_Registers[REGISTER_Y]);
 		break;
 
 		//MYA 
