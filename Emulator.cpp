@@ -1775,7 +1775,8 @@ void Group_1(BYTE opcode) {
 	case 0x97: //#
 		data = fetch();
 		Registers[REGISTER_A] |= data;
-		set_three_flags(Registers[REGISTER_A]);
+		set_flag_z(Registers[REGISTER_A]);
+		set_flag_n(Registers[REGISTER_A]);
 		break;
 
 
@@ -1787,7 +1788,8 @@ void Group_1(BYTE opcode) {
 	case 0x98: //#
 		data = fetch();
 		Registers[REGISTER_B] |= data;
-		set_three_flags(Registers[REGISTER_B]);
+		set_flag_z(Registers[REGISTER_B]);
+		set_flag_n(Registers[REGISTER_B]);
 		break;
 
 
