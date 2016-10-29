@@ -2669,16 +2669,37 @@ void Group_1(BYTE opcode) {
 
 					ProgramCounter = address;
 					break;
+					/////////////////
+					//     JSR     //
+					/////////////////
 
-					//JSR
-					/*
-					Jump to Subroutine
-					*/
+				case 0x21: //JSR (abs)	
+					HB = fetch();
+					LB = fetch();
+					address += (WORD)((WORD)HB << 8) + LB;
+					if (address >= 0 && address < MEMORY_SIZE) {
 
-				case 0x21:
-			
+						LB = (BYTE)ProgramCounter;
+						HB = (BYTE)(ProgramCounter >> 8);
+
+						temp_word = ((WORD)HB << 8) + LB;
+
+						Memory[StackPointer] = temp_word;
+						StackPointer--;
+
+						ProgramCounter = address;
+					}
 					break;
 
+					/////////////////
+					//     RET     //
+					/////////////////
+
+				case 0x4C: //RET (impl)	
+					StackPointer++;
+					address = Memory[StackPointer];
+					ProgramCounter = address;
+					break;
 
 				}
 
