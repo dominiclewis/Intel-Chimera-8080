@@ -527,7 +527,6 @@ WORD getAbsAd() {
 }
 
 
-
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
 	BYTE LB = 0;
@@ -2269,7 +2268,7 @@ void Group_1(BYTE opcode) {
 			set_three_flags(data);
 			break;
 
-		//SALAB
+		//SALB
 			/*
 			Arithmetic shift left Memory or AAccumulator 
 			*/
@@ -2285,15 +2284,119 @@ void Group_1(BYTE opcode) {
 			*/
 
 		case 0xA5: //abs
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			if (address >= 0 && address < MEMORY_SIZE) {
+				if ((Memory[address] & 0x80) == 0x80) { //keep the sign
+					if ((Memory[address] & 0x01) != 0) {
+						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+						data = (data | 0x80);
+					}
+					else {
+						data = Memory[address] >> 1;
+						data = (data | 0x80);
+					}
+				}
+				else {
+					if ((Memory[address] & 0x01) != 0) {
+						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					}
+					else {
+						data = Memory[address] >> 1;
+					}
 
+				}
+				Memory[address] = (BYTE)data;
+			}
+			set_three_flags(data);
+			break;
 
 		case 0xB5: //abs,X
+			address += Index_Registers[REGISTER_X];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			if (address >= 0 && address < MEMORY_SIZE) {
+				if ((Memory[address] & 0x80) == 0x80) { //keep the sign
+					if ((Memory[address] & 0x01) != 0) {
+						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+						data = (data | 0x80);
+					}
+					else {
+						data = Memory[address] >> 1;
+						data = (data | 0x80);
+					}
+				}
+				else {
+					if ((Memory[address] & 0x01) != 0) {
+						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					}
+					else {
+						data = Memory[address] >> 1;
+					}
+
+				}
+				Memory[address] = (BYTE)data;
+			}
+			set_three_flags(data);
+			break;
+		
+
+		case 0xC5: //abs,y
+			address += Index_Registers[REGISTER_Y];
+			HB = fetch();
+			LB = fetch();
+			address += (WORD)((WORD)HB << 8) + LB;
+			if (address >= 0 && address < MEMORY_SIZE) {
+				if ((Memory[address] & 0x80) == 0x80) { //keep the sign
+					if ((Memory[address] & 0x01) != 0) {
+						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+						data = (data | 0x80);
+					}
+					else {
+						data = Memory[address] >> 1;
+						data = (data | 0x80);
+					}
+				}
+				else {
+					if ((Memory[address] & 0x01) != 0) {
+						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					}
+					else {
+						data = Memory[address] >> 1;
+					}
+
+				}
+				Memory[address] = (BYTE)data;
+			}
+			set_three_flags(data);
+			break;
+
+
+			//SARA
+			/*
+			Arithmetic shift right memory or Accumulator
+			*/
+
+			case 0xD5: //A
 
 			break;
 
-		case 0xC5: //abs,y
+			//CPIA
+			/*
+			Data compared to Accumultor
+			*/
+		case 0x95 :  //#, A
 
-			break; 
+			HB = fetch();
+
+			
+			data = (WORD)Registers[REGISTER_A] - (WORD)HB;
+
+			set_all_flags(Registers[REGISTER_A], ~HB + 1, data);
+			break;
+
 
 	}
 
