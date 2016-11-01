@@ -2737,10 +2737,31 @@ void Group_1(BYTE opcode) {
 			/*
 			Data compared to accumulator
 			*/
-		case 0x95:
-			
+		case 0x95:// # A - Data
+			data = fetch();
+
+			param1 = Registers[REGISTER_A];
+
+			temp_word = (WORD)data - (WORD)param1;
+
+			set_three_flags((WORD)temp_word);
 			break;
 
+	//CPIB
+
+			/*
+			Data compared to accumulator
+			*/
+
+		case 0x96:
+			data = fetch();
+
+			param1 = Registers[REGISTER_B];
+
+			temp_word = (WORD)data - (WORD)param1;
+
+			set_three_flags((WORD)temp_word);
+			break;
 	}
 
 
