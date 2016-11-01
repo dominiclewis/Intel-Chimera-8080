@@ -34,10 +34,10 @@ char trc_file[MAX_BUFFER_SIZE];
 //   Registers          //
 //////////////////////////
 
-#define FLAG_I  0x10 //0001 0000  HEX so it's actually 0x 1 0 (1 zero) not 0x10(ten)
-#define FLAG_Z  0x04 //0000 0100
-#define FLAG_N  0x02 //0000 0010
-#define FLAG_C  0x01 //0000 0001
+#define FLAG_I  0x10 //0001 0000  HEX so it's actually 0x 1 0 (1 zero) not 0x10(ten) (Interupt)
+#define FLAG_Z  0x04 //0000 0100 Zero
+#define FLAG_N  0x02 //0000 0010 Negative 
+#define FLAG_C  0x01 //0000 0001 Carry 
 #define REGISTER_M 4
 #define REGISTER_A 3
 #define REGISTER_B 2
@@ -525,7 +525,10 @@ WORD getAbsAd() {
 
 	return address;
 }
-
+void push(BYTE reg) {
+	Memory[StackPointer] = reg;
+	StackPointer--;
+}
 
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
@@ -2659,7 +2662,7 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_H] = Memory[StackPointer];
 		break;
 
-	
+
 		//JUMP
 	case 0x10: //abs
 		address = getAbsAd();
@@ -2703,7 +2706,7 @@ void Group_1(BYTE opcode) {
 
 		//SBIA
 
-		case 0x93: //# 
+	case 0x93: //# 
 		data = fetch();
 		param1 = Registers[REGISTER_A];
 
@@ -2717,80 +2720,230 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = temp_word;
 		break;
 
-	//SBIB
+		//SBIB
 
-		case 0x94: //# 
-			data = fetch();
-			param1 = Registers[REGISTER_B];
+	case 0x94: //# 
+		data = fetch();
+		param1 = Registers[REGISTER_B];
 
-			temp_word = (WORD)data - (WORD)param1;
+		temp_word = (WORD)data - (WORD)param1;
 
-			if ((Flags & FLAG_C) != 0) {
-				temp_word--;
-			}
+		if ((Flags & FLAG_C) != 0) {
+			temp_word--;
+		}
 
-			set_three_flags((WORD)temp_word);
-			Registers[REGISTER_B] = temp_word;
-			break;
+		set_three_flags((WORD)temp_word);
+		Registers[REGISTER_B] = temp_word;
+		break;
 
-	//CPIA
-			/*
-			Data compared to accumulator
-			*/
-		case 0x95:// # A - Data
-			data = fetch();
+		//CPIA
+		/*
+		Data compared to accumulator
+		*/
+	case 0x95:// # A - Data
+		data = fetch();
 
-			param1 = Registers[REGISTER_A];
+		param1 = Registers[REGISTER_A];
 
-			temp_word = (WORD)data - (WORD)param1;
+		temp_word = (WORD)data - (WORD)param1;
 
-			set_three_flags((WORD)temp_word);
-			break;
+		set_three_flags((WORD)temp_word);
+		break;
 
-	//CPIB
+		//CPIB
 
-			/*
-			Data compared to accumulator
-			*/
+		/*
+		Data compared to accumulator
+		*/
 
-		case 0x96:
-			data = fetch();
+	case 0x96:
+		data = fetch();
 
-			param1 = Registers[REGISTER_B];
+		param1 = Registers[REGISTER_B];
 
-			temp_word = (WORD)data - (WORD)param1;
+		temp_word = (WORD)data - (WORD)param1;
 
-			set_three_flags((WORD)temp_word);
-			break;
+		set_three_flags((WORD)temp_word);
+		break;
 
-			//JCC
-			/*
-			Jump on Carry clear
-			*/
-		case 0x11: //abs
+		//JCC
+		/*
+		Jump on Carry clear
+		*/
+	case 0x11: //abs
+		address = getAbsAd();
+
+		if ((Flags & FLAG_C) == 0) {
+
+			ProgramCounter = address;
+		}
+
+		break;
+
+		//JCC
+
+		/*
+		Jump on carry set
+		*/
+	case 0x12: //abs 
+
+		address = getAbsAd();
+		if ((Flags & FLAG_C) != 0) {
+			ProgramCounter = address;
+		}
+
+		break;
+
+		//JNE
+		/*
+		Jump on result not Zero 
+		*/
+	case 0x13: //abs
+			
 			address = getAbsAd();
 
-			if ((Flags & FLAG_C) == 0) {
+			if ((Flags & FLAG_Z) == 0)
+			{
+				ProgramCounter = address;
 
-				ProgramCounter = address; 
+			}
+		break;
+
+		//JEQ
+		/*
+		Jump on result equal to Zero
+		*/
+	case 0x14:  //abs 
+		
+		address = getAbsAd();
+
+		if ((Flags & FLAG_Z) != 0)
+		{
+			ProgramCounter = address;
+
+		}
+
+		break;
+
+
+		//JMI
+		/*
+		Jump on Negative Result
+		*/
+	case 0x15:
+		address = getAbsAd();
+
+		if ((Flags & FLAG_N) != 0)
+		{
+
+			ProgramCounter = address; 
+		}
+		break;
+		// JPL 
+		/*
+		Jump on positive reuslt 
+		*/
+	case 0x16:
+
+		address = getAbsAd();
+		if ((Flags & FLAG_N) == 0) {
+			
+			ProgramCounter = address; 
+
+		}
+		break;
+
+	//JHI
+
+	case 0x17:
+		address = getAbsAd();
+		if (Flags & (FLAG_C | FLAG_Z) != 0)
+		{
+			ProgramCounter = address;
+
+		}
+		
+		break;
+
+
+	//JLE
+	case 0x18: //JLE (abs)	
+		address = getAbsAd();
+		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
+			ProgramCounter = address;
+		}
+		break;
+		
+		//CCC
+	case 0x22: //abs
+		address = getAbsAd();
+		if ((Flags & FLAG_C) == 0) {
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+		break;
+		//CCS
+	case 0x23: //abs
+
+		address = getAbsAd();
+		if ((Flags & FLAG_C) != 0) {
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+		break; 
+
+		//CNE 
+		/*
+		Call on result not Zero
+		*/
+
+	case 0x24: //abs
+		address = getAbsAd();
+		if ((Flags & FLAG_Z) == 0) {
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+
+		break;
+
+		//CEQ 
+		/*
+		Call on result equal to Zero
+		*/
+		case 0x25:
+		address = getAbsAd();
+		if ((Flags & FLAG_Z) != 0) {
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+		break;
+
+	//CMI 
+		/*
+		Call on negative result
+		*/
+
+	  case 0x26: //abs
+		address = getAbsAd();
+		if ((Flags & FLAG_N) != 0) {
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+
+		break;
+
+		//CPL 
+		/*
+		Call on positive result
+		*/
+			case 0x27: //abs
+			address = getAbsAd();
+			if ((Flags & FLAG_N) == 0) {
+				push(ProgramCounter);
+				ProgramCounter = address;
 			}
 
-			break;
-
-			//JCC
-
-			/*
-			Jump on carry set
-			*/
-		case 0x12: //abs 
-
-			address = getAbsAd(); 
-			if ((Flags & FLAG_C) != 0) {
-				ProgramCounter = address; 
-			}
-
-			break;
-
+		break;
 
 	}
 
@@ -3279,7 +3432,7 @@ void building(int args, _TCHAR** argv)
 		Memory[TEST_ADDRESS_10],
 		Memory[TEST_ADDRESS_11],
 		Memory[TEST_ADDRESS_12]
-	);
+		);
 	sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 }
 
@@ -3403,7 +3556,7 @@ void test_and_mark() {
 						Memory[TEST_ADDRESS_10],
 						Memory[TEST_ADDRESS_11],
 						Memory[TEST_ADDRESS_12]
-					);
+						);
 					sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 				}
 			}
