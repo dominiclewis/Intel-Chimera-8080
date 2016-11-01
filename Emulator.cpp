@@ -1194,43 +1194,45 @@ void Group_1(BYTE opcode) {
 			break;
 		}
 
+		//STOS
 
+		//////////////////
+		//     STOS    ///
+		//////////////////
 
-	case 0x6A:
+	case 0x6A: //STOS (abs)
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			//Memory[address] = StackPointer;
-			StackPointer = Memory[address];
+			Memory[address] = (BYTE)(StackPointer >> 8);
+			Memory[address + 1] = (BYTE)(StackPointer);
 		}
 		break;
 
-	case 0x7A:
+	case 0x7A: //STOS (abs,X)
 		address += Index_Registers[REGISTER_X];
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			//Memory[address] = StackPointer;
-			StackPointer = Memory[address];
+			Memory[address] = (BYTE)(StackPointer >> 8);
+			Memory[address + 1] = (BYTE)(StackPointer);
 		}
 		break;
 
-	case 0x8A:
-
+	case 0x8A: //STOS (abs,Y)
 		address += Index_Registers[REGISTER_Y];
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			//Memory[address] = StackPointer;
-			StackPointer = Memory[address];
+			Memory[address] = (BYTE)(StackPointer >> 8);
+			Memory[address + 1] = (BYTE)(StackPointer);
 		}
 		break;
 
-
-	case 0x9A:
+	case 0x9A: //STOS ((ind))
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -1238,13 +1240,12 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			//	Memory[address] = StackPointer;
-			StackPointer = Memory[address];
+			Memory[address] = (BYTE)(StackPointer >> 8);
+			Memory[address + 1] = (BYTE)(StackPointer);
 		}
-
 		break;
 
-	case 0xAA:
+	case 0xAA: //STOS ((ind,X))
 		HB = fetch();
 		LB = fetch();
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -1253,8 +1254,8 @@ void Group_1(BYTE opcode) {
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			//Memory[address] = StackPointer;
-			StackPointer = Memory[address];
+			Memory[address] = (BYTE)(StackPointer >> 8);
+			Memory[address + 1] = (BYTE)(StackPointer);
 		}
 		break;
 
