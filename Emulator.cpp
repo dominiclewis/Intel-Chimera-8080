@@ -2660,7 +2660,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	
-
+		//JUMP
 	case 0x10: //abs
 		address = getAbsAd();
 
@@ -2762,6 +2762,36 @@ void Group_1(BYTE opcode) {
 
 			set_three_flags((WORD)temp_word);
 			break;
+
+			//JCC
+			/*
+			Jump on Carry clear
+			*/
+		case 0x11: //abs
+			address = getAbsAd();
+
+			if ((Flags & FLAG_C) == 0) {
+
+				ProgramCounter = address; 
+			}
+
+			break;
+
+			//JCC
+
+			/*
+			Jump on carry set
+			*/
+		case 0x12: //abs 
+
+			address = getAbsAd(); 
+			if ((Flags & FLAG_C) != 0) {
+				ProgramCounter = address; 
+			}
+
+			break;
+
+
 	}
 
 
