@@ -466,11 +466,11 @@ BYTE rotateRightCarry(BYTE inReg)
 	BYTE result, carry = 0x00;
 	WORD data;
 	if ((Flags & FLAG_C) == 0x01)
-		carry = 0x80;		
+		carry = 0x80;
 	data = (inReg >> 1) | carry;
 	if ((inReg & 0x01) == 0x01)
 	{
-		data = data | 0x100;	
+		data = data | 0x100;
 	}
 	result = (BYTE)data;
 	set_three_flags(data);
@@ -494,7 +494,7 @@ BYTE rotateLeft(BYTE inReg)
 	BYTE result;
 	result = inReg << 1;
 	if ((inReg & 0x80) == 0x80)
-	result = result | 0x01;
+		result = result | 0x01;
 
 
 	set_flag_z(result);
@@ -523,7 +523,7 @@ WORD getAbsAd() {
 	LB = fetch();
 	address += (WORD)((WORD)HB << 8) + LB;
 
-	return address; 
+	return address;
 }
 
 
@@ -733,7 +733,7 @@ void Group_1(BYTE opcode) {
 			Memory[address] = Registers[REGISTER_A];
 		}
 		break;
-		
+
 		//MVI 
 		//L,#	
 	case 0x1C:
@@ -2063,7 +2063,7 @@ void Group_1(BYTE opcode) {
 		/*
 		Rotate left through carry Memory or Accumulator
 		*/
-		
+
 	case 0xA3://abs
 		HB = fetch();
 		LB = fetch();
@@ -2071,7 +2071,7 @@ void Group_1(BYTE opcode) {
 		//grab the address
 		Memory[address] = rotateLeftCarry(Memory[address]);
 		break;
-	
+
 	case 0xB3://abs,x
 		address += Index_Registers[REGISTER_X];
 
@@ -2088,7 +2088,7 @@ void Group_1(BYTE opcode) {
 		HB = fetch();
 		LB = fetch();
 		address += (WORD)((WORD)HB << 8) + LB;
-	
+
 		Memory[address] = rotateLeftCarry(Memory[address]);
 
 		break;
@@ -2103,608 +2103,648 @@ void Group_1(BYTE opcode) {
 
 		//RLCB
 		/*
-		Rotate left through carry memory or accumulator 
+		Rotate left through carry memory or accumulator
 		*/
 	case 0xE3: //B
 		Registers[REGISTER_B] = rotateLeftCarry(Registers[REGISTER_B]);
-		break; 
+		break;
 
 		//ROL
 		/*
 		Rotate left without carry Memory or Accumlator
 		*/
 
-		case 0xA8: //Abs 
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			Memory[address] = rotateLeft(Memory[address]);
+	case 0xA8: //Abs 
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		Memory[address] = rotateLeft(Memory[address]);
 		break;
 
-		case 0xB8:  //abs ,X
-		
-			address += Index_Registers[REGISTER_X];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			Memory[address] = rotateLeft(Memory[address]);
-			break; 
+	case 0xB8:  //abs ,X
 
-		case 0xC8: //abs, y
-			address += Index_Registers[REGISTER_Y];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			Memory[address] = rotateLeft(Memory[address]);
-			break;
+		address += Index_Registers[REGISTER_X];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		Memory[address] = rotateLeft(Memory[address]);
+		break;
 
-
-	//ROLA
-	/*
-	Rotate left without carry Memory or Accumlator
-	*/
-
-		case 0xD8: //A
-			Registers[REGISTER_A] = rotateLeft(Registers[REGISTER_A]);
-			break; 
-
-	//ROLB
-	/*
-	Rotate left without carry memory or accumulator
-	*/
-		case 0xE8:
-			Registers[REGISTER_B] = rotateLeft(Registers[REGISTER_B]);
-			break; 
+	case 0xC8: //abs, y
+		address += Index_Registers[REGISTER_Y];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		Memory[address] = rotateLeft(Memory[address]);
+		break;
 
 
-			//RR
-			/*
-			Rotate right without carry memory or Accumulator
-			*/
-		case 0xA9: //abs 
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			Memory[address] = rotateRight(Memory[address]);
-			break;
-		
-	
-		case 0xB9: //abs,x
+		//ROLA
+		/*
+		Rotate left without carry Memory or Accumlator
+		*/
 
-			address += Index_Registers[REGISTER_X];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			Memory[address] = rotateRight(Memory[address]);
-			break;
+	case 0xD8: //A
+		Registers[REGISTER_A] = rotateLeft(Registers[REGISTER_A]);
+		break;
 
-		case 0xC9: //abs,Y
+		//ROLB
+		/*
+		Rotate left without carry memory or accumulator
+		*/
+	case 0xE8:
+		Registers[REGISTER_B] = rotateLeft(Registers[REGISTER_B]);
+		break;
 
-			address += Index_Registers[REGISTER_Y];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			Memory[address] = rotateRight(Memory[address]);
-			break;
+
+		//RR
+		/*
+		Rotate right without carry memory or Accumulator
+		*/
+	case 0xA9: //abs 
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		Memory[address] = rotateRight(Memory[address]);
+		break;
+
+
+	case 0xB9: //abs,x
+
+		address += Index_Registers[REGISTER_X];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		Memory[address] = rotateRight(Memory[address]);
+		break;
+
+	case 0xC9: //abs,Y
+
+		address += Index_Registers[REGISTER_Y];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		Memory[address] = rotateRight(Memory[address]);
+		break;
 
 
 		//RRA 
-			/*
-			Rotate right wihtout carry memory or accumulator 
-			*/
-		case 0xD9://A
-			Registers[REGISTER_A] = rotateRight(Registers[REGISTER_A]);
-			break;
-			//RRB 
-			/*
-			Rotate right wihtout carry memory or accumulator
-			*/
-		case 0xE9://B
-			Registers[REGISTER_B] = rotateRight(Registers[REGISTER_B]);
-			break;
+		/*
+		Rotate right wihtout carry memory or accumulator
+		*/
+	case 0xD9://A
+		Registers[REGISTER_A] = rotateRight(Registers[REGISTER_A]);
+		break;
+		//RRB 
+		/*
+		Rotate right wihtout carry memory or accumulator
+		*/
+	case 0xE9://B
+		Registers[REGISTER_B] = rotateRight(Registers[REGISTER_B]);
+		break;
 
 
 		//SAL
-			/*
-			Arithmetic Shift left Memory or Accumulator
-			*/
-		case 0xA4:	//abs
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
+		/*
+		Arithmetic Shift left Memory or Accumulator
+		*/
+	case 0xA4:	//abs
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
 
-			if (address >= 0 && address < MEMORY_SIZE) {
-				data = (WORD)Memory[address] << 1 ; //Shift
+		if (address >= 0 && address < MEMORY_SIZE) {
+			data = (WORD)Memory[address] << 1; //Shift
 
-				Memory[address] = (BYTE)data; 
-			}
+			Memory[address] = (BYTE)data;
+		}
 
-			set_three_flags(data); 
-			break;
+		set_three_flags(data);
+		break;
 
-		case 0xB4:  //abs x 
-			address += Index_Registers[REGISTER_X];
+	case 0xB4:  //abs x 
+		address += Index_Registers[REGISTER_X];
 
-			address += getAbsAd();
-
-
-			if (address >= 0 && address < MEMORY_SIZE) {
-				data = (WORD)Memory[address] << 1; //Shift
-
-				Memory[address] = (BYTE)data;
-			}
-
-			set_three_flags(data);
-
-			break;
-
-		case 0xC4:  //abs y 
-			address += Index_Registers[REGISTER_Y];
-
-			address += getAbsAd();
+		address += getAbsAd();
 
 
-			if (address >= 0 && address < MEMORY_SIZE) {
-				data = (WORD)Memory[address] << 1; //Shift
+		if (address >= 0 && address < MEMORY_SIZE) {
+			data = (WORD)Memory[address] << 1; //Shift
 
-				Memory[address] = (BYTE)data;
-			}
+			Memory[address] = (BYTE)data;
+		}
 
-			set_three_flags(data);
-			break; 
-	
+		set_three_flags(data);
+
+		break;
+
+	case 0xC4:  //abs y 
+		address += Index_Registers[REGISTER_Y];
+
+		address += getAbsAd();
+
+
+		if (address >= 0 && address < MEMORY_SIZE) {
+			data = (WORD)Memory[address] << 1; //Shift
+
+			Memory[address] = (BYTE)data;
+		}
+
+		set_three_flags(data);
+		break;
+
 
 		//SALA
-			/*
-			Arithmetic shift Left memory or Accumulator
-			*/
-		case 0xD4: //A
-			
-			data = Registers[REGISTER_A] << 1;
-			Registers[REGISTER_A] = (BYTE)data;
-			set_three_flags(data);
-			break;
+		/*
+		Arithmetic shift Left memory or Accumulator
+		*/
+	case 0xD4: //A
+
+		data = Registers[REGISTER_A] << 1;
+		Registers[REGISTER_A] = (BYTE)data;
+		set_three_flags(data);
+		break;
 
 		//SALB
-			/*
-			Arithmetic shift left Memory or AAccumulator 
-			*/
-		case 0xE4:
-			data = Registers[REGISTER_B] << 1;
+		/*
+		Arithmetic shift left Memory or AAccumulator
+		*/
+	case 0xE4:
+		data = Registers[REGISTER_B] << 1;
+		Registers[REGISTER_B] = (BYTE)data;
+		set_three_flags(data);
+		break;
+
+		//SAR
+		/*
+		Arithmetic shift right memory or accumulator
+		*/
+
+	case 0xA5: //abs
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x80) == 0x80) { //keep the sign
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					data = (data | 0x80);
+				}
+				else {
+					data = Memory[address] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+				}
+				else {
+					data = Memory[address] >> 1;
+				}
+
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+	case 0xB5: //abs,X
+		address += Index_Registers[REGISTER_X];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x80) == 0x80) { //keep the sign
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					data = (data | 0x80);
+				}
+				else {
+					data = Memory[address] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+				}
+				else {
+					data = Memory[address] >> 1;
+				}
+
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+
+	case 0xC5: //abs,y
+		address += Index_Registers[REGISTER_Y];
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x80) == 0x80) { //keep the sign
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					data = (data | 0x80);
+				}
+				else {
+					data = Memory[address] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+				}
+				else {
+					data = Memory[address] >> 1;
+				}
+
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+
+		//SARA
+		/*
+		Arithmetic shift right memory or Accumulator
+		*/
+
+	case 0xD5: //A
+			   //take out if statement for neg flag for normal shift
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Registers[REGISTER_A] & 0x80) == 0x80) { //keep the sign
+
+				if ((Registers[REGISTER_A] & 0x01) != 0) {
+					data = (Registers[REGISTER_A] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					data = (data | 0x80);
+				}
+				else {
+					data = Registers[REGISTER_A] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Registers[REGISTER_A] & 0x01) != 0) {
+					data = (Registers[REGISTER_A] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+				}
+				else {
+					data = Registers[REGISTER_A] >> 1;
+				}
+
+			}
+			Registers[REGISTER_A] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+		//SARB
+		/*
+		Arithmetic shift right Memory or Accu,ulator
+		*/
+
+	case 0xE5:
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Registers[REGISTER_B] & 0x80) == 0x80) { //keep the sign
+
+				if ((Registers[REGISTER_B] & 0x01) != 0) {
+					data = (Registers[REGISTER_B] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+					data = (data | 0x80);
+				}
+				else {
+					data = Registers[REGISTER_B] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Registers[REGISTER_B] & 0x01) != 0) {
+					data = (Registers[REGISTER_B] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
+				}
+				else {
+					data = Registers[REGISTER_B] >> 1;
+				}
+
+			}
 			Registers[REGISTER_B] = (BYTE)data;
-			set_three_flags(data);
-			break; 
+		}
+		set_three_flags(data);
+		break;
 
-			//SAR
-			/*
-			Arithmetic shift right memory or accumulator
-			*/
+		//LSR
+		/*
+		Shift right Memory or Accumulator
+		*/
 
-		case 0xA5: //abs
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			if (address >= 0 && address < MEMORY_SIZE) {
-				if ((Memory[address] & 0x80) == 0x80) { //keep the sign
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-						data = (data | 0x80);
-					}
-					else {
-						data = Memory[address] >> 1;
-						data = (data | 0x80);
-					}
-				}
-				else {
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					}
-					else {
-						data = Memory[address] >> 1;
-					}
-
-				}
-				Memory[address] = (BYTE)data;
+	case 0xA6:	//abs
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x01) != 0) {
+				data = (Memory[address] >> 1) | 0x100;
 			}
-			set_three_flags(data);
-			break;
-
-		case 0xB5: //abs,X
-			address += Index_Registers[REGISTER_X];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			if (address >= 0 && address < MEMORY_SIZE) {
-				if ((Memory[address] & 0x80) == 0x80) { //keep the sign
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-						data = (data | 0x80);
-					}
-					else {
-						data = Memory[address] >> 1;
-						data = (data | 0x80);
-					}
-				}
-				else {
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					}
-					else {
-						data = Memory[address] >> 1;
-					}
-
-				}
-				Memory[address] = (BYTE)data;
+			else {
+				data = Memory[address] >> 1;
 			}
-			set_three_flags(data);
-			break;
-		
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
 
-		case 0xC5: //abs,y
-			address += Index_Registers[REGISTER_Y];
-			HB = fetch();
-			LB = fetch();
-			address += (WORD)((WORD)HB << 8) + LB;
-			if (address >= 0 && address < MEMORY_SIZE) {
-				if ((Memory[address] & 0x80) == 0x80) { //keep the sign
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-						data = (data | 0x80);
-					}
-					else {
-						data = Memory[address] >> 1;
-						data = (data | 0x80);
-					}
-				}
-				else {
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					}
-					else {
-						data = Memory[address] >> 1;
-					}
+		break;
 
-				}
-				Memory[address] = (BYTE)data;
+	case 0xB6:	//abs,X
+
+		address += Index_Registers[REGISTER_X];
+
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x01) != 0) {
+				data = (Memory[address] >> 1) | 0x100;
 			}
-			set_three_flags(data);
-			break;
+			else {
+				data = Memory[address] >> 1;
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
 
+	case 0xC6: //abs,Y
+		address += Index_Registers[REGISTER_Y];
 
-			//SARA
-			/*
-			Arithmetic shift right memory or Accumulator
-			*/
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x01) != 0) {
+				data = (Memory[address] >> 1) | 0x100;
+			}
+			else {
+				data = Memory[address] >> 1;
+			}
+			Memory[address] = (BYTE)data;
+		}
+		set_three_flags(data);
 
-			case 0xD5: //A
-			//take out if statement for neg flag for normal shift
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Registers[REGISTER_A] & 0x80) == 0x80) { //keep the sign
-
-						if ((Registers[REGISTER_A] & 0x01) != 0) {
-							data = (Registers[REGISTER_A] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-							data = (data | 0x80);
-						}
-						else {
-							data = Registers[REGISTER_A] >> 1;
-							data = (data | 0x80);
-						}
-					}
-					else {
-						if ((Registers[REGISTER_A] & 0x01) != 0) {
-							data = (Registers[REGISTER_A] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-						}
-						else {
-							data = Registers[REGISTER_A] >> 1;
-						}
-
-					}
-					Registers[REGISTER_A] = (BYTE)data;
-				}
-				set_three_flags(data);
-			break;
-
-			//SARB
-			/*
-			Arithmetic shift right Memory or Accu,ulator
-			*/
-
-			case 0xE5:
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Registers[REGISTER_B] & 0x80) == 0x80) { //keep the sign
-
-						if ((Registers[REGISTER_B] & 0x01) != 0) {
-							data = (Registers[REGISTER_B] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-							data = (data | 0x80);
-						}
-						else {
-							data = Registers[REGISTER_B] >> 1;
-							data = (data | 0x80);
-						}
-					}
-					else {
-						if ((Registers[REGISTER_B] & 0x01) != 0) {
-							data = (Registers[REGISTER_B] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-						}
-						else {
-							data = Registers[REGISTER_B] >> 1;
-						}
-
-					}
-					Registers[REGISTER_B] = (BYTE)data;
-				}
-				set_three_flags(data);
-				break; 
-
-				//LSR
-				/*
-				Shift right Memory or Accumulator
-				*/
-
-			case 0xA6 :	//abs
-				HB = fetch();
-				LB = fetch();
-				address += (WORD)((WORD)HB << 8) + LB;
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;	
-					}
-					else {
-						data = Memory[address] >> 1;
-					}
-					Memory[address] = (BYTE)data;
-				}
-				set_three_flags(data);
-		
-				break;
-
-			case 0xB6:	//abs,X
-
-				address += Index_Registers[REGISTER_X];
-
-				HB = fetch();
-				LB = fetch();
-				address += (WORD)((WORD)HB << 8) + LB;
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;
-					}
-					else {
-						data = Memory[address] >> 1;
-					}
-					Memory[address] = (BYTE)data;
-				}
-				set_three_flags(data);
-				break;
-
-			case 0xC6: //abs,Y
-				address += Index_Registers[REGISTER_Y];
-
-				HB = fetch();
-				LB = fetch();
-				address += (WORD)((WORD)HB << 8) + LB;
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Memory[address] & 0x01) != 0) {
-						data = (Memory[address] >> 1) | 0x100;
-					}
-					else {
-						data = Memory[address] >> 1;
-					}
-					Memory[address] = (BYTE)data;
-				}
-				set_three_flags(data);
-
-				break; 
+		break;
 
 		//LSRA
-				/*
-				Shif right memory or Accumulator
-				*/
-			case 0xD6:
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Registers[REGISTER_A] & 0x01) != 0) {
-						data = (Registers[REGISTER_A] >> 1) | 0x100;
-					}
-					else {
-						data = Registers[REGISTER_A] >> 1;
-					}
-					Registers[REGISTER_A] = (BYTE)data;
-				}
-				set_three_flags(data);
-				break;
+		/*
+		Shif right memory or Accumulator
+		*/
+	case 0xD6:
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Registers[REGISTER_A] & 0x01) != 0) {
+				data = (Registers[REGISTER_A] >> 1) | 0x100;
+			}
+			else {
+				data = Registers[REGISTER_A] >> 1;
+			}
+			Registers[REGISTER_A] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
 
 		//LSRB
-				/*
-				Shift right memory or Accumualtor
-				*/
-			case 0xE6:
-				if (address >= 0 && address < MEMORY_SIZE) {
-					if ((Registers[REGISTER_B] & 0x01) != 0) {
-						data = (Registers[REGISTER_B] >> 1) | 0x100;
-					}
-					else {
-						data = Registers[REGISTER_B] >> 1;
-					}
-					Registers[REGISTER_B] = (BYTE)data;
-				}
-				set_three_flags(data);
-				break; 
+		/*
+		Shift right memory or Accumualtor
+		*/
+	case 0xE6:
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Registers[REGISTER_B] & 0x01) != 0) {
+				data = (Registers[REGISTER_B] >> 1) | 0x100;
+			}
+			else {
+				data = Registers[REGISTER_B] >> 1;
+			}
+			Registers[REGISTER_B] = (BYTE)data;
+		}
+		set_three_flags(data);
+		break;
+
+		//COM
+
+		/*
+		Negate memory or accumulator
+		*/
+
+	case 0xA7: //abs 
+			   //get ab address
+		address = getAbsAd();
+		data = ~Memory[address];
+
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] = (BYTE)data;
+
+		}
+		set_three_flags(data);
+		break;
+
+	case 0xB7: //abs X
+		address += Index_Registers[REGISTER_X];
+		address += getAbsAd();
+		data = ~Memory[address];
+
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] = (BYTE)data;
+
+		}
+		set_three_flags(data);
+		break;
+
+	case 0xC7: //abs Y 
+		address += Index_Registers[REGISTER_Y];
+		address += getAbsAd();
+		data = ~Memory[address];
+
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] = (BYTE)data;
+
+		}
+		set_three_flags(data);
+		break;
+
+		//COMA
+		/*
+		Negate Memory or Accumulator
+		*/
+	case 0xD7: //A
+
+		data = ~Registers[REGISTER_A];
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Registers[REGISTER_A] = (BYTE)data;
+
+		}
+		set_three_flags(data);
+		break;
+
+		//COMB
+	case 0xE7: //B 
+		data = ~Registers[REGISTER_B];
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Registers[REGISTER_B] = (BYTE)data;
+
+		}
+		set_three_flags(data);
+
+		break;
+		//PUSH
+		/*
+		Push Register onto the stack
+		*/
+
+	case 0xBE: //A
+
+		Memory[StackPointer] = Registers[REGISTER_A];
+		StackPointer--;
+		break;
+
+	case 0xCE: //B
+		Memory[StackPointer] = Registers[REGISTER_B];
+		StackPointer--;
+		break;
+
+	case 0xDE: //FL
+		Memory[StackPointer] = Flags;
+		StackPointer--;
+		break;
+
+	case 0xEE: //L
+		Memory[StackPointer] = Registers[REGISTER_L];
+		StackPointer--;
+		break;
+	case 0xFE: //H
+		Memory[StackPointer] = Registers[REGISTER_H];
+		StackPointer--;
+		break;
+
+		//POP
+		/*
+		Pop the top of the
+		Stack into the Register
+		*/
+
+	case 0xBF://A
+		StackPointer++;
+
+		Registers[REGISTER_A] = Memory[StackPointer];
+
+		break;
+	case 0xCF: //B
+		StackPointer++;
+
+		Registers[REGISTER_B] = Memory[StackPointer];
+		break;
+
+	case 0xDF: //FL
+		StackPointer++;
+		Flags = Memory[StackPointer];
+		break;
+
+	case 0xEF: //L
+		StackPointer++;
+		Registers[REGISTER_L] = Memory[StackPointer];
+		break;
+
+	case 0xFF: //H
+		StackPointer++;
+		Registers[REGISTER_H] = Memory[StackPointer];
+		break;
+
 	
-				//COM
 
-				/*
-				Negate memory or accumulator 
-				*/
+	case 0x10: //abs
+		address = getAbsAd();
 
-			case 0xA7: //abs 
-			//get ab address
-				address = getAbsAd();
-				data = ~Memory[address];
+		ProgramCounter = address;
+		break;
+		/////////////////
+		//     JSR     //
+		/////////////////
 
-				if (address >= 0 && address < MEMORY_SIZE) {
-					Memory[address] = (BYTE)data;
-					
-				}
-				set_three_flags(data);
-				break;
+	case 0x21: //JSR (abs)	
+		HB = fetch();
+		LB = fetch();
+		address += (WORD)((WORD)HB << 8) + LB;
+		if (address >= 0 && address < MEMORY_SIZE) {
 
-			case 0xB7: //abs X
-				address += Index_Registers[REGISTER_X];
-				address += getAbsAd();
-				data = ~Memory[address];
+			LB = (BYTE)ProgramCounter;
+			HB = (BYTE)(ProgramCounter >> 8);
 
-				if (address >= 0 && address < MEMORY_SIZE) {
-					Memory[address] = (BYTE)data;
+			temp_word = ((WORD)HB << 8) + LB;
 
-				}
-				set_three_flags(data);
-				break; 
+			Memory[StackPointer] = temp_word;
+			StackPointer--;
 
-			case 0xC7: //abs Y 
-				address += Index_Registers[REGISTER_Y];
-				address += getAbsAd();
-				data = ~Memory[address];
+			ProgramCounter = address;
+		}
+		break;
 
-				if (address >= 0 && address < MEMORY_SIZE) {
-					Memory[address] = (BYTE)data;
+		/////////////////
+		//     RET     //
+		/////////////////
 
-				}
-				set_three_flags(data);
-				break;
-		
-				//COMA
-				/*
-				Negate Memory or Accumulator
-				*/
-			case 0xD7: //A
+	case 0x4C: //RET (impl)	
+		StackPointer++;
+		address = Memory[StackPointer];
+		ProgramCounter = address;
+		break;
 
-				data = ~Registers[REGISTER_A];
-				if (address >= 0 && address < MEMORY_SIZE) {
-				Registers[REGISTER_A] = (BYTE)data;
 
-				}
-				set_three_flags(data);
-				break;
-				
-				//COMB
-			case 0xE7: //B 
-				data = ~Registers[REGISTER_B];
-				if (address >= 0 && address < MEMORY_SIZE) {
-					Registers[REGISTER_B] = (BYTE)data;
 
-				}
-				set_three_flags(data);
 
-				break;
-				//PUSH
-				/*
-				Push Register onto the stack
-				*/
+		//SBIA
 
-				case 0xBE: //A
-					
-					Memory[StackPointer] = Registers[REGISTER_A];
-					StackPointer--;
-				break;
+		case 0x93: //# 
+		data = fetch();
+		param1 = Registers[REGISTER_A];
 
-				case 0xCE: //B
-					Memory[StackPointer] = Registers[REGISTER_B];
-					StackPointer--;
-					break;
-				
-				case 0xDE: //FL
-					Memory[StackPointer] = Flags; 
-					StackPointer--;
-					break;
+		temp_word = (WORD)data - (WORD)param1;
 
-				case 0xEE: //L
-					Memory[StackPointer] = Registers[REGISTER_L];
-					StackPointer--;
-					break;
-				case 0xFE: //H
-					Memory[StackPointer] = Registers[REGISTER_H];
-					StackPointer--;
-					break;
+		if ((Flags & FLAG_C) != 0) {
+			temp_word--;
+		}
 
-					//POP
-					/*
-					Pop the top of the
-					Stack into the Register
-					*/
+		set_three_flags((WORD)temp_word);
+		Registers[REGISTER_A] = temp_word;
+		break;
 
-				case 0xBF://A
-					StackPointer++;
+	//SBIB
 
-					Registers[REGISTER_A] = Memory[StackPointer];
-				
-					break;
-				case 0xCF: //B
-					StackPointer++;
+		case 0x94: //# 
+			data = fetch();
+			param1 = Registers[REGISTER_B];
 
-					Registers[REGISTER_B] = Memory[StackPointer];
-					break;
+			temp_word = (WORD)data - (WORD)param1;
 
-				case 0xDF: //FL
-					StackPointer++;
-					Flags = Memory[StackPointer];
-					break;
+			if ((Flags & FLAG_C) != 0) {
+				temp_word--;
+			}
 
-				case 0xEF: //L
-					StackPointer++; 
-					Registers[REGISTER_L] = Memory[StackPointer];
-					break;
+			set_three_flags((WORD)temp_word);
+			Registers[REGISTER_B] = temp_word;
+			break;
 
-				case 0xFF: //H
-					StackPointer++;
-					Registers[REGISTER_H] = Memory[StackPointer];
-						break;
-
-						//JMP
-						/*
-						Loads Memory into programCounter
-						*/
-
-				case 0x10: //abs
-					address = getAbsAd();
-
-					ProgramCounter = address;
-					break;
-					/////////////////
-					//     JSR     //
-					/////////////////
-
-				case 0x21: //JSR (abs)	
-					HB = fetch();
-					LB = fetch();
-					address += (WORD)((WORD)HB << 8) + LB;
-					if (address >= 0 && address < MEMORY_SIZE) {
-
-						LB = (BYTE)ProgramCounter;
-						HB = (BYTE)(ProgramCounter >> 8);
-
-						temp_word = ((WORD)HB << 8) + LB;
-
-						Memory[StackPointer] = temp_word;
-						StackPointer--;
-
-						ProgramCounter = address;
-					}
-					break;
-
-					/////////////////
-					//     RET     //
-					/////////////////
-
-				case 0x4C: //RET (impl)	
-					StackPointer++;
-					address = Memory[StackPointer];
-					ProgramCounter = address;
-					break;
-
-				}
-
+	//CPIA
+			/*
+			Data compared to accumulator
+			*/
+		case 0x95:
 			
-				
+			break;
+
+	}
+
+
+
 
 
 
@@ -3188,7 +3228,7 @@ void building(int args, _TCHAR** argv)
 		Memory[TEST_ADDRESS_10],
 		Memory[TEST_ADDRESS_11],
 		Memory[TEST_ADDRESS_12]
-		);
+	);
 	sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 }
 
@@ -3312,7 +3352,7 @@ void test_and_mark() {
 						Memory[TEST_ADDRESS_10],
 						Memory[TEST_ADDRESS_11],
 						Memory[TEST_ADDRESS_12]
-						);
+					);
 					sendto(sock, buffer, strlen(buffer), 0, (SOCKADDR *)&server_addr, sizeof(SOCKADDR));
 				}
 			}
