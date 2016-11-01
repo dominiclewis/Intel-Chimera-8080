@@ -2853,7 +2853,7 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	//JHI
+		//JHI
 
 	case 0x17:
 		address = getAbsAd();
@@ -2862,20 +2862,20 @@ void Group_1(BYTE opcode) {
 			ProgramCounter = address;
 
 		}
-		
+
 		break;
 
 
-	//JLE
+		//JLE
 	case 0x18: //JLE (abs)	
 		address = getAbsAd();
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
 			ProgramCounter = address;
 		}
 		break;
-		
+
 		//CCC
-	case 0x22: //abs
+	case 0x22: //abs R
 		address = getAbsAd();
 		if ((Flags & FLAG_C) == 0) {
 			push(ProgramCounter);
@@ -2883,21 +2883,21 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 		//CCS
-	case 0x23: //abs
+	case 0x23: //abs //R
 
 		address = getAbsAd();
 		if ((Flags & FLAG_C) != 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
 		}
-		break; 
+		break;
 
 		//CNE 
 		/*
 		Call on result not Zero
 		*/
 
-	case 0x24: //abs
+	case 0x24: //abs r
 		address = getAbsAd();
 		if ((Flags & FLAG_Z) == 0) {
 			push(ProgramCounter);
@@ -2910,7 +2910,7 @@ void Group_1(BYTE opcode) {
 		/*
 		Call on result equal to Zero
 		*/
-		case 0x25:
+	case 0x25: //RIGHT
 		address = getAbsAd();
 		if ((Flags & FLAG_Z) != 0) {
 			push(ProgramCounter);
@@ -2918,12 +2918,12 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-	//CMI 
-		/*
-		Call on negative result
-		*/
+		//CMI 
+			/*
+			Call on negative result
+			*/
 
-	  case 0x26: //abs
+	case 0x26: //abs r
 		address = getAbsAd();
 		if ((Flags & FLAG_N) != 0) {
 			push(ProgramCounter);
@@ -2936,16 +2936,41 @@ void Group_1(BYTE opcode) {
 		/*
 		Call on positive result
 		*/
-			case 0x27: //abs
-			address = getAbsAd();
-			if ((Flags & FLAG_N) == 0) {
-				push(ProgramCounter);
-				ProgramCounter = address;
-			}
-
+	case 0x27: //abs r 
+		address = getAbsAd();
+		if ((Flags & FLAG_N) == 0) {
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
 		break;
+		//CHI
+		/*
+		Call on result same or lower
+		*/
+	case 0x28: 
+		address = getAbsAd();
+		if (Flags & (FLAG_C | FLAG_Z) != 0){
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+		break;
+	//CLE
+		/*
+		Call on result higher 
+		*/
+case 0x29:
+		address = getAbsAd();
+		
+		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
+
+			push(ProgramCounter);
+			ProgramCounter = address;
+		}
+	break;
+
 
 	}
+
 
 
 
