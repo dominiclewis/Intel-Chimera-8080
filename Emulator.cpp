@@ -749,19 +749,20 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_H] = data;
 		break;
 
-		//LX  
 
-	case 0x0C: //LH,# IMMEDIATE
-		data = fetch();
-		Registers[REGISTER_L] = data;
 
+		////////////////
+		//     LX     //
+		////////////////
+
+	case 0x0D: //LX L (#)
+		Registers[REGISTER_H] = fetch();
+		Registers[REGISTER_L] = fetch();
 		break;
 
-
-	case 0x0D:  //LH,# IMMEDIUATE
-		data = fetch();
-		Registers[REGISTER_H] = data;
-		//Register[REGISTER_L] = data 
+	case 0x0C: //LX H (#)
+		Registers[REGISTER_H] = fetch();
+		Registers[REGISTER_L] = fetch();
 		break;
 
 		//CSA 
