@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include <winsock2.h>
-
+/*
+Author: Dominic Lewis(15024059) 
+Created: 17/10/2016
+Revised: 02/11/2016 - Adding Comments
+Description: Emulates the Intel 8080 Processor
+User advice: None 
+*/
 #pragma comment(lib, "wsock32.lib")
 
 
@@ -34,21 +40,21 @@ char trc_file[MAX_BUFFER_SIZE];
 //   Registers          //
 //////////////////////////
 
-#define FLAG_I  0x10 //0001 0000  HEX so it's actually 0x 1 0 (1 zero) not 0x10(ten) (Interupt)
-#define FLAG_Z  0x04 //0000 0100 Zero
-#define FLAG_N  0x02 //0000 0010 Negative 
-#define FLAG_C  0x01 //0000 0001 Carry 
+#define FLAG_I  0x10 
+#define FLAG_Z  0x04 
+#define FLAG_N  0x02 
+#define FLAG_C  0x01 
 #define REGISTER_M 4
 #define REGISTER_A 3
 #define REGISTER_B 2
-#define REGISTER_H 1   //HIGHBYTE  (ON)
-#define REGISTER_L 0	//LOWBYTE   (OFF)
+#define REGISTER_H 1   
+#define REGISTER_L 0	
 #define REGISTER_X 0
 #define REGISTER_Y 1
 
 BYTE Index_Registers[2];
 
-BYTE Registers[5]; //Incremented from 4 20161020
+BYTE Registers[5]; 
 BYTE Flags;
 WORD ProgramCounter;
 WORD StackPointer;
@@ -367,6 +373,13 @@ char opcode_mneumonics[][14] =
 ////////////////////////////////////////////////////////////////////////////////
 //                           Simulator/Emulator (Start)                       //
 ////////////////////////////////////////////////////////////////////////////////
+/*
+Function: fetch
+Description: Fetches from address a byte of memory which is set by the ProgramCounter
+Paramaters: NONE
+Returns: byte
+Warnings: None
+*/
 BYTE fetch()
 {
 	BYTE byte = 0;
@@ -383,6 +396,13 @@ BYTE fetch()
 	}
 	return byte;
 }
+/*
+Function: fetch
+Description: Fetches from address a byte of memory which is set by the ProgramCounter
+Paramaters: NONE
+Returns: byte
+Warnings: None
+*/
 void set_flag_z(BYTE inReg) {
 	BYTE reg;
 	reg = inReg;
@@ -395,7 +415,13 @@ void set_flag_z(BYTE inReg) {
 		Flags = Flags & (~FLAG_Z); //reset
 	}
 }
-void set_flag_n(WORD inReg) {
+/*
+Function: set_flag_n 
+Description: Sets flag n based on the result of the bitwise or ( | ) operation carried out inside the function
+Paramaters: WORD inReg - This is passed to the function to ensure the correct register is stored and used in the operations
+Returns: none (void) 
+Warnings: None
+*/void set_flag_n(WORD inReg) {
 	BYTE reg;
 	reg = inReg;
 	if ((reg & 0x80) == 0x80) {
@@ -2798,17 +2824,17 @@ void Group_1(BYTE opcode) {
 
 		//JNE
 		/*
-		Jump on result not Zero 
+		Jump on result not Zero
 		*/
 	case 0x13: //abs
-			
-			address = getAbsAd();
 
-			if ((Flags & FLAG_Z) == 0)
-			{
-				ProgramCounter = address;
+		address = getAbsAd();
 
-			}
+		if ((Flags & FLAG_Z) == 0)
+		{
+			ProgramCounter = address;
+
+		}
 		break;
 
 		//JEQ
@@ -2816,7 +2842,7 @@ void Group_1(BYTE opcode) {
 		Jump on result equal to Zero
 		*/
 	case 0x14:  //abs 
-		
+
 		address = getAbsAd();
 
 		if ((Flags & FLAG_Z) != 0)
@@ -2838,19 +2864,19 @@ void Group_1(BYTE opcode) {
 		if ((Flags & FLAG_N) != 0)
 		{
 
-			ProgramCounter = address; 
+			ProgramCounter = address;
 		}
 		break;
 		// JPL 
 		/*
-		Jump on positive reuslt 
+		Jump on positive reuslt
 		*/
 	case 0x16:
 
 		address = getAbsAd();
 		if ((Flags & FLAG_N) == 0) {
-			
-			ProgramCounter = address; 
+
+			ProgramCounter = address;
 
 		}
 		break;
@@ -2921,9 +2947,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 		//CMI 
-			/*
-			Call on negative result
-			*/
+		/*
+		Call on negative result
+		*/
 
 	case 0x26: //abs r
 		address = getAbsAd();
@@ -2949,26 +2975,26 @@ void Group_1(BYTE opcode) {
 		/*
 		Call on result same or lower
 		*/
-	case 0x28: 
+	case 0x28:
 		address = getAbsAd();
-		if (Flags & (FLAG_C | FLAG_Z) != 0){
+		if (Flags & (FLAG_C | FLAG_Z) != 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
 		}
 		break;
-	//CLE
+		//CLE
 		/*
-		Call on result higher 
+		Call on result higher
 		*/
-case 0x29:
+	case 0x29:
 		address = getAbsAd();
-		
+
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
 
 			push(ProgramCounter);
 			ProgramCounter = address;
 		}
-	break;
+		break;
 
 
 	}
