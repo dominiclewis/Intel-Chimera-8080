@@ -566,6 +566,18 @@ void push(BYTE reg) {
 	Memory[StackPointer] = reg;
 	StackPointer--;
 }
+
+void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address) {
+
+	data = ~Registers[inReg];
+	if (address >= 0 && address < MEMORY_SIZE) {
+		Registers[inReg] = (BYTE)data;
+
+	}
+	set_three_flags(data);
+
+
+}
 void compare(BYTE reg1, BYTE reg2)
 {
 	WORD temp_word = 0;
@@ -585,6 +597,28 @@ void compare(BYTE reg1, BYTE reg2)
 	set_flag_n((BYTE)temp_word);
 	set_flag_z((BYTE)temp_word);
 
+}
+void default_switch() {
+
+	int destReg = 0;
+	int sourceReg = 0;
+	WORD address = 0;
+	
+
+	Registers[sourceReg] = Registers[destReg];
+	if (sourceReg == REGISTER_M) {
+		address = Registers[REGISTER_L];
+		address += (WORD)Registers[REGISTER_H] << 4;
+		if (address >= 0 && address <= MEMORY_SIZE) {
+			Memory[address] = Registers[destReg];
+		}
+	}
+	else {
+		Registers[sourceReg] = Registers[destReg];
+	}
+}
+void source_as_reg_index(int destReg, int sourceReg) {
+	Registers[destReg] = Registers[sourceReg];
 }
 
 //Group 1 = Loading Information/Data
@@ -2430,23 +2464,12 @@ void Group_1(BYTE opcode) {
 		Negate Memory or Accumulator
 		*/
 	case 0xD7: //A
-
-		data = ~Registers[REGISTER_A];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_A] = (BYTE)data;
-
-		}
-		set_three_flags(data);
+		negate_mem_or_accumulator(REGISTER_A, data,address);
 		break;
 
 		//COMB
 	case 0xE7: //B 
-		data = ~Registers[REGISTER_B];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_B] = (BYTE)data;
-
-		}
-		set_three_flags(data);
+		negate_mem_or_accumulator(REGISTER_B, data, address);
 
 		break;
 		//PUSH
@@ -2557,7 +2580,6 @@ void Group_1(BYTE opcode) {
 	case 0x93: //# 
 		data = fetch();
 		param1 = Registers[REGISTER_A];
-
 		temp_word = (WORD)data - (WORD)param1;
 
 		if ((Flags & FLAG_C) != 0) {
@@ -2573,7 +2595,6 @@ void Group_1(BYTE opcode) {
 	case 0x94: //# 
 		data = fetch();
 		param1 = Registers[REGISTER_B];
-
 		temp_word = (WORD)data - (WORD)param1;
 
 		if ((Flags & FLAG_C) != 0) {
@@ -2852,17 +2873,7 @@ void Group_2_Move(BYTE opcode)
 		break;
 
 	default:
-		Registers[destReg] = Registers[sourceReg];
-		if (destReg == REGISTER_M) {
-			address = Registers[REGISTER_L];
-			address += (WORD)Registers[REGISTER_H] << 4;
-			if (address >= 0 && address <= MEMORY_SIZE) {
-				Memory[address] = Registers[sourceReg];
-			}
-		}
-		else {
-			Registers[destReg] = Registers[sourceReg];
-		}
+		default_switch();
 		break;
 
 	}
@@ -2890,22 +2901,12 @@ void Group_2_Move(BYTE opcode)
 		break;
 
 	default:
-		Registers[sourceReg] = Registers[destReg];
-		if (sourceReg == REGISTER_M) {
-			address = Registers[REGISTER_L];
-			address += (WORD)Registers[REGISTER_H] << 4;
-			if (address >= 0 && address <= MEMORY_SIZE) {
-				Memory[address] = Registers[destReg];
-			}
-		}
-		else {
-			Registers[sourceReg] = Registers[destReg];
-		}
+		default_switch();
 		break;
 
 	}
-
-	Registers[destReg] = Registers[sourceReg];
+	
+	source_as_reg_index(destReg, sourceReg);
 }
 
 
