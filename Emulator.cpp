@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include <winsock2.h>
 /*
-Author: Dominic Lewis(15024059) 
+Author: Dominic Lewis(15024059)
 Created: 17/10/2016
 Revised: 02/11/2016 - Adding Comments
 Description: Emulates the Intel 8080 Processor
-User advice: None 
+User advice: None
 */
 #pragma comment(lib, "wsock32.lib")
 
@@ -14,8 +14,8 @@ User advice: None
 
 #define IP_ADDRESS_SERVER "127.0.0.1"
 
-#define PORT_SERVER 0x1984 // We define a port that we are going to use.
-#define PORT_CLIENT 0x1985 // We define a port that we are going to use.
+#define PORT_SERVER 0x1984 
+#define PORT_CLIENT 0x1985 
 
 #define WORD  unsigned short
 #define DWORD unsigned long
@@ -27,7 +27,7 @@ User advice: None
 SOCKADDR_IN server_addr;
 SOCKADDR_IN client_addr;
 
-SOCKET sock;  // This is our socket, it is the handle to the IO address to read/write packets
+SOCKET sock;  
 
 WSADATA data;
 
@@ -54,7 +54,7 @@ char trc_file[MAX_BUFFER_SIZE];
 
 BYTE Index_Registers[2];
 
-BYTE Registers[5]; 
+BYTE Registers[5];
 BYTE Flags;
 WORD ProgramCounter;
 WORD StackPointer;
@@ -416,39 +416,39 @@ void set_flag_z(BYTE inReg) {
 	}
 }
 /*
-Function: set_flag_n 
+Function: set_flag_n
 Description: Sets flag n based on the result of the bitwise or ( | ) operation carried out inside the function
 Paramaters: WORD inReg - This is passed to the function to ensure the correct register is stored and used in the operations
-Returns: none (void) 
+Returns: none (void)
 Warnings: None
 */void set_flag_n(WORD inReg) {
 	BYTE reg;
 	reg = inReg;
 	if ((reg & 0x80) == 0x80) {
-		Flags = Flags | FLAG_N;	//set N
+		Flags = Flags | FLAG_N;	
 	}
 	else {
-		Flags = Flags & (~FLAG_N); //reset N 
+		Flags = Flags & (~FLAG_N); 
 	}
 }
-//CHECK
+
 void set_flag_c(WORD result)
 {
-	if (result >= 0x100)	//doesnt fit in byte
+	if (result >= 0x100)	
 		Flags = Flags | FLAG_C;
 	else
 		Flags = Flags & (~FLAG_C);
 }
 
 
-void set_all_flags(BYTE inReg1, BYTE inReg2, WORD result) //SEND REGISTERS AND DATA 
+void set_three_flags_inreg(BYTE inReg1, BYTE inReg2, WORD result) 
 {
 
 	set_flag_c(result);
 	set_flag_n(result);
 	set_flag_z(result);
 }
-void set_three_flags(WORD result) //SEND DATA 
+void set_three_flags(WORD result) 
 {
 	set_flag_c(result);
 	set_flag_n(result);
@@ -458,7 +458,7 @@ void set_three_flags(WORD result) //SEND DATA
 BYTE addRegs(BYTE inReg1, BYTE inReg2)
 {
 	WORD result = inReg1 + inReg2;
-	set_all_flags(inReg1, inReg2, result);
+	set_three_flags_inreg(inReg1, inReg2, result);
 	return (BYTE)result;
 }
 
@@ -467,7 +467,7 @@ BYTE subWithCarry(BYTE inReg1, BYTE inReg2)
 	WORD result;
 	BYTE carry = Flags & FLAG_C;
 	result = inReg1 - inReg2 - carry;
-	set_all_flags(inReg1, ~inReg2 + 1, result);			//reg 2 is data fetched				
+	set_three_flags_inreg(inReg1, ~inReg2 + 1, result);
 	return (BYTE)result;
 }
 
@@ -476,14 +476,14 @@ BYTE addWithCarry(BYTE inReg1, BYTE inReg2)
 	WORD result;
 	BYTE carry = Flags & FLAG_C;
 	result = inReg1 + inReg2 + carry;
-	set_all_flags(inReg1, inReg2, result);
+	set_three_flags_inreg(inReg1, inReg2, result);
 	return (BYTE)result;
 }
 
 BYTE subRegs(BYTE inReg1, BYTE inReg2)
 {
 	WORD result = inReg1 - inReg2;
-	set_all_flags(inReg1, ~inReg2 + 1, result);
+	set_three_flags_inreg(inReg1, ~inReg2 + 1, result);
 	return (BYTE)result;
 }
 
