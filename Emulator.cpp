@@ -566,6 +566,26 @@ void push(BYTE reg) {
 	Memory[StackPointer] = reg;
 	StackPointer--;
 }
+void compare(BYTE reg1, BYTE reg2)
+{
+	WORD temp_word = 0;
+	BYTE param1 = 0;
+	BYTE param2 = 0;
+
+	param1 = Registers[reg1];
+	param2 = Registers[reg2];
+	temp_word = (WORD)param1 - (WORD)param2;
+
+	if (temp_word >= 0x100) {
+		Flags = Flags | FLAG_C; // Set carry flag
+	}
+	else {
+		Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
+	}
+	set_flag_n((BYTE)temp_word);
+	set_flag_z((BYTE)temp_word);
+
+}
 
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
@@ -1221,94 +1241,34 @@ void Group_1(BYTE opcode) {
 	case 0x81: // B-M
 		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
-
+	
 
 		//CMP
 		/*Register compared to Accumulator*/
 	case 0x35: // A-L
-		param1 = Registers[REGISTER_A];
-		param2 = Registers[REGISTER_L];
-		temp_word = (WORD)param1 - (WORD)param2;
-		if (temp_word >= 0x100) {
-			Flags = Flags | FLAG_C; // Set carry flag
-		}
-		else {
-			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
-		}
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
+		compare(REGISTER_A, REGISTER_L);
 		break;
 
 
 	case 0x45: //A-H
-		param1 = Registers[REGISTER_A];
-		param2 = Registers[REGISTER_H];
-		temp_word = (WORD)param1 - (WORD)param2;
-		if (temp_word >= 0x100) {
-			Flags = Flags | FLAG_C; // Set carry flag
-		}
-		else {
-			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
-		}
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
+		compare(REGISTER_A, REGISTER_H);
 		break;
 
 	case 0x55: //A-M
-		param1 = Registers[REGISTER_A];
-		param2 = Registers[REGISTER_M];
-		temp_word = (WORD)param1 - (WORD)param2;
-		if (temp_word >= 0x100) {
-			Flags = Flags | FLAG_C; // Set carry flag
-		}
-		else {
-			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
-		}
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
+		compare(REGISTER_A, REGISTER_M);
 		break;
 
 	case 0x65: //B-L
-		param1 = Registers[REGISTER_B];
-		param2 = Registers[REGISTER_L];
-		temp_word = (WORD)param1 - (WORD)param2;
-		if (temp_word >= 0x100) {
-			Flags = Flags | FLAG_C; // Set carry flag
-		}
-		else {
-			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
-		}
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
+		compare(REGISTER_B, REGISTER_L);
 		break;
 
 
 	case 0x75: //B-H
-		param1 = Registers[REGISTER_B];
-		param2 = Registers[REGISTER_H];
-		temp_word = (WORD)param1 - (WORD)param2;
-		if (temp_word >= 0x100) {
-			Flags = Flags | FLAG_C; // Set carry flag
-		}
-		else {
-			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
-		}
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
+		compare(REGISTER_B, REGISTER_H);
 		break;
 
 	case 0x85: //B-M
-		param1 = Registers[REGISTER_B];
-		param2 = Registers[REGISTER_M];
-		temp_word = (WORD)param1 - (WORD)param2;
-		if (temp_word >= 0x100) {
-			Flags = Flags | FLAG_C; // Set carry flag
-		}
-		else {
-			Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
-		}
-		set_flag_n((BYTE)temp_word);
-		set_flag_z((BYTE)temp_word);
+		compare(REGISTER_B, REGISTER_M);
 		break;
 
 		//ADD
@@ -2630,14 +2590,10 @@ void Group_1(BYTE opcode) {
 		Data compared to accumulator
 		*/
 	case 0x95:// # A - Data
-	//	data = fetch();
+
 		compare_accumulator(REGISTER_A);
 
-		/*
-		param1 = Registers[REGISTER_A];
-		temp_word = (WORD)data - (WORD)param1;
-		set_three_flags((WORD)temp_word);
-		*/
+
 		break;
 
 		//CPIB
