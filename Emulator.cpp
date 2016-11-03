@@ -551,6 +551,17 @@ WORD getAbsAd() {
 
 	return address;
 }
+
+void compare_accumulator(BYTE inReg) {
+	BYTE param1 = 0; 
+	WORD data = 0;
+	WORD temp_word;
+	data = fetch();
+	param1 = Registers[inReg];
+	temp_word = (WORD)data - (WORD)param1;
+	set_three_flags((WORD)temp_word);
+}
+
 void push(BYTE reg) {
 	Memory[StackPointer] = reg;
 	StackPointer--;
@@ -2613,18 +2624,20 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = temp_word;
 		break;
 
+
 		//CPIA
 		/*
 		Data compared to accumulator
 		*/
 	case 0x95:// # A - Data
-		data = fetch();
+	//	data = fetch();
+		compare_accumulator(REGISTER_A);
 
+		/*
 		param1 = Registers[REGISTER_A];
-
 		temp_word = (WORD)data - (WORD)param1;
-
 		set_three_flags((WORD)temp_word);
+		*/
 		break;
 
 		//CPIB
@@ -2634,13 +2647,8 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x96:
-		data = fetch();
+		compare_accumulator(REGISTER_B); 
 
-		param1 = Registers[REGISTER_B];
-
-		temp_word = (WORD)data - (WORD)param1;
-
-		set_three_flags((WORD)temp_word);
 		break;
 
 		//JCC
@@ -2649,9 +2657,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0x11: //abs
 		address = getAbsAd();
-
 		if ((Flags & FLAG_C) == 0) {
-
 			ProgramCounter = address;
 		}
 
@@ -2837,7 +2843,6 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0x29:
 		address = getAbsAd();
-
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
 
 			push(ProgramCounter);
