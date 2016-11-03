@@ -581,9 +581,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1A: //LDAA abs
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_A] = Memory[address];
 		}
@@ -591,10 +589,8 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x2A://LDAA abs,X
-		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += Index_Registers[REGISTER_X];	
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_A] = Memory[address];
 		}
@@ -602,9 +598,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x3A: //LDAA abs,Y
 		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_A] = Memory[address];
 		}
@@ -613,9 +607,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x4A:  //(in ) 
 
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -625,9 +617,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x5A: //(indirect) x
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -647,9 +637,8 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1B: //LDAB abs 
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
+
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_B] = Memory[address];
 		}
@@ -657,9 +646,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x2B: //LDAB abs, X 
 		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_B] = Memory[address];
 		}
@@ -667,9 +654,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x3B: //LDAB abs,Y
 		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[REGISTER_B] = Memory[address];
 		}
@@ -678,9 +663,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x4B: //(ind)
 
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -690,9 +673,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x5B: //(indirect) x
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -710,9 +691,7 @@ void Group_1(BYTE opcode) {
 		Stores Accumulator
 		*/
 	case 0xBA: //STORA (abs)
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_A];
 		}
@@ -720,9 +699,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xCA: //STORA (abs,X)
 		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_A];
 		}
@@ -730,18 +707,14 @@ void Group_1(BYTE opcode) {
 
 	case 0xDA: //STORA (abs,Y)
 		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_A];
 		}
 		break;
 
 	case 0xEA: //STORA ((ind))
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -751,9 +724,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0xFA: //STORA ((ind,X))
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -802,9 +773,7 @@ void Group_1(BYTE opcode) {
 
 		//STORB 
 	case 0xBB: //STORB (abs)
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_B];
 		}
@@ -812,9 +781,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xCB: //STORB (abs,X)
 		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_B];
 		}
@@ -822,18 +789,14 @@ void Group_1(BYTE opcode) {
 
 	case 0xDB: //STORB (abs,Y)
 		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[REGISTER_B];
 		}
 		break;
 
 	case 0xEB: //STORB ((ind))
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -843,9 +806,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0xFB: //STORB ((ind,X))
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -862,9 +823,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1E: //LDX abs
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Index_Registers[REGISTER_X] = Memory[address];
 		}
@@ -873,9 +832,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x2E:
 		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Index_Registers[REGISTER_X] = Memory[address];
 		}
@@ -883,9 +840,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x3E: //LDX abs,Y
 		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Index_Registers[REGISTER_X] = Memory[address];
 		}
@@ -894,9 +849,7 @@ void Group_1(BYTE opcode) {
 
 	case 0x4E:
 
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -906,9 +859,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x5E: //indirect x
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -925,9 +876,7 @@ void Group_1(BYTE opcode) {
 
 
 	case 0xBC:
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Index_Registers[REGISTER_X];
 		}
@@ -935,9 +884,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xCC:
 		address += Index_Registers[REGISTER_X];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Index_Registers[REGISTER_X];
 		}
@@ -946,9 +893,7 @@ void Group_1(BYTE opcode) {
 	case 0xDC:
 
 		address += Index_Registers[REGISTER_Y];
-		HB = fetch();
-		LB = fetch();
-		address += (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Index_Registers[REGISTER_X];
 		}
@@ -956,9 +901,7 @@ void Group_1(BYTE opcode) {
 
 
 	case 0xEC:
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -969,9 +912,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0xFC:
-		HB = fetch();
-		LB = fetch();
-		address = (WORD)((WORD)HB << 8) + LB;
+		address += getAbsAd();
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
