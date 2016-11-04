@@ -641,15 +641,29 @@ void default_switch() {
 void source_as_reg_index(int destReg, int sourceReg) {
 	Registers[destReg] = Registers[sourceReg];
 }
-void check_address(WORD address, BYTE reg)
-{
-	if (address >= 0 && address < MEMORY_SIZE)
-	{
-		Registers[reg] = Memory[address];
 
+
+void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
+{
+
+	if (option == 1)
+	{
+		HB = Memory[address];
+		LB = Memory[address + 1];
+		address = (WORD)((WORD)HB << 8) + LB;
 	}
 
+	if (reg2 == 0) {
+		address += Index_Registers[REGISTER_X];
+	}
+	else if (reg2 == 1) {
+		address += Index_Registers[REGISTER_Y];
+	}
+	if (address >= 0 && address < MEMORY_SIZE)
+	{
+		Registers[reg1] = Memory[address];
 
+	}
 }
 
 //Group 1 = Loading Information/Data
@@ -678,38 +692,31 @@ void Group_1(BYTE opcode) {
 
 	case 0x1A: //LDAA abs
 		address += getAbsAd();
-		check_address(address, REGISTER_A);
+		check_address(address, REGISTER_A,REGISTER_A,HB,LB,0);
 		break;
 
 	case 0x2A://LDAA abs,X
-		address += Index_Registers[REGISTER_X];
 		address += getAbsAd();
-		check_address(address, REGISTER_A);
+		check_address(address, REGISTER_A,REGISTER_X,HB,LB,0);
 		break;
 
 	case 0x3A: //LDAA abs,Y
-		address += Index_Registers[REGISTER_Y];
+
 		address += getAbsAd();
-		check_address(address, REGISTER_A);
+		check_address(address, REGISTER_A,REGISTER_Y,HB,LB,0);
 
 		break;
 
 	case 0x4A:  //(in ) 
 
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		check_address(address, REGISTER_A);
+		check_address(address, REGISTER_A,REGISTER_A,HB,LB,1);
 		break;
 
 	case 0x5A: //(indirect) x
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		check_address(address, REGISTER_A);
+	
+		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 1);
 		break;
 
 		//LDAB
@@ -723,20 +730,18 @@ void Group_1(BYTE opcode) {
 
 	case 0x1B: //LDAB abs 
 		address += getAbsAd();
-
-		check_address(address, REGISTER_B);
+		check_address(address, REGISTER_B,REGISTER_B,HB,LB,0);
 		break;
 
 	case 0x2B: //LDAB abs, X 
-		address += Index_Registers[REGISTER_X];
+		
 		address += getAbsAd();
-		check_address(address, REGISTER_B);
+		check_address(address, REGISTER_B,REGISTER_X,HB,LB,0);
 		break;
 
 	case 0x3B: //LDAB abs,Y
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		check_address(address, REGISTER_B);
+		check_address(address, REGISTER_B,REGISTER_Y,HB,LB,0);
 
 		break;
 
