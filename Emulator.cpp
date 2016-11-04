@@ -553,7 +553,7 @@ WORD getAbsAd() {
 }
 
 void compare_accumulator(BYTE inReg) {
-	BYTE param1 = 0; 
+	BYTE param1 = 0;
 	WORD data = 0;
 	WORD temp_word;
 	data = fetch();
@@ -578,7 +578,7 @@ void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice)
 
 		}
 
-		}  
+	}
 	else if (choice == 1)
 	{
 		address = getAbsAd();
@@ -589,7 +589,7 @@ void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice)
 
 		}
 	}
-	
+
 	else {
 		data = ~Registers[inReg];
 		if (address >= 0 && address < MEMORY_SIZE) {
@@ -624,7 +624,7 @@ void default_switch() {
 	int destReg = 0;
 	int sourceReg = 0;
 	WORD address = 0;
-	
+
 
 	Registers[sourceReg] = Registers[destReg];
 	if (sourceReg == REGISTER_M) {
@@ -640,6 +640,16 @@ void default_switch() {
 }
 void source_as_reg_index(int destReg, int sourceReg) {
 	Registers[destReg] = Registers[sourceReg];
+}
+void check_address(WORD address, BYTE reg)
+{
+	if (address >= 0 && address < MEMORY_SIZE)
+	{
+		Registers[reg] = Memory[address];
+
+	}
+
+
 }
 
 //Group 1 = Loading Information/Data
@@ -668,26 +678,19 @@ void Group_1(BYTE opcode) {
 
 	case 0x1A: //LDAA abs
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_A] = Memory[address];
-		}
-
+		check_address(address, REGISTER_A);
 		break;
 
 	case 0x2A://LDAA abs,X
 		address += Index_Registers[REGISTER_X];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_A] = Memory[address];
-		}
+		check_address(address, REGISTER_A);
 		break;
 
 	case 0x3A: //LDAA abs,Y
 		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_A] = Memory[address];
-		}
+		check_address(address, REGISTER_A);
 
 		break;
 
@@ -697,9 +700,7 @@ void Group_1(BYTE opcode) {
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_A] = Memory[address];
-		}
+		check_address(address, REGISTER_A);
 		break;
 
 	case 0x5A: //(indirect) x
@@ -708,9 +709,7 @@ void Group_1(BYTE opcode) {
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
 		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_A] = Memory[address];
-		}
+		check_address(address, REGISTER_A);
 		break;
 
 		//LDAB
@@ -725,25 +724,19 @@ void Group_1(BYTE opcode) {
 	case 0x1B: //LDAB abs 
 		address += getAbsAd();
 
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_B] = Memory[address];
-		}
+		check_address(address, REGISTER_B);
 		break;
 
 	case 0x2B: //LDAB abs, X 
 		address += Index_Registers[REGISTER_X];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_B] = Memory[address];
-		}
+		check_address(address, REGISTER_B);
 		break;
 
 	case 0x3B: //LDAB abs,Y
 		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Registers[REGISTER_B] = Memory[address];
-		}
+		check_address(address, REGISTER_B);
 
 		break;
 
@@ -1296,7 +1289,7 @@ void Group_1(BYTE opcode) {
 	case 0x81: // B-M
 		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
-	
+
 
 		//CMP
 		/*Register compared to Accumulator*/
@@ -1941,7 +1934,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0xB2: //abs,x 
-		
+
 		address += getAbsAd();
 		address += Index_Registers[REGISTER_X];
 		if (address >= 0 && address < MEMORY_SIZE) {
@@ -2445,8 +2438,8 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA7: //abs 
-		negate_mem_or_accumulator(REGISTER_A, data, address, 1); 
-		
+		negate_mem_or_accumulator(REGISTER_A, data, address, 1);
+
 		break;
 
 	case 0xB7: //abs X
@@ -2462,12 +2455,12 @@ void Group_1(BYTE opcode) {
 		Negate Memory or Accumulator
 		*/
 	case 0xD7: //A
-		negate_mem_or_accumulator(REGISTER_A, data,address,2);
+		negate_mem_or_accumulator(REGISTER_A, data, address, 2);
 		break;
 
 		//COMB
 	case 0xE7: //B 
-		negate_mem_or_accumulator(REGISTER_B, data, address,2);
+		negate_mem_or_accumulator(REGISTER_B, data, address, 2);
 
 		break;
 		//PUSH
@@ -2622,7 +2615,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x96:
-		compare_accumulator(REGISTER_B); 
+		compare_accumulator(REGISTER_B);
 
 		break;
 
@@ -2903,7 +2896,7 @@ void Group_2_Move(BYTE opcode)
 		break;
 
 	}
-	
+
 	source_as_reg_index(destReg, sourceReg);
 }
 
