@@ -675,7 +675,6 @@ void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE op
 
 	}
 }
-
 void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
 {
 
@@ -709,6 +708,69 @@ void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, B
 	}
 
 }
+
+
+void load_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYTE option)
+{
+
+
+	if (option == 1) {
+
+		HB = Memory[address];
+		LB = Memory[address + 1];
+		address = (WORD)((WORD)HB << 8) + LB;
+	}
+	if (reg1 == 0) {
+		address += Index_Registers[REGISTER_X];
+	}
+	else if (reg1 == 1) {
+		address += Index_Registers[REGISTER_Y];
+	}
+
+	if ((option == 0) || (option == 1)) {
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+			StackPointer = (WORD)Memory[address] << 8;
+			StackPointer += Memory[address + 1];
+		}
+
+	}
+
+
+
+}
+
+
+
+void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYTE option) {
+
+	if (option == 1)
+	{
+		HB = Memory[address];
+		LB = Memory[address + 1];
+		address = (WORD)((WORD)HB << 8) + LB;
+
+	}
+
+	if (reg1 == 0) {
+		address += Index_Registers[REGISTER_X];
+	}
+	else if (reg1 == 1) {
+		address += Index_Registers[REGISTER_Y];
+	}
+
+
+	if ((option == 0) || (option == 1)) {
+
+		if (address >= 0 && address < MEMORY_SIZE - 1) {
+			Memory[address] = (BYTE)(StackPointer >> 8);
+			Memory[address + 1] = (BYTE)(StackPointer);
+		}
+
+	}
+
+}
+
+
 
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
@@ -904,7 +966,6 @@ void Group_1(BYTE opcode) {
 	case 0x1E: //LDX abs
 		address += getAbsAd();
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 0);
-
 		break;
 
 	case 0x2E:
@@ -1092,54 +1153,33 @@ void Group_1(BYTE opcode) {
 
 	case 0x30: //abs
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
+
+		load_stackpointer(address, data, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x40: //abx,X
-		address += Index_Registers[REGISTER_X];
+		
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
+		load_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x50: //abs,Y
-		address += Index_Registers[REGISTER_Y];
+		
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
+		load_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x60: //(ind)
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-		}
+		load_stackpointer(address, data, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x70: //ind,X
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			StackPointer = (WORD)Memory[address] << 8;
-			StackPointer += Memory[address + 1];
-			break;
-		}
+		load_stackpointer(address, data, REGISTER_X, HB, LB, 1);
+		break;
+		
 
-		//STOS
 
 		//////////////////
 		//     STOS    ///
@@ -1147,51 +1187,28 @@ void Group_1(BYTE opcode) {
 
 	case 0x6A: //STOS (abs)
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			Memory[address] = (BYTE)(StackPointer >> 8);
-			Memory[address + 1] = (BYTE)(StackPointer);
-		}
+		store_stackpointer(address, data, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x7A: //STOS (abs,X)
-		address += Index_Registers[REGISTER_X];
+	
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			Memory[address] = (BYTE)(StackPointer >> 8);
-			Memory[address + 1] = (BYTE)(StackPointer);
-		}
+		store_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x8A: //STOS (abs,Y)
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			Memory[address] = (BYTE)(StackPointer >> 8);
-			Memory[address + 1] = (BYTE)(StackPointer);
-		}
+		store_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x9A: //STOS ((ind))
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			Memory[address] = (BYTE)(StackPointer >> 8);
-			Memory[address + 1] = (BYTE)(StackPointer);
-		}
+		store_stackpointer(address, data, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0xAA: //STOS ((ind,X))
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE - 1) {
-			Memory[address] = (BYTE)(StackPointer >> 8);
-			Memory[address + 1] = (BYTE)(StackPointer);
-		}
+		store_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
 
 		//NEW ADC
