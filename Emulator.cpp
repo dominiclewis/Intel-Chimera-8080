@@ -661,14 +661,14 @@ void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE op
 		address += Index_Registers[REGISTER_Y];
 	}
 
-	if (option != 2) {
+	if ((option != 2) && (option != 3)) {
 		if (address >= 0 && address < MEMORY_SIZE)
 		{
 			Registers[reg1] = Memory[address];
 
 		}
 	}
-	else if (option == 2) {
+	else if ((option == 2) || (option == 3)) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[reg1];
 		}
@@ -790,12 +790,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xEA: //STORA ((ind))
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Registers[REGISTER_A];
-		}
+		check_address(address,REGISTER_A, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xFA: //STORA ((ind,X))
