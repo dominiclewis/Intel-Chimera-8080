@@ -680,7 +680,7 @@ void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, B
 {
 
 
-	if (option == 1) {
+	if ((option == 1) || (option == 4)) {
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
@@ -700,10 +700,15 @@ void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, B
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Index_Registers[reg1] = Memory[address];
 		}
+
+	}
+	else if ((option == 3) || (option == 4)) {
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] = Index_Registers[reg1];
+		}
 	}
 
 }
-
 
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
@@ -934,49 +939,31 @@ void Group_1(BYTE opcode) {
 
 	case 0xBC:
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_X];
-		}
+		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xCC:
-		address += Index_Registers[REGISTER_X];
+		
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_X];
-		}
+		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 3);
 		break;
 
 	case 0xDC:
 
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_X];
-		}
+		index_check_address(address, REGISTER_X, REGISTER_Y, HB, LB, 3);
 		break;
 
 
 	case 0xEC:
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_X];
-		}
+		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 4);
 
 		break;
 
 	case 0xFC:
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_X];
-		}
+		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 4);
 		break;
 		//LDY Begins Here 
 	case 0x0F: //LDY Immidiate #
@@ -986,96 +973,59 @@ void Group_1(BYTE opcode) {
 
 	case 0x1F: //LDY abs
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Index_Registers[REGISTER_Y] = Memory[address];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 0);
 
 		break;
 
 	case 0x2F:
-		address += Index_Registers[REGISTER_X];
+		
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Index_Registers[REGISTER_Y] = Memory[address];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3F: //LDY abs,Y
-		address += Index_Registers[REGISTER_Y];
+		
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Index_Registers[REGISTER_Y] = Memory[address];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4F:
 
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Index_Registers[REGISTER_Y] = Memory[address];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x5F: //indirect x
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Index_Registers[REGISTER_Y] = Memory[address];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 1);
 		break;
 		//STOY BEGINS
 	case 0xBD:
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_Y];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xCD:
-		address += Index_Registers[REGISTER_X];
+		
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_Y];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 3);
 		break;
 
 	case 0xDD:
-
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_Y];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 3);
 		break;
 
 
 	case 0xED:
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_Y];
-		}
-
+		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 4);
 		break;
 
 	case 0xFD:
 		address += getAbsAd();
-		HB = Memory[address];
-		LB = Memory[address + 1];
-		address = (WORD)((WORD)HB << 8) + LB;
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] = Index_Registers[REGISTER_Y];
-		}
+		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 4);
 		break;
 		//CAY 
 		/*
