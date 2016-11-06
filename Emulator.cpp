@@ -431,6 +431,13 @@ Warnings: None
 		Flags = Flags & (~FLAG_N);
 	}
 }
+/*
+Function: set_flag_C
+Description: Sets flag C based on the result of the bitwise or ( | ) operation carried out inside the function OR the result of the bitwise & in conjunction with the negation of FLAG_C 
+Paramaters: WORD inReg - This is passed to the function to ensure the correct register is stored and used in the operations
+Returns: none (void)
+Warnings: None
+*/
 
 void set_flag_c(WORD result)
 {
@@ -439,55 +446,86 @@ void set_flag_c(WORD result)
 	else
 		Flags = Flags & (~FLAG_C);
 }
+/*
+Function: set_three_flags
+Description: Sets flag n,z and c based on result
+Paramaters: WORD result, this is passed to the function to ensure the flags are set correctly.
+Returns: none (void)
+Warnings: None
+*/
 
-
-void set_three_flags_inreg(BYTE inReg1, BYTE inReg2, WORD result)
-{
-
-	set_flag_c(result);
-	set_flag_n(result);
-	set_flag_z(result);
-}
 void set_three_flags(WORD result)
 {
 	set_flag_c(result);
 	set_flag_n(result);
 	set_flag_z(result);
 }
+/*
+Function: add_regs
+Description: Adds the contents of two registers, then sets the flag based on it and returns that result to the calling function
+Paramaters: WORD result, this is passed to the function to ensure the flags are set correctly.
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
 
-BYTE addRegs(BYTE inReg1, BYTE inReg2)
+BYTE add_regs(BYTE inReg1, BYTE inReg2)
 {
 	WORD result = inReg1 + inReg2;
-	set_three_flags_inreg(inReg1, inReg2, result);
+	set_three_flags(result);
 	return (BYTE)result;
 }
-
-BYTE subWithCarry(BYTE inReg1, BYTE inReg2)
+/*
+Function: sub_With_carry
+Description: Verifies whether or not a carry should take place then subtracts the second register away from the first then also subtracts the carry
+Paramters: BYTE inReg1, BYTE inReg2. These two paramaters represent the first and second register that will be used in the sum. 
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
+BYTE sub_with_carry(BYTE inReg1, BYTE inReg2)
 {
 	WORD result;
 	BYTE carry = Flags & FLAG_C;
 	result = inReg1 - inReg2 - carry;
-	set_three_flags_inreg(inReg1, ~inReg2 + 1, result);
+	set_three_flags(result);
 	return (BYTE)result;
 }
+/*
+Function: add_with_carry
+Description: Verifies whether or not a carry should take place then adds the second register to the first then also adds the carry
+Paramters: BYTE inReg1, BYTE inReg2. These two paramaters represent the first and second register that will be used in the sum.
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
 
-BYTE addWithCarry(BYTE inReg1, BYTE inReg2)
+BYTE add_with_carry(BYTE inReg1, BYTE inReg2)
 {
 	WORD result;
 	BYTE carry = Flags & FLAG_C;
 	result = inReg1 + inReg2 + carry;
-	set_three_flags_inreg(inReg1, inReg2, result);
+	set_three_flags (result);
 	return (BYTE)result;
 }
-
-BYTE subRegs(BYTE inReg1, BYTE inReg2)
+/*
+Function: sub_regs
+Description: Subracts one register away from another
+Paramters: BYTE inReg1, BYTE inReg2 : These two paramaters represent the first and second register that will be used in the sum.
+Returns: BYTE result : The result of the operation
+Warnings: None
+*/
+BYTE sub_regs(BYTE inReg1, BYTE inReg2)
 {
 	WORD result = inReg1 - inReg2;
-	set_three_flags_inreg(inReg1, ~inReg2 + 1, result);
+	set_three_flags (result);
 	return (BYTE)result;
 }
-
-BYTE rotateRightCarry(BYTE inReg)
+/*
+Function: rotate_right_carry
+Description: Checks if a carry is necessary then rotates the bits right whilst incorporating the carry and also sets flag_c, n and z
+Paramters: BYTE inReg
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
+BYTE rotate_right_carry(BYTE inReg)
 {
 	BYTE result, carry = 0x00;
 	WORD data;
@@ -503,8 +541,14 @@ BYTE rotateRightCarry(BYTE inReg)
 	return result;
 
 }
-
-BYTE rotateLeftCarry(BYTE inReg)
+/*
+Function: rotate_left_carry
+Description: Checks if a carry is necessary then rotates the bits left whilst incorporating the carry and also sets flag_c, n and z
+Paramters: BYTE inReg
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
+BYTE rotate_left_carry(BYTE inReg)
 {
 	BYTE result, carry;
 	carry = Flags & FLAG_C;
@@ -514,8 +558,14 @@ BYTE rotateLeftCarry(BYTE inReg)
 	set_three_flags(data);
 	return result;
 }
-
-BYTE rotateLeft(BYTE inReg)
+/*
+Function: rotate_left
+Description: Rotates the bits left and also sets flag n and z to match the result
+Paramters: BYTE inReg
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
+BYTE rotate_left(BYTE inReg)
 {
 	BYTE result;
 	result = inReg << 1;
@@ -528,7 +578,14 @@ BYTE rotateLeft(BYTE inReg)
 
 	return result;
 }
-BYTE rotateRight(BYTE inReg)
+/*
+Function: rotate_right
+Description: Rotates the bits right and also sets flag n and z to match the result
+Paramters: BYTE inReg
+Returns: BYTE result: The result of the operation
+Warnings: None
+*/
+BYTE rotate_right(BYTE inReg)
 {
 	BYTE result;
 	result = inReg >> 1;
@@ -539,8 +596,14 @@ BYTE rotateRight(BYTE inReg)
 	set_flag_n(result);
 	return result;
 }
-
-WORD getAbsAd() {
+/*
+Function: get_abs_ad
+Description: Fetches the address for absolute addressing=
+Paramters: None 
+Returns: WORD address : The address to be used 
+Warnings: None
+*/
+WORD get_abs_ad() {
 	BYTE LB = 0;
 	BYTE HB = 0;
 	WORD address = 0;
@@ -551,7 +614,13 @@ WORD getAbsAd() {
 
 	return address;
 }
-
+/*
+Function: compare_accumulator
+Description: Compares what is held in the/an accumulator to what is held in a register also calls set_three_flags with temp_word being used to set the flags. 
+Paramters: BYTE inReg - The register which will be used in the comarpsion
+Returns: None (void) 
+Warnings: None
+*/
 void compare_accumulator(BYTE inReg) {
 	BYTE param1 = 0;
 	WORD data = 0;
@@ -561,16 +630,29 @@ void compare_accumulator(BYTE inReg) {
 	temp_word = (WORD)data - (WORD)param1;
 	set_three_flags((WORD)temp_word);
 }
-
+/*
+Function: push
+Description: Pushes a registers contents onto the top of the stack 
+Paramters: BYTE reg : the register in consideration
+Returns: None (void)
+Warnings: None
+*/
 void push(BYTE reg) {
 	Memory[StackPointer] = reg;
 	StackPointer--;
 }
 
+/*
+Function: negate_mem_or_accumulator
+Description: Depending on choices it carries out a variety of functions which work towards negating whatever is stored in the memory or an accumulator. It also calls set_three_flags passing data 
+Paramters: BYTE inReg : This is the reg which will be used, WORD data, WORD address, BYTE choice: This variable controls which control flow is executed 
+Returns: None (void)
+Warnings: None
+*/
 void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice) {
 	if (choice == 0) {
 		address += Index_Registers[inReg];
-		address += getAbsAd();
+		address += get_abs_ad();
 		data = ~Memory[address];
 
 		if (address >= 0 && address < MEMORY_SIZE) {
@@ -581,7 +663,7 @@ void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice)
 	}
 	else if (choice == 1)
 	{
-		address = getAbsAd();
+		address = get_abs_ad();
 		data = ~Memory[address];
 
 		if (address >= 0 && address < MEMORY_SIZE) {
@@ -599,6 +681,13 @@ void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice)
 	}
 	set_three_flags(data);
 }
+/*
+Function: compare
+Description:Compares the contents of two registers, setting a carry if necessary, also calls set_flag_n & _Z passing temp_word
+Paramters:BYTE reg1, BYTE reg2 : These are the registers in conisderation
+Returns: None (void)
+Warnings: None
+*/
 void compare(BYTE reg1, BYTE reg2)
 {
 	WORD temp_word = 0;
@@ -619,6 +708,13 @@ void compare(BYTE reg1, BYTE reg2)
 	set_flag_z((BYTE)temp_word);
 
 }
+/*
+Function: default_switch()
+Description: The default case in the switches written here for resuability 
+Paramters:
+Returns: None (void)
+Warnings: None
+*/
 void default_switch() {
 
 	int destReg = 0;
@@ -638,9 +734,23 @@ void default_switch() {
 		Registers[sourceReg] = Registers[destReg];
 	}
 }
+/*
+Function: source_as_reg_index
+Description: Moves whatever is in the source register to the correct destination register
+Paramters:int destReg, int sourceReg: These are the registers in consideration=
+Returns: None (void)
+Warnings: None
+*/
 void source_as_reg_index(int destReg, int sourceReg) {
 	Registers[destReg] = Registers[sourceReg];
 }
+/*
+Function: check_address
+Description: Validates the address to ensure there are no overflows and the correct operation has been carried out on it
+Paramters:WORD address, BYTE reg1, BYTE reg2 : These are the registers being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: None (void)
+Warnings: For reg2 if there is no appropriate Register in consideration simply pass it REGISTER_A as reg2 and no additonal operations will be carried out (REGISTER_B also works) 
+*/
 void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
 {
 
@@ -684,6 +794,13 @@ void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE op
 		}
 	}
 }
+/*
+Function: index_check_address
+Description: Validates the address to ensure there are no overflows and the correct operation has been carried out on it. This is an extension of check address as if left into one function it became unwieldy. 
+Paramters:WORD address, BYTE reg1, BYTE reg2 : These are the registers being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: None (void)
+Warnings: For reg2 if there is no appropriate Register in consideration simply pass it REGISTER_A as reg2 and no additonal operations will be carried out(REGISTER_B also works) 
+*/
 void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
 {
 
@@ -717,7 +834,13 @@ void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, B
 	}
 
 }
-
+/*
+Function: load_stackpointer
+Description: Loads the stackpointer with the relevant address and also ensures that the address being used is correct. 
+Paramters:WORD address, BYTE reg1: This is the register being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: None (void)
+Warnings: For reg1 if there is no appropriate one pass in REGISTER A or REGISTER B 
+*/
 
 void load_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYTE option)
 {
@@ -748,8 +871,13 @@ void load_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYT
 
 }
 
-
-
+/*
+Function: store_stackpointer
+Description: Stores the Stackpointer in memory and also ensures the correct address is  used
+Paramters:WORD address, BYTE reg1 This is the register being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: None (void)
+Warnings: For reg1 if there is no appropriate one pass in REGISTER A or REGISTER B 
+*/
 void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYTE option) {
 
 	if (option == 1)
@@ -778,7 +906,13 @@ void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BY
 	}
 
 }
-
+/*
+Function: rotate_right_through
+Description: Rotates the bits right through a carry if necessary or the accumulators. Also corrects address value if necessary.
+Paramters:WORD address, BYTE reg1: This is the registers being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: WORD data: returns this to allow the calling block to set the flags correctly. 
+Warnings: For reg1 if there is no appropriate one pass in REGISTER A or REGISTER B 
+*/
 WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE option)
 {
 
@@ -812,6 +946,13 @@ WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE o
 	return data;
 
 }
+/*
+Function: airthmetic_shift
+Description: Carries out arithmetic shift left or right and rectifies address in Registers if necessary
+Paramters:WORD address, BYTE reg1, BYTE reg2 : These are the registers being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: WORD data : This allows the calling block to set the flags based on this data
+Warnings: For reg2 if there is no appropriate Register in consideration simply pass it REGISTER_A as reg2 and no additonal operations will be carried out(REGISTER_B also works) 
+*/
 WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 {
 	if (reg2 == 0) {
@@ -888,6 +1029,13 @@ WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option
 	return data;
 
 }
+/*
+Function: shift_right
+Description: Carries out shift right and rectifies address in Registers if necessary
+Paramters:WORD address, BYTE reg1, BYTE reg2 : These are the registers being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
+Returns: WORD data : This allows the calling block to set the flags based on this data
+Warnings:For reg2 if there is no appropriate Register in consideration simply pass it REGISTER_A as reg2 and no additonal operations will be carried out(REGISTER_B also works) 
+*/
 WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 {
 	if (reg2 == 0)
@@ -933,8 +1081,14 @@ WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 	}
 	return data;
 }
-
-WORD sub_to_accumulator_carry(BYTE flags, BYTE reg1)
+/*
+Function: sub_to_accumulator_carry
+Description: Carries out to an accumulator also checks if a carry is necessary
+Paramters:BYTE reg1 : The register(Accumulator) in consideration
+Returns:WORD temp_word: This is passed back to the calling function which it is used for setting the flags
+Warnings: None
+*/
+WORD sub_to_accumulator_carry(BYTE reg1)
 {
 	WORD data = 0, temp_word;
 	BYTE param1;
@@ -977,30 +1131,30 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1A: //LDAA abs
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x2A://LDAA abs,X
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3A: //LDAA abs,Y
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4A:  //(in ) 
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x5A: //(indirect) x
-		address += getAbsAd();
+		address += get_abs_ad();
 
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 1);
 		break;
@@ -1015,30 +1169,30 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1B: //LDAB abs 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 0);
 		break;
 
 	case 0x2B: //LDAB abs, X 
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3B: //LDAB abs,Y
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4B: //(ind)
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 1);
 		break;
 
 	case 0x5B: //(indirect) x
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1050,27 +1204,27 @@ void Group_1(BYTE opcode) {
 		Stores Accumulator
 		*/
 	case 0xBA: //STORA (abs)
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 2);
 		break;
 
 	case 0xCA: //STORA (abs,X)
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 2);
 		break;
 
 	case 0xDA: //STORA (abs,Y)
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 2);
 		break;
 
 	case 0xEA: //STORA ((ind))
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xFA: //STORA ((ind,X))
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 3);
 		break;
 
@@ -1113,27 +1267,27 @@ void Group_1(BYTE opcode) {
 
 		//STORB 
 	case 0xBB: //STORB (abs)
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 2);
 		break;
 
 	case 0xCB: //STORB (abs,X)
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 2);
 		break;
 
 	case 0xDB: //STORB (abs,Y)
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_Y, HB, LB, 2);
 		break;
 
 	case 0xEB: //STORB ((ind))
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 3);
 		break;
 
 	case 0xFB: //STORB ((ind,X))
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 3);
 		break;
 
@@ -1144,30 +1298,30 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1E: //LDX abs
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x2E:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3E: //LDX abs,Y
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4E:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x5E: //indirect x
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 1);
 
 		break;
@@ -1179,31 +1333,31 @@ void Group_1(BYTE opcode) {
 
 
 	case 0xBC:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xCC:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 3);
 		break;
 
 	case 0xDC:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_Y, HB, LB, 3);
 		break;
 
 
 	case 0xEC:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 4);
 
 		break;
 
 	case 0xFC:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 4);
 		break;
 		//LDY Begins Here 
@@ -1213,59 +1367,59 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x1F: //LDY abs
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 0);
 
 		break;
 
 	case 0x2F:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3F: //LDY abs,Y
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4F:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x5F: //indirect x
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 1);
 		break;
 		//STOY BEGINS
 	case 0xBD:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xCD:
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 3);
 		break;
 
 	case 0xDD:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 3);
 		break;
 
 
 	case 0xED:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 4);
 		break;
 
 	case 0xFD:
-		address += getAbsAd();
+		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 4);
 		break;
 		//CAY 
@@ -1332,30 +1486,30 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x30: //abs
-		address += getAbsAd();
+		address += get_abs_ad();
 
 		load_stackpointer(address, data, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x40: //abx,X
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		load_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x50: //abs,Y
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		load_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x60: //(ind)
-		address += getAbsAd();
+		address += get_abs_ad();
 		load_stackpointer(address, data, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x70: //ind,X
-		address += getAbsAd();
+		address += get_abs_ad();
 		load_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1366,53 +1520,53 @@ void Group_1(BYTE opcode) {
 		//////////////////
 
 	case 0x6A: //STOS (abs)
-		address += getAbsAd();
+		address += get_abs_ad();
 		store_stackpointer(address, data, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x7A: //STOS (abs,X)
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		store_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x8A: //STOS (abs,Y)
-		address += getAbsAd();
+		address += get_abs_ad();
 		store_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x9A: //STOS ((ind))
-		address += getAbsAd();
+		address += get_abs_ad();
 		store_stackpointer(address, data, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0xAA: //STOS ((ind,X))
-		address += getAbsAd();
+		address += get_abs_ad();
 		store_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
 
 		//NEW ADC
 	case 0x31:  // A - L   (L moved to A) 
-		Registers[REGISTER_A] = addWithCarry(Registers[REGISTER_A], Registers[REGISTER_L]);
+		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x41:   // A-H
-		Registers[REGISTER_A] = addWithCarry(Registers[REGISTER_A], Registers[REGISTER_H]);
+		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 	case 0x51: //A-M
-		Registers[REGISTER_A] = addWithCarry(Registers[REGISTER_A], Registers[REGISTER_M]);
+		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x61: //B-L 
-		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_L]);
+		Registers[REGISTER_B] = add_with_carry(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x71: //B-H
-		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_H]);
+		Registers[REGISTER_B] = add_with_carry(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x81: // B-M
-		Registers[REGISTER_B] = addWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
+		Registers[REGISTER_B] = add_with_carry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
 
@@ -1449,27 +1603,27 @@ void Group_1(BYTE opcode) {
 		Register is added to accumulator    FLAGS INVOLVED
 		*/
 	case 0x33: // A- L (L is stored in A) 
-		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_L]);
+		Registers[REGISTER_A] = add_regs(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x43:	//A - H 
-		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_H]);
+		Registers[REGISTER_A] = add_regs(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
 	case 0x53:  //A-M
-		Registers[REGISTER_A] = addRegs(Registers[REGISTER_A], Registers[REGISTER_M]);
+		Registers[REGISTER_A] = add_regs(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x63: //B-L 
-		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_L]);
+		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x73:  //B-H
-		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_H]);
+		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x83:   //B-M
-		Registers[REGISTER_B] = addRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
+		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
 		//CLC CHECK
@@ -1510,29 +1664,29 @@ void Group_1(BYTE opcode) {
 		Register subtracted to Accumulator with Carry
 		*/
 	case 0x32: //A-L   A minus L 
-		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_L]);
+		Registers[REGISTER_A] = sub_with_carry(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x42: //A-H
-		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_H]);
+		Registers[REGISTER_A] = sub_with_carry(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
 
 	case 0x52: //A-M 
-		Registers[REGISTER_A] = subWithCarry(Registers[REGISTER_A], Registers[REGISTER_M]);
+		Registers[REGISTER_A] = sub_with_carry(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x62: //B-L
-		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_L]);
+		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x72: // B-H
-		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_H]);
+		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 
 	case 0x82: //B-M
-		Registers[REGISTER_B] = subWithCarry(Registers[REGISTER_B], Registers[REGISTER_M]);
+		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
 		//SUB
@@ -1540,27 +1694,27 @@ void Group_1(BYTE opcode) {
 		Register Subtracted to Accumulator
 		*/
 	case 0x34:  // A-L  
-		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_L]);
+		Registers[REGISTER_A] = sub_regs(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x44:   //A-H
-		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_H]);
+		Registers[REGISTER_A] = sub_regs(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
 	case 0x54: //A-M
-		Registers[REGISTER_A] = subRegs(Registers[REGISTER_A], Registers[REGISTER_M]);
+		Registers[REGISTER_A] = sub_regs(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x64:	//B-L
-		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_L]);
+		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x74: //B-H
-		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_H]);
+		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x84:  //B-M 
-		Registers[REGISTER_B] = subRegs(Registers[REGISTER_B], Registers[REGISTER_M]);
+		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
 		//OR 
@@ -1874,21 +2028,21 @@ void Group_1(BYTE opcode) {
 		Increment memory or Accumulator
 		*/
 	case 0xA0: //ABS
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 4);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 	case 0xB0://abs,x
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 4);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xC0:  //abs Y
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 4);
 
 		set_flag_z((WORD)Memory[address]);
@@ -1949,7 +2103,7 @@ void Group_1(BYTE opcode) {
 		Accumulator
 		*/
 	case 0xA1: //ABS
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 5);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
@@ -1957,14 +2111,14 @@ void Group_1(BYTE opcode) {
 
 	case 0xB1://abs,x
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 5);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xC1:  //abs Y
-		address += getAbsAd();
+		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 5);
 
 		set_flag_z((WORD)Memory[address]);
@@ -2025,14 +2179,14 @@ void Group_1(BYTE opcode) {
 		Rotate right through carry Memory or Accumulator
 		*/
 	case 0xA2: //abs
-		address += getAbsAd();
+		address += get_abs_ad();
 		data = rotate_right_through(address, data, REGISTER_A, carry, 0);
 		set_three_flags(data);
 		break;
 
 	case 0xB2: //abs,x 
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		data = rotate_right_through(address, data, REGISTER_X, carry, 0);
 		set_three_flags(data);
 		break;
@@ -2040,7 +2194,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xC2://abs, Y
 
-		address += getAbsAd();
+		address += get_abs_ad();
 
 		data = rotate_right_through(address, data, REGISTER_Y, carry, 0);
 		set_three_flags(data);
@@ -2053,7 +2207,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xD2: //A
 
-		Registers[REGISTER_A] = rotateRightCarry(Registers[REGISTER_A]);
+		Registers[REGISTER_A] = rotate_right_carry(Registers[REGISTER_A]);
 
 
 		break;
@@ -2067,7 +2221,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xE2: //B 
 
-		Registers[REGISTER_B] = rotateRightCarry(Registers[REGISTER_B]);
+		Registers[REGISTER_B] = rotate_right_carry(Registers[REGISTER_B]);
 		break;
 
 		//RLC 
@@ -2076,25 +2230,25 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA3://abs
-		address += getAbsAd();
+		address += get_abs_ad();
 		//grab the address
-		Memory[address] = rotateLeftCarry(Memory[address]);
+		Memory[address] = rotate_left_carry(Memory[address]);
 		break;
 
 	case 0xB3://abs,x
 		address += Index_Registers[REGISTER_X];
 
-		address += getAbsAd();
+		address += get_abs_ad();
 
-		Memory[address] = rotateLeftCarry(Memory[address]);
+		Memory[address] = rotate_left_carry(Memory[address]);
 		break;
 
 	case 0xC3: //abs, y 
 		address += Index_Registers[REGISTER_Y];
 
-		address += getAbsAd();
+		address += get_abs_ad();
 
-		Memory[address] = rotateLeftCarry(Memory[address]);
+		Memory[address] = rotate_left_carry(Memory[address]);
 
 		break;
 
@@ -2103,7 +2257,7 @@ void Group_1(BYTE opcode) {
 		Rotate left through carry memory or Accumulator
 		*/
 	case 0xD3://A
-		Registers[REGISTER_A] = rotateLeftCarry(Registers[REGISTER_A]);
+		Registers[REGISTER_A] = rotate_left_carry(Registers[REGISTER_A]);
 		break;
 
 		//RLCB
@@ -2111,7 +2265,7 @@ void Group_1(BYTE opcode) {
 		Rotate left through carry memory or accumulator
 		*/
 	case 0xE3: //B
-		Registers[REGISTER_B] = rotateLeftCarry(Registers[REGISTER_B]);
+		Registers[REGISTER_B] = rotate_left_carry(Registers[REGISTER_B]);
 		break;
 
 		//ROL
@@ -2120,21 +2274,21 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA8: //Abs 
-		address += getAbsAd();
-		Memory[address] = rotateLeft(Memory[address]);
+		address += get_abs_ad();
+		Memory[address] = rotate_left(Memory[address]);
 		break;
 
 	case 0xB8:  //abs ,X
 
 		address += Index_Registers[REGISTER_X];
-		address += getAbsAd();
-		Memory[address] = rotateLeft(Memory[address]);
+		address += get_abs_ad();
+		Memory[address] = rotate_left(Memory[address]);
 		break;
 
 	case 0xC8: //abs, y
 		address += Index_Registers[REGISTER_Y];
-		address += getAbsAd();
-		Memory[address] = rotateLeft(Memory[address]);
+		address += get_abs_ad();
+		Memory[address] = rotate_left(Memory[address]);
 		break;
 
 
@@ -2144,7 +2298,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD8: //A
-		Registers[REGISTER_A] = rotateLeft(Registers[REGISTER_A]);
+		Registers[REGISTER_A] = rotate_left(Registers[REGISTER_A]);
 		break;
 
 		//ROLB
@@ -2152,7 +2306,7 @@ void Group_1(BYTE opcode) {
 		Rotate left without carry memory or accumulator
 		*/
 	case 0xE8:
-		Registers[REGISTER_B] = rotateLeft(Registers[REGISTER_B]);
+		Registers[REGISTER_B] = rotate_left(Registers[REGISTER_B]);
 		break;
 
 
@@ -2161,23 +2315,23 @@ void Group_1(BYTE opcode) {
 		Rotate right without carry memory or Accumulator
 		*/
 	case 0xA9: //abs 
-		address += getAbsAd();
-		Memory[address] = rotateRight(Memory[address]);
+		address += get_abs_ad();
+		Memory[address] = rotate_right(Memory[address]);
 		break;
 
 
 	case 0xB9: //abs,x
 
 		address += Index_Registers[REGISTER_X];
-		address += getAbsAd();
-		Memory[address] = rotateRight(Memory[address]);
+		address += get_abs_ad();
+		Memory[address] = rotate_right(Memory[address]);
 		break;
 
 	case 0xC9: //abs,Y
 
 		address += Index_Registers[REGISTER_Y];
-		address += getAbsAd();
-		Memory[address] = rotateRight(Memory[address]);
+		address += get_abs_ad();
+		Memory[address] = rotate_right(Memory[address]);
 		break;
 
 
@@ -2186,14 +2340,14 @@ void Group_1(BYTE opcode) {
 		Rotate right wihtout carry memory or accumulator
 		*/
 	case 0xD9://A
-		Registers[REGISTER_A] = rotateRight(Registers[REGISTER_A]);
+		Registers[REGISTER_A] = rotate_right(Registers[REGISTER_A]);
 		break;
 		//RRB 
 		/*
 		Rotate right wihtout carry memory or accumulator
 		*/
 	case 0xE9://B
-		Registers[REGISTER_B] = rotateRight(Registers[REGISTER_B]);
+		Registers[REGISTER_B] = rotate_right(Registers[REGISTER_B]);
 		break;
 
 
@@ -2202,15 +2356,15 @@ void Group_1(BYTE opcode) {
 		Arithmetic Shift left Memory or Accumulator
 		*/
 	case 0xA4:	//abs
-		address += getAbsAd();
-		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_A, 0);
+		address += get_abs_ad();
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_A, 0);
 
 		set_three_flags(data);
 		break;
 
 	case 0xB4:  //abs x
 
-		address += getAbsAd();
+		address += get_abs_ad();
 
 
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_X, 0);
@@ -2221,9 +2375,9 @@ void Group_1(BYTE opcode) {
 
 	case 0xC4:  //abs y 
 
-		address += getAbsAd();
+		address += get_abs_ad();
 
-		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_Y, 0);
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_Y, 0);
 
 		set_three_flags(data);
 		break;
@@ -2256,21 +2410,21 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA5: //abs
-		address += getAbsAd();
-		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_A, 1);
+		address += get_abs_ad();
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_A, 1);
 		set_three_flags(data);
 		break;
 
 	case 0xB5: //abs,X
-		address += getAbsAd();
-		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_X, 1);
+		address += get_abs_ad();
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_X, 1);
 		set_three_flags(data);
 		break;
 
 
 	case 0xC5: //abs,y
-		address += getAbsAd();
-		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_Y, 1);
+		address += get_abs_ad();
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_Y, 1);
 		set_three_flags(data);
 		break;
 
@@ -2302,8 +2456,8 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA6:	//abs
-		address += getAbsAd();
-		data = shift_right(address,data,REGISTER_A, REGISTER_A, 0);
+		address += get_abs_ad();
+		data = shift_right(address, data, REGISTER_A, REGISTER_A, 0);
 		set_three_flags(data);
 
 		break;
@@ -2311,14 +2465,14 @@ void Group_1(BYTE opcode) {
 	case 0xB6:	//abs,X
 
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		data = shift_right(address, data, REGISTER_A, REGISTER_X, 0);
 		set_three_flags(data);
 		break;
 
 	case 0xC6: //abs,Y
 
-		address += getAbsAd();
+		address += get_abs_ad();
 		data = shift_right(address, data, REGISTER_A, REGISTER_Y, 0);
 		set_three_flags(data);
 
@@ -2440,7 +2594,7 @@ void Group_1(BYTE opcode) {
 
 		//JUMP
 	case 0x10: //abs
-		address = getAbsAd();
+		address = get_abs_ad();
 
 		ProgramCounter = address;
 		break;
@@ -2449,7 +2603,7 @@ void Group_1(BYTE opcode) {
 		/////////////////
 
 	case 0x21: //JSR (abs)	
-		address += getAbsAd();
+		address += get_abs_ad();
 		if (address >= 0 && address < MEMORY_SIZE) {
 
 			LB = (BYTE)ProgramCounter;
@@ -2480,7 +2634,7 @@ void Group_1(BYTE opcode) {
 		//SBIA
 
 	case 0x93: //# 
-		temp_word = sub_to_accumulator_carry(Flags, REGISTER_A);
+		temp_word = sub_to_accumulator_carry(REGISTER_A);
 		set_three_flags((WORD)temp_word);
 		Registers[REGISTER_A] = temp_word;
 		break;
@@ -2488,7 +2642,7 @@ void Group_1(BYTE opcode) {
 		//SBIB
 
 	case 0x94: //# 
-		temp_word = sub_to_accumulator_carry(Flags, REGISTER_B);
+		temp_word = sub_to_accumulator_carry( REGISTER_B);
 		set_three_flags((WORD)temp_word);
 		Registers[REGISTER_B] = temp_word;
 		break;
@@ -2521,7 +2675,7 @@ void Group_1(BYTE opcode) {
 		Jump on Carry clear
 		*/
 	case 0x11: //abs
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_C) == 0) {
 			ProgramCounter = address;
 		}
@@ -2535,7 +2689,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0x12: //abs 
 
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_C) != 0) {
 			ProgramCounter = address;
 		}
@@ -2548,7 +2702,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0x13: //abs
 
-		address = getAbsAd();
+		address = get_abs_ad();
 
 		if ((Flags & FLAG_Z) == 0)
 		{
@@ -2563,7 +2717,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0x14:  //abs 
 
-		address = getAbsAd();
+		address = get_abs_ad();
 
 		if ((Flags & FLAG_Z) != 0)
 		{
@@ -2578,7 +2732,7 @@ void Group_1(BYTE opcode) {
 		Jump on Negative Result
 		*/
 	case 0x15:
-		address = getAbsAd();
+		address = get_abs_ad();
 
 		if ((Flags & FLAG_N) != 0)
 		{
@@ -2592,7 +2746,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0x16:
 
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_N) == 0) {
 
 			ProgramCounter = address;
@@ -2603,7 +2757,7 @@ void Group_1(BYTE opcode) {
 		//JHI
 
 	case 0x17:
-		address = getAbsAd();
+		address = get_abs_ad();
 		if (Flags & (FLAG_C | FLAG_Z) != 0)
 		{
 			ProgramCounter = address;
@@ -2615,7 +2769,7 @@ void Group_1(BYTE opcode) {
 
 		//JLE
 	case 0x18: //JLE (abs)	
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
 			ProgramCounter = address;
 		}
@@ -2623,7 +2777,7 @@ void Group_1(BYTE opcode) {
 
 		//CCC
 	case 0x22: //abs R
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_C) == 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2632,7 +2786,7 @@ void Group_1(BYTE opcode) {
 		//CCS
 	case 0x23: //abs //R
 
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_C) != 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2645,7 +2799,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x24: //abs r
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_Z) == 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2658,7 +2812,7 @@ void Group_1(BYTE opcode) {
 		Call on result equal to Zero
 		*/
 	case 0x25: //RIGHT
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_Z) != 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2671,7 +2825,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x26: //abs r
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_N) != 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2684,7 +2838,7 @@ void Group_1(BYTE opcode) {
 		Call on positive result
 		*/
 	case 0x27: //abs r 
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & FLAG_N) == 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2695,7 +2849,7 @@ void Group_1(BYTE opcode) {
 		Call on result same or lower
 		*/
 	case 0x28:
-		address = getAbsAd();
+		address = get_abs_ad();
 		if (Flags & (FLAG_C | FLAG_Z) != 0) {
 			push(ProgramCounter);
 			ProgramCounter = address;
@@ -2706,7 +2860,7 @@ void Group_1(BYTE opcode) {
 		Call on result higher
 		*/
 	case 0x29:
-		address = getAbsAd();
+		address = get_abs_ad();
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
 
 			push(ProgramCounter);
