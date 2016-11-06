@@ -641,7 +641,6 @@ void default_switch() {
 void source_as_reg_index(int destReg, int sourceReg) {
 	Registers[destReg] = Registers[sourceReg];
 }
-
 void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
 {
 
@@ -661,7 +660,7 @@ void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE op
 		address += Index_Registers[REGISTER_Y];
 	}
 
-	if ((option != 2) && (option != 3)) {
+	if ((option != 2) && (option != 3) && (option != 4) && (option != 5)) {
 		if (address >= 0 && address < MEMORY_SIZE)
 		{
 			Registers[reg1] = Memory[address];
@@ -673,6 +672,16 @@ void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE op
 			Memory[address] = Registers[reg1];
 		}
 
+	}
+	else if (option == 4) {
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] ++;
+		}
+	}
+	else if (option == 5) {
+		if (address >= 0 && address < MEMORY_SIZE) {
+			Memory[address] --;
+		}
 	}
 }
 void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
@@ -770,7 +779,64 @@ void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BY
 
 }
 
+WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE option)
+{
 
+	if (reg1 == 0)
+	{
+
+		address += Index_Registers[REGISTER_X];
+
+	}
+
+	//RRC LOGIC 
+	if (reg1 == 1)
+	{
+		address += Index_Registers[REGISTER_Y];
+
+	}
+
+	if (option == 0) {
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Flags & FLAG_C) == 0x01) {
+				carry = 0x80;
+			}
+			data = (Memory[address] >> 1) | carry;
+			if ((Memory[address] & 0x01) == 0x01) {
+				data = data | 0x100;
+			}
+			Memory[address] = (BYTE)data;
+		}
+	}
+	//RRC END 
+	return data;
+
+}
+
+WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE option)
+{
+	if (reg1 == 0) {
+		address += Index_Registers[REGISTER_X];
+
+	}
+	else if (reg1 == 1) {
+
+		address += Index_Registers[REGISTER_Y];
+	}
+
+
+	//shift_left
+	if (option == 0) {
+		if (address >= 0 && address < MEMORY_SIZE) {
+			data = (WORD)Memory[address] << 1; //Shift
+
+			Memory[address] = (BYTE)data;
+		}
+
+	} //shift left end  
+
+	return data;
+}
 
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
@@ -886,7 +952,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xEA: //STORA ((ind))
 		address += getAbsAd();
-		check_address(address,REGISTER_A, REGISTER_A, HB, LB, 3);
+		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xFA: //STORA ((ind,X))
@@ -1004,7 +1070,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0xCC:
-		
+
 		address += getAbsAd();
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 3);
 		break;
@@ -1039,13 +1105,13 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x2F:
-		
+
 		address += getAbsAd();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3F: //LDY abs,Y
-		
+
 		address += getAbsAd();
 		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 0);
 
@@ -1068,7 +1134,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0xCD:
-		
+
 		address += getAbsAd();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 3);
 		break;
@@ -1158,13 +1224,13 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x40: //abx,X
-		
+
 		address += getAbsAd();
 		load_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x50: //abs,Y
-		
+
 		address += getAbsAd();
 		load_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
@@ -1178,7 +1244,7 @@ void Group_1(BYTE opcode) {
 		address += getAbsAd();
 		load_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
-		
+
 
 
 		//////////////////
@@ -1191,7 +1257,7 @@ void Group_1(BYTE opcode) {
 		break;
 
 	case 0x7A: //STOS (abs,X)
-	
+
 		address += getAbsAd();
 		store_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
@@ -1695,29 +1761,21 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xA0: //ABS
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] ++;
-
-		}
+		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 4);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 	case 0xB0://abs,x
-		address += Index_Registers[REGISTER_X];
+
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] ++;
-		}
+		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 4);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xC0:  //abs Y
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] ++;
-		}
+		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 4);
 
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
@@ -1770,7 +1828,6 @@ void Group_1(BYTE opcode) {
 		halt = true;
 		break;
 
-		//REPEAT
 
 		//DEC
 		/*
@@ -1779,30 +1836,22 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xA1: //ABS
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] --;
-
-		}
+		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 5);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xB1://abs,x
-		address += Index_Registers[REGISTER_X];
+
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] --;
-		}
+		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 5);
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xC1:  //abs Y
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			Memory[address] --;
-		}
+		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 5);
 
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
@@ -1863,54 +1912,23 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xA2: //abs
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Flags & FLAG_C) == 0x01) {
-				carry = 0x80;
-			}
-
-			data = (Memory[address] >> 1) | carry;
-
-			if ((Memory[address] & 0x01) == 0x01) {
-				data = data | 0x100;
-			}
-			Memory[address] = (BYTE)data;
-		}
+		data = rotate_right_through(address, data, REGISTER_A, carry, 0);
 		set_three_flags(data);
 		break;
 
 	case 0xB2: //abs,x 
 
 		address += getAbsAd();
-		address += Index_Registers[REGISTER_X];
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Flags & FLAG_C) == 0x01) {
-				carry = 0x80;
-			}
-			data = (Memory[address] >> 1) | carry;
-			if ((Memory[address] & 0x01) == 0x01) {
-				data = data | 0x100;
-			}
-			Memory[address] = (BYTE)data;
-		}
+		data = rotate_right_through(address, data, REGISTER_X, carry, 0);
 		set_three_flags(data);
 		break;
 
 
 	case 0xC2://abs, Y
 
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
 
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Flags & FLAG_C) == 0x01) {
-				carry = 0x80;
-			}
-			data = (Memory[address] >> 1) | carry;
-			if ((Memory[address] & 0x01) == 0x01) {
-				data = data | 0x100;
-			}
-			Memory[address] = (BYTE)data;
-		}
+		data = rotate_right_through(address, data, REGISTER_Y, carry, 0);
 		set_three_flags(data);
 		break;
 
@@ -2071,43 +2089,27 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xA4:	//abs
 		address += getAbsAd();
-
-		if (address >= 0 && address < MEMORY_SIZE) {
-			data = (WORD)Memory[address] << 1; //Shift
-
-			Memory[address] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_A, 0);
 
 		set_three_flags(data);
 		break;
 
-	case 0xB4:  //abs x 
-		address += Index_Registers[REGISTER_X];
+	case 0xB4:  //abs x
 
 		address += getAbsAd();
 
 
-		if (address >= 0 && address < MEMORY_SIZE) {
-			data = (WORD)Memory[address] << 1; //Shift
-
-			Memory[address] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_X, 0);
 
 		set_three_flags(data);
 
 		break;
 
 	case 0xC4:  //abs y 
-		address += Index_Registers[REGISTER_Y];
 
 		address += getAbsAd();
 
-
-		if (address >= 0 && address < MEMORY_SIZE) {
-			data = (WORD)Memory[address] << 1; //Shift
-
-			Memory[address] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_Y, 0);
 
 		set_three_flags(data);
 		break;
