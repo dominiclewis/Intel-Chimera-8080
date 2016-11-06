@@ -934,6 +934,24 @@ WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 	return data;
 }
 
+WORD sub_to_accumulator_carry(BYTE flags, BYTE reg1)
+{
+	WORD data = 0, temp_word;
+	BYTE param1;
+
+	data = fetch();
+	param1 = Registers[reg1];
+	temp_word = (WORD)data - (WORD)param1;
+
+	if ((Flags & FLAG_C) != 0) {
+		temp_word--;
+	}
+
+	return temp_word;
+
+}
+
+
 //Group 1 = Loading Information/Data
 void Group_1(BYTE opcode) {
 	BYTE LB = 0;
@@ -2462,14 +2480,7 @@ void Group_1(BYTE opcode) {
 		//SBIA
 
 	case 0x93: //# 
-		data = fetch();
-		param1 = Registers[REGISTER_A];
-		temp_word = (WORD)data - (WORD)param1;
-
-		if ((Flags & FLAG_C) != 0) {
-			temp_word--;
-		}
-
+		temp_word = sub_to_accumulator_carry(Flags, REGISTER_A);
 		set_three_flags((WORD)temp_word);
 		Registers[REGISTER_A] = temp_word;
 		break;
@@ -2477,14 +2488,7 @@ void Group_1(BYTE opcode) {
 		//SBIB
 
 	case 0x94: //# 
-		data = fetch();
-		param1 = Registers[REGISTER_B];
-		temp_word = (WORD)data - (WORD)param1;
-
-		if ((Flags & FLAG_C) != 0) {
-			temp_word--;
-		}
-
+		temp_word = sub_to_accumulator_carry(Flags, REGISTER_B);
 		set_three_flags((WORD)temp_word);
 		Registers[REGISTER_B] = temp_word;
 		break;
@@ -2564,7 +2568,6 @@ void Group_1(BYTE opcode) {
 		if ((Flags & FLAG_Z) != 0)
 		{
 			ProgramCounter = address;
-
 		}
 
 		break;
