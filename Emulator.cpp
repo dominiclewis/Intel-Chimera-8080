@@ -812,14 +812,13 @@ WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE o
 	return data;
 
 }
-
-WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE option)
+WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 {
-	if (reg1 == 0) {
+	if (reg2 == 0) {
 		address += Index_Registers[REGISTER_X];
 
 	}
-	else if (reg1 == 1) {
+	else if (reg2 == 1) {
 
 		address += Index_Registers[REGISTER_Y];
 	}
@@ -833,9 +832,61 @@ WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE option)
 			Memory[address] = (BYTE)data;
 		}
 
-	} //shift left end  
 
+	} //shift left end  
+	else if (option == 1) { 	//Shift right
+
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Memory[address] & 0x80) == 0x80) {
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;
+					data = (data | 0x80);
+				}
+				else {
+					data = Memory[address] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Memory[address] & 0x01) != 0) {
+					data = (Memory[address] >> 1) | 0x100;
+				}
+				else {
+					data = Memory[address] >> 1;
+				}
+
+			}
+			Memory[address] = (BYTE)data;
+		}
+	}//shift right end
+	else if (option == 3)
+	{
+		if (address >= 0 && address < MEMORY_SIZE) {
+			if ((Registers[reg1] & 0x80) == 0x80) {
+				if ((Registers[reg1] & 0x01) != 0) {
+					data = (Registers[reg1] >> 1) | 0x100;
+					data = (data | 0x80);
+				}
+				else {
+					data = Registers[reg1] >> 1;
+					data = (data | 0x80);
+				}
+			}
+			else {
+				if ((Registers[reg1] & 0x01) != 0) {
+					data = (Registers[reg1] >> 1) | 0x100;
+				}
+				else {
+					data = Registers[reg1] >> 1;
+				}
+
+			}
+			Registers[reg1] = (BYTE)data;
+		}
+
+	}
 	return data;
+
 }
 
 //Group 1 = Loading Information/Data
@@ -2089,7 +2140,7 @@ void Group_1(BYTE opcode) {
 		*/
 	case 0xA4:	//abs
 		address += getAbsAd();
-		data = arithmetic_shift(address, data, REGISTER_A, 0);
+		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_A, 0);
 
 		set_three_flags(data);
 		break;
@@ -2099,7 +2150,7 @@ void Group_1(BYTE opcode) {
 		address += getAbsAd();
 
 
-		data = arithmetic_shift(address, data, REGISTER_X, 0);
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_X, 0);
 
 		set_three_flags(data);
 
@@ -2109,7 +2160,7 @@ void Group_1(BYTE opcode) {
 
 		address += getAbsAd();
 
-		data = arithmetic_shift(address, data, REGISTER_Y, 0);
+		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_Y, 0);
 
 		set_three_flags(data);
 		break;
@@ -2143,85 +2194,20 @@ void Group_1(BYTE opcode) {
 
 	case 0xA5: //abs
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Memory[address] & 0x80) == 0x80) { //keep the sign
-				if ((Memory[address] & 0x01) != 0) {
-					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					data = (data | 0x80);
-				}
-				else {
-					data = Memory[address] >> 1;
-					data = (data | 0x80);
-				}
-			}
-			else {
-				if ((Memory[address] & 0x01) != 0) {
-					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-				}
-				else {
-					data = Memory[address] >> 1;
-				}
-
-			}
-			Memory[address] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_A, 1);
 		set_three_flags(data);
 		break;
 
 	case 0xB5: //abs,X
-		address += Index_Registers[REGISTER_X];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Memory[address] & 0x80) == 0x80) { //keep the sign
-				if ((Memory[address] & 0x01) != 0) {
-					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					data = (data | 0x80);
-				}
-				else {
-					data = Memory[address] >> 1;
-					data = (data | 0x80);
-				}
-			}
-			else {
-				if ((Memory[address] & 0x01) != 0) {
-					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-				}
-				else {
-					data = Memory[address] >> 1;
-				}
-
-			}
-			Memory[address] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_X, 1);
 		set_three_flags(data);
 		break;
 
 
 	case 0xC5: //abs,y
-		address += Index_Registers[REGISTER_Y];
 		address += getAbsAd();
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Memory[address] & 0x80) == 0x80) { //keep the sign
-				if ((Memory[address] & 0x01) != 0) {
-					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					data = (data | 0x80);
-				}
-				else {
-					data = Memory[address] >> 1;
-					data = (data | 0x80);
-				}
-			}
-			else {
-				if ((Memory[address] & 0x01) != 0) {
-					data = (Memory[address] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-				}
-				else {
-					data = Memory[address] >> 1;
-				}
-
-			}
-			Memory[address] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_A,REGISTER_Y, 1);
 		set_three_flags(data);
 		break;
 
@@ -2233,29 +2219,7 @@ void Group_1(BYTE opcode) {
 
 	case 0xD5: //A
 			   //take out if statement for neg flag for normal shift
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Registers[REGISTER_A] & 0x80) == 0x80) { //keep the sign
-
-				if ((Registers[REGISTER_A] & 0x01) != 0) {
-					data = (Registers[REGISTER_A] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					data = (data | 0x80);
-				}
-				else {
-					data = Registers[REGISTER_A] >> 1;
-					data = (data | 0x80);
-				}
-			}
-			else {
-				if ((Registers[REGISTER_A] & 0x01) != 0) {
-					data = (Registers[REGISTER_A] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-				}
-				else {
-					data = Registers[REGISTER_A] >> 1;
-				}
-
-			}
-			Registers[REGISTER_A] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_A, 3);
 		set_three_flags(data);
 		break;
 
@@ -2265,29 +2229,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE5:
-		if (address >= 0 && address < MEMORY_SIZE) {
-			if ((Registers[REGISTER_B] & 0x80) == 0x80) { //keep the sign
-
-				if ((Registers[REGISTER_B] & 0x01) != 0) {
-					data = (Registers[REGISTER_B] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-					data = (data | 0x80);
-				}
-				else {
-					data = Registers[REGISTER_B] >> 1;
-					data = (data | 0x80);
-				}
-			}
-			else {
-				if ((Registers[REGISTER_B] & 0x01) != 0) {
-					data = (Registers[REGISTER_B] >> 1) | 0x100;	//make data bigger then 0x100 so the carry is set
-				}
-				else {
-					data = Registers[REGISTER_B] >> 1;
-				}
-
-			}
-			Registers[REGISTER_B] = (BYTE)data;
-		}
+		data = arithmetic_shift(address, data, REGISTER_B, REGISTER_A, 3);
 		set_three_flags(data);
 		break;
 
