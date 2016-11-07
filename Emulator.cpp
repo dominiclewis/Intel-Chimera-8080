@@ -873,7 +873,7 @@ void load_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYT
 
 /*
 Function: store_stackpointer
-Description: Stores the Stackpointer in memory and also ensures the correct address is  used
+Description: Stores the Stackpointer in memory and also ensures the correct address is used
 Paramters:WORD address, BYTE reg1 This is the register being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
 Returns: None (void)
 Warnings: For reg1 if there is no appropriate one pass in REGISTER A or REGISTER B 
@@ -1128,36 +1128,45 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x0A: //IMMEDIATE ADDRESSING (#)
+		//Fetch the address from memory 
 		data = fetch();
+		//Store the address in the stated Register
 		Registers[REGISTER_A] = data;
 		break;
 
 	case 0x1A: ///ABSOLUTE ADDRESSING(abs)
+		//Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x2A: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+		//Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3A: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
-
+	  //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4A:  //INDIRECT ADDRESSING(ind)
-
+		//Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 1);
 		break;
-
+		
 	case 0x5A: //INDEXED INDIRECT ADDRESSING((ind,X))
+		//Get valid address
 		address += get_abs_ad();
-
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1170,35 +1179,45 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x0B: //IMMEDIATE ADDRESSING (#)
+		//fetch address from memory
 		data = fetch();
+		//Store the address in the stated Register
 		Registers[REGISTER_B] = data;
 		break;
 
 	case 0x1B: //ABSOLUTE ADDRESSING(abs)
+	    //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 0);
 		break;
 
 	case 0x2B: //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+	     //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3B: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4B: //INDIRECT ADDRESSING(ind)
-
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 1);
 		break;
 
 	case 0x5B: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1211,27 +1230,37 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xBA: //ABSOLUTE ADDRESSING(abs)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 2);
 		break;
 
 	case 0xCA: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 2);
 		break;
 
 	case 0xDA: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 2);
 		break;
 
 	case 0xEA: //INDIRECT ADDRESSING(ind)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xFA: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 3);
 		break;
 
@@ -1244,12 +1273,16 @@ void Group_1(BYTE opcode) {
 		*/
 			
 	case 0x1C: //L,#
+		//Fetch address from memory
 		data = fetch();
+		//Store address in stated Register
 		Registers[REGISTER_L] = data;
 		break;
 
 	case 0x1D: //H,#
+		//Fetch address from Memory
 		data = fetch();
+		//Store address in state Register
 		Registers[REGISTER_H] = data;
 		break;
 
@@ -1262,11 +1295,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x0D: //LH,#
+		//Fetch address from memory and store it 
 		Registers[REGISTER_H] = fetch();
 		Registers[REGISTER_L] = fetch();
 		break;
 
 	case 0x0C: //LH,#
+		//Fetch address from memory and store it
 		Registers[REGISTER_H] = fetch();
 		Registers[REGISTER_L] = fetch();
 		break;
@@ -1279,6 +1314,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xF2: //IMPLIED ADDRESSING(impl)
+		//Move the status register into the accumulator
 		Registers[REGISTER_A] = Flags;
 		break;
 
@@ -1291,27 +1327,37 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xBB: //ABSOLUTE ADDRESSING(abs)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 2);
 		break;
 
 	case 0xCB: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 2);
 		break;
 
 	case 0xDB: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_Y, HB, LB, 2);
 		break;
 
 	case 0xEB: //INDIRECT ADDRESSING(ind)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 3);
 		break;
 
 	case 0xFB: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 3);
 		break;
 
@@ -1324,36 +1370,47 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x0E: //IMMEDIATE ADDRESSING (#)
+		//Fetch an address
 		data = fetch();
+		//Store address inside the stated index_register
 		Index_Registers[REGISTER_X] = data;
 		break;
 
 	case 0x1E: //ABSOLUTE ADDRESSING(abs)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x2E: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3E: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x4E: //INDIRECT ADDRESSING(ind)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x5E: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 1);
 
 		break;
-
 
 		////////////////
 		//     STOX    //
@@ -1364,28 +1421,37 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xBC: //ABSOLUTE ADDRESSING(abs)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xCC: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 3);
 		break;
 
 	case 0xDC: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_Y, HB, LB, 3);
 		break;
 
-
 	case 0xEC: //INDIRECT ADDRESSING(ind)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_A, HB, LB, 4);
 		break;
 
 	case 0xFC: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 4);
 		break;
 
@@ -1398,34 +1464,45 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x0F: //IMMEDIATE ADDRESSING (#)
+		//Grab the address from memory 
 		data = fetch();
+		//Move the address into index_register
 		Index_Registers[REGISTER_Y] = data;
 		break;
 
 	case 0x1F: //ABSOLUTE ADDRESSING(abs)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x2F: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x3F: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
-
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 0);
 
 		break;
 
 	case 0x4F: //INDIRECT ADDRESSING(ind)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x5F: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1438,28 +1515,37 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xBD: //ABSOLUTE ADDRESSING(abs)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 3);
 		break;
 
 	case 0xCD: //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 3);
 		break;
 
 	case 0xDD: //INDEXED ABSOLUTE ADDRESSING(abs,y)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_Y, HB, LB, 3);
 		break;
 
 	case 0xED: //INDIRECT ADDRESSING(ind)
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 4);
 		break;
 
 	case 0xFD: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get valid address
 		address += get_abs_ad();
+		//Validate address
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 4);
 		break;
 
@@ -1471,8 +1557,10 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xF0:  //IMPLIED ADDRESSING(impl)
+		//Move what is currently stored in the Accumulator(Register A) into Register Y
 		Index_Registers[REGISTER_Y] = Registers[REGISTER_A];
-		set_flag_n(Index_Registers[REGISTER_Y]);
+		//Set the negative flag based on what is inside the register
+		set_flag_n(Index_Registers[REGISTER_Y]); 
 		break;
 
 		////////////////
@@ -1483,6 +1571,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xF1: //IMPLIED ADDRESSING(impl)
+		//Transfer what is stored in Register Y into the Accumulator (Register_A)
 		Registers[REGISTER_A] = Index_Registers[REGISTER_Y];
 		break;
 
@@ -1495,8 +1584,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xF3: //IMPLIED ADDRESSING(impl)
+		//Create a store for both of the Registers in consideration to use
 		data = Registers[REGISTER_A] + Registers[REGISTER_B];
+		//Once added set Register A to be the sum of them 
 		Registers[REGISTER_A] = (BYTE)data;
+		//Set the flags (z,n,c) based on the result of the operation 
 		set_three_flags(data);
 		break;
 
@@ -1507,9 +1599,12 @@ void Group_1(BYTE opcode) {
 		Subtracts Accumulator B from Accumulator A
 		*/
 
-	case 0xF4: //IMPLIED ADDRESSING(impl) 
+	case 0xF4: //IMPLIED ADDRESSING(impl)
+		//Create a store for both of the registers in consideration to use 
 		data = Registers[REGISTER_A] - Registers[REGISTER_B];
+		//Set Register A to equal the result of the operation
 		Registers[REGISTER_A] = (BYTE)data;
+		///set the flags based on the sum(z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -1521,9 +1616,12 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xF5: //IMPLIED ADDRESSING(impl)
-		data = Registers[REGISTER_B] + Registers[REGISTER_A]; // Sets data to equal the sum of two registers added together
-		Registers[REGISTER_B] = (BYTE)data; //Set the register to equal the sum done above (cast into a byte incase)
-		set_three_flags(data);	//Set all of the flags by passing the sum to it which bitwise operations will be carried out on
+			 //Create a store forboth of the registers in consideration to use
+		data = Registers[REGISTER_B] + Registers[REGISTER_A]; 
+		//Once added set Register B to be the sum of them 
+		Registers[REGISTER_B] = (BYTE)data;
+		//Set the flags (z,n,c) based on the result of the operation 
+		set_three_flags(data);	
 		break;
 
 		//SAB
@@ -1532,8 +1630,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xF6: //IMPLIED ADDRESSING(impl)
+			   //Create a store for both of the registers in consideration to use 
 		data = Registers[REGISTER_B] - Registers[REGISTER_A];
+		//Set Register B to equal the result of the operation
 		Registers[REGISTER_B] = (BYTE)data;
+		//Set the flags (z,n,c) based on the result of the operation 
 		set_three_flags(data);
 		break;
 
@@ -1546,35 +1647,44 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x20: //IMMEDIATE ADDRESSING (#)
+		//Fetch the address from memory
 		data = fetch();
+		//Set the stackpointer to be the result of the fetch and shift it then fetch the next address
 		StackPointer = data << 8; StackPointer += fetch();
 		break;
 
 	case 0x30: //ABSOLUTE ADDRESSING(abs)
+		//Get a valid adress
 		address += get_abs_ad();
-
+		//Load stackpointer with address
 		load_stackpointer(address, data, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x40: //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Load stackpointer with address
 		load_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x50: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
-
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Load stackpointer with address
 		load_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x60: //INDIRECT ADDRESSING(ind)
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Load stackpointer with address
 		load_stackpointer(address, data, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0x70: ///INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Load stackpointer with address
 		load_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1587,28 +1697,37 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x6A: //ABSOLUTE ADDRESSING(abs)
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Store the stackpointer in memory
 		store_stackpointer(address, data, REGISTER_A, HB, LB, 0);
 		break;
 
 	case 0x7A: //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Store the stackpointer in memory
 		store_stackpointer(address, data, REGISTER_X, HB, LB, 0);
 		break;
 
 	case 0x8A: //INDEXED ABSOLUTE ADDRESSING(abs,y)
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Store the stackpointer in memory
 		store_stackpointer(address, data, REGISTER_Y, HB, LB, 0);
 		break;
 
 	case 0x9A: //INDIRECT ADDRESSING(ind)
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Store the stackpointer in memory
 		store_stackpointer(address, data, REGISTER_A, HB, LB, 1);
 		break;
 
 	case 0xAA: //INDEXED INDIRECT ADDRESSING((ind,X))
+			   //Get a valid adress
 		address += get_abs_ad();
+		//Store the stackpointer in memory
 		store_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
 
@@ -1622,26 +1741,31 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x31: //A-L   
-
+		//Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x41: // A-H
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 	case 0x51: //A-M
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x61: //B-L 
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_B] = add_with_carry(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x71: //B-H
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_B] = add_with_carry(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x81: // B-M
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_B] = add_with_carry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
@@ -1653,28 +1777,34 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x35: // A-L
+		//Call function which compares two registers together
 		compare(REGISTER_A, REGISTER_L);
 		break;
 
 
 	case 0x45: //A-H
+			   //Call function which compares two registers together
 		compare(REGISTER_A, REGISTER_H);
 		break;
 
 	case 0x55: //A-M
+			   //Call function which compares two registers together
 		compare(REGISTER_A, REGISTER_M);
 		break;
 
 	case 0x65: //B-L
+			   //Call function which compares two registers together
 		compare(REGISTER_B, REGISTER_L);
 		break;
 
 
 	case 0x75: //B-H
+			   //Call function which compares two registers together
 		compare(REGISTER_B, REGISTER_H);
 		break;
 
 	case 0x85: //B-M
+			   //Call function which compares two registers together
 		compare(REGISTER_B, REGISTER_M);
 		break;
 
@@ -1686,26 +1816,32 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x33: // A- L
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_A] = add_regs(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x43:	//A - H 
+				//Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_A] = add_regs(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
 	case 0x53:  //A-M
+				//Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_A] = add_regs(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x63: //B-L 
+			   //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x73:  //B-H
+				//Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x83:   //B-M
+				 //Call function which adds the stated registers together then returns the answer to the destination Register
 		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
@@ -1717,6 +1853,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x05: //IMPLIED ADDRESSING(impl)
+		//Clears a carry 
 		Flags = (Flags & (~FLAG_C));
 		break;
 
@@ -1726,8 +1863,8 @@ void Group_1(BYTE opcode) {
 		/*
 		Set Carry flag
 		*/
-
 	case 0x06: //IMPLIED ADDRESSING(impl)
+			   //Sets a carry
 		Flags = Flags | FLAG_C;
 		break;
 
@@ -1737,8 +1874,9 @@ void Group_1(BYTE opcode) {
 		/*
 		Clear Interrupt flag
 		*/
-
+		
 	case 0x07: //IMPLIED ADDRESSING(impl)
+		//Clears an interrupt 
 		Flags = (Flags & (~FLAG_I));
 		break;
 
@@ -1750,6 +1888,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x08: //IMPLIED ADDRESSING(impl)
+		//Sets an interrupt 
 		Flags = Flags | FLAG_I;
 		break;
 
@@ -1761,26 +1900,32 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x32: //A-L   
+		//Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_A] = sub_with_carry(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x42: //A-H
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_A] = sub_with_carry(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
 	case 0x52: //A-M 
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_A] = sub_with_carry(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x62: //B-L
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x72: // B-H
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x82: //B-M
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
@@ -1792,26 +1937,32 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x34:  // A-L  
+				//Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_A] = sub_regs(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
 
 	case 0x44:   //A-H
+				 //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_A] = sub_regs(Registers[REGISTER_A], Registers[REGISTER_H]);
 		break;
 
 	case 0x54: //A-M
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_A] = sub_regs(Registers[REGISTER_A], Registers[REGISTER_M]);
 		break;
 
 	case 0x64:	//B-L
+				//Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_L]);
 		break;
 
 	case 0x74: //B-H
+			   //Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_H]);
 		break;
 
 	case 0x84:  //B-M 
+				//Calls a function which subtracts the stated registers away from each other and returns the result to the destination register
 		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
@@ -1819,78 +1970,84 @@ void Group_1(BYTE opcode) {
 		//     OR     //
 		////////////////
 		/*
-		Register bitewise inclusive or with Accumulator
+		Register bitewise inclusive OR with Accumulator
 		*/
 
 	case 0x36: //A-L 
+		//Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramaters once they have been inclusively or'd
 		temp_word = (WORD)param1 | (WORD)param2;
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x46: // A-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramaters once they have been inclusively or'd
 		temp_word = (WORD)param1 | (WORD)param2;
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x56: //A-M
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramaters once they have been inclusively or'd
 		temp_word = (WORD)param1 | (WORD)param2;
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x66: //B-L
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramaters once they have been inclusively or'd
 		temp_word = (WORD)param1 | (WORD)param2;
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
 	case 0x76: //B-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramaters once they have been inclusively or'd
 		temp_word = (WORD)param1 | (WORD)param2;
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
 	case 0x86: //B-M 
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramaters once they have been inclusively or'd
 		temp_word = (WORD)param1 | (WORD)param2;
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
@@ -1902,70 +2059,80 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x37: //A-L
-
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramaters once they have been and'd 
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x47: //A-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramaters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x57: // A-M
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramaters once they have been and'd 
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x67://B - L 
+			  //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramaters once they have been and'd 
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
 	case 0x77: //B-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramaters once they have been and'd 
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
 	case 0x87: //B-M
-
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramaters once they have been and'd 
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
@@ -1977,68 +2144,80 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x38: // A-L
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramters once they have been exclusively or'd
 		temp_word = (WORD)param1 ^ (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x48: //A-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramters once they have been exclusively or'd
 		temp_word = (WORD)param1 ^ (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x58: //A-M
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramters once they have been exclusively or'd
 		temp_word = (WORD)param1 ^ (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_A] = (BYTE)temp_word;
 		break;
 
 	case 0x68: //B-L
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramters once they have been exclusively or'd
 		temp_word = (WORD)param1 ^ (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
 	case 0x78: //B-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramters once they have been exclusively or'd
 		temp_word = (WORD)param1 ^ (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
 	case 0x88: //B-M
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramters once they have been exclusively or'd
 		temp_word = (WORD)param1 ^ (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
-
+		//Move the result of the operation into the destination register
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
@@ -2050,56 +2229,67 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x39: //A-L
-
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
 
 	case 0x49: //A-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
 
 	case 0x59: //A-M
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_A];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
 
 	case 0x69://B-L
+			  //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_L];
-
+		//Create a store for the paramters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
 
 	case 0x79: //B-H
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_H];
-
+		//Create a store for the paramters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
 
 	case 0x89: //B-M
+			   //Loads the paramater variables which the register contents
 		param1 = Registers[REGISTER_B];
 		param2 = Registers[REGISTER_M];
-
+		//Create a store for the paramters once they have been and'd
 		temp_word = (WORD)param1 & (WORD)param2;
+		//Set flag z and n based on the result
 		set_flag_z((WORD)temp_word);
 		set_flag_n((WORD)temp_word);
 		break;
@@ -2112,8 +2302,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x97: //IMMEDIATE ADDRESSING (#)
+		//Fetch the address 
 		data = fetch();
+		//Set the register to be the result of a bitwise or
 		Registers[REGISTER_A] |= data;
+		//Set flag z and n based on the result
 		set_flag_z(Registers[REGISTER_A]);
 		set_flag_n(Registers[REGISTER_A]);
 		break;
@@ -2126,8 +2319,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x98: //IMMEDIATE ADDRESSING (#)
+			   //Fetch the address 
 		data = fetch();
+		//Set the register to be the result of a bitwise or
 		Registers[REGISTER_B] |= data;
+		//Set flag z and n based on the result
 		set_flag_z(Registers[REGISTER_B]);
 		set_flag_n(Registers[REGISTER_B]);
 		break;
@@ -2140,23 +2336,30 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA0: //ABSOLUTE ADDRESSING(abs)
+		//Get a valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 4);
+		//Set flag z and n based on the result
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 	case 0xB0: //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+			   //Get a valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 4);
+		//Set flag z and n based on the result
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xC0:  //INDEXED ABSOLUTE ADDRESSING(abs,y)
+				//Get a valid address
 		address += get_abs_ad();
+		//Validate address
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 4);
-
+		//Set flag z and n based on the result
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
@@ -2169,7 +2372,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD0: //IMPLIED ADDRESSING(impl)
+		//Increment the address in the register
 		Registers[REGISTER_A]++;
+		//Set the flag z and n based on this
 		set_flag_z((WORD)Registers[REGISTER_A]);
 		set_flag_n((WORD)Registers[REGISTER_A]);
 		break;
@@ -2182,7 +2387,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE0: //IMPLIED ADDRESSING(impl)
+			   //Increment the address in the register
 		Registers[REGISTER_B]++;
+		//Set the flag z and n based on this
 		set_flag_z((WORD)Registers[REGISTER_B]);
 		set_flag_n((WORD)Registers[REGISTER_B]);
 		break;
@@ -2195,7 +2402,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x02:  //IMPLIED ADDRESSING(impl) 
+		//Increment what is stored in the register
 		Index_Registers[REGISTER_X]++;
+		//Set the flag z based on this
 		set_flag_z((WORD)Index_Registers[REGISTER_X]);
 		break;
 
@@ -2207,7 +2416,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x04:  //IMPLIED ADDRESSING(impl) 
+				//Increment what is stored in the register
 		Index_Registers[REGISTER_Y]++;
+		//Set the flag z based on this
 		set_flag_z((WORD)Index_Registers[REGISTER_Y]);
 		break;
 
@@ -2219,6 +2430,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x2D: //IMPLIED ADDRESSING(impl)
+		// Set the halt variable to true 
 		halt = true;
 		break;
 
@@ -2231,24 +2443,31 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA1: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address += get_abs_ad();
+		//Verify the address
 		check_address(address, REGISTER_A, REGISTER_A, HB, LB, 5);
+		//Set the flags z and n based on the verification of the address
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xB1://INDEXED ABSOLUTE ADDRESSING(abs,x)
-
+			  //Get the address
 		address += get_abs_ad();
+		//Verify the address
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 5);
+		//Set the flags z and n based on the verification of the address
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
 
 	case 0xC1: //INDEXED ABSOLUTE ADDRESSING(abs,y)
+			   //Get the address
 		address += get_abs_ad();
+		//Verify the address
 		check_address(address, REGISTER_A, REGISTER_Y, HB, LB, 5);
-
+		//Set the flags z and n based on the verification of the address
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
@@ -2261,7 +2480,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD1: //IMPLIED ADDRESSING(impl)
+		//Decrement the register
 		Registers[REGISTER_A]--;
+		//Set the flags z and n based on the Register
 		set_flag_z((WORD)Registers[REGISTER_A]);
 		set_flag_n((WORD)Registers[REGISTER_A]);
 		break;
@@ -2274,7 +2495,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE1: //IMPLIED ADDRESSING(impl)
+			   //Decrement the register
 		Registers[REGISTER_B]--;
+		//Set the flags z and n based on the Register
 		set_flag_z((WORD)Registers[REGISTER_B]);
 		set_flag_n((WORD)Registers[REGISTER_B]);
 		break;
@@ -2287,7 +2510,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x01: //IMPLIED ADDRESSING(impl)
+			   //Decrement the register
 		Index_Registers[REGISTER_X]--;
+		//Set the flag z based on the register
 		set_flag_z((WORD)Index_Registers[REGISTER_X]);
 		break;
 
@@ -2299,7 +2524,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x03: //IMPLIED ADDRESSING(impl)
+			   //Decrement the register
 		Index_Registers[REGISTER_Y]--;
+		//Set the flag z based on the register
 		set_flag_z((WORD)Index_Registers[REGISTER_Y]);
 		break;
 
@@ -2309,8 +2536,9 @@ void Group_1(BYTE opcode) {
 		/*
 		No Operating
 		*/
-
+		
 	case 0x2C: //IMPLIED ADDRESSING(impl)
+		//Set the halt variable to be true
 		halt = true;
 		break;
 
@@ -2322,21 +2550,29 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA2:  //ABSOLUTE ADDRESSING(abs)
+		//Get address
 		address += get_abs_ad();
+		//Set data to be the result of the rotate function
 		data = rotate_right_through(address, data, REGISTER_A, carry, 0);
+		//Set flags based on the return of the rotate function (z,n,c)
 		set_three_flags(data);
 		break;
 
 	case 0xB2: //INDEXED ABSOLUTE ADDRESSING(abs,x)
-
+			   //Get address
 		address += get_abs_ad();
+		//Set data to be the result of the rotate function
 		data = rotate_right_through(address, data, REGISTER_X, carry, 0);
+		//Set flags based on the return of the rotate function(z,n,c)
 		set_three_flags(data);
 		break;
 
 	case 0xC2://INDEXED ABSOLUTE ADDRESSING(abs,y)
+			  //Get address
 		address += get_abs_ad();
+		//Set data to be the result of the rotate function
 		data = rotate_right_through(address, data, REGISTER_Y, carry, 0);
+		//Set flags based on the return of the rotate function(z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2348,7 +2584,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD2: //A
-
+		//Set Register to be the result of the rotate function
 		Registers[REGISTER_A] = rotate_right_carry(Registers[REGISTER_A]);
 
 		break;
@@ -2361,7 +2597,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE2: //B 
-
+			   //Set Register to be the result of the rotate function
 		Registers[REGISTER_B] = rotate_right_carry(Registers[REGISTER_B]);
 		break;
 
@@ -2373,24 +2609,25 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA3:  //ABSOLUTE ADDRESSING(abs)
+				//Grab the address
 		address += get_abs_ad();
-		//grab the address
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_left_carry(Memory[address]);
 		break;
 
 	case 0xB3: //INDEXED ABSOLUTE ADDRESSING(abs,x)
+			   //Grab the address
 		address += Index_Registers[REGISTER_X];
-
 		address += get_abs_ad();
-
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_left_carry(Memory[address]);
 		break;
 
 	case 0xC3:  //INDEXED ABSOLUTE ADDRESSING(abs,y)
+				//Grab the address
 		address += Index_Registers[REGISTER_Y];
-
 		address += get_abs_ad();
-
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_left_carry(Memory[address]);
 
 		break;
@@ -2403,6 +2640,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD3://A
+		//Set the register to be the result of the rotate function
 		Registers[REGISTER_A] = rotate_left_carry(Registers[REGISTER_A]);
 		break;
 
@@ -2414,6 +2652,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE3: //B
+			   //Set the register to be the result of the rotate function
 		Registers[REGISTER_B] = rotate_left_carry(Registers[REGISTER_B]);
 		break;
 
@@ -2425,20 +2664,25 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA8: //ABSOLUTE ADDRESSING(abs)
+		//Grab the address
 		address += get_abs_ad();
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_left(Memory[address]);
 		break;
 
 	case 0xB8:  //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+				//Grab the address
 		address += Index_Registers[REGISTER_X];
 		address += get_abs_ad();
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_left(Memory[address]);
 		break;
 
 	case 0xC8: //INDEXED ABSOLUTE ADDRESSING(abs,y)
+			   //Grab the address
 		address += Index_Registers[REGISTER_Y];
 		address += get_abs_ad();
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_left(Memory[address]);
 		break;
 
@@ -2450,6 +2694,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD8: //A
+			   //Set the register to be the result of the rotate function
 		Registers[REGISTER_A] = rotate_left(Registers[REGISTER_A]);
 		break;
 
@@ -2461,6 +2706,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE8: //B
+			   //Set the register to be the result of the rotate function
 		Registers[REGISTER_B] = rotate_left(Registers[REGISTER_B]);
 		break;
 
@@ -2472,21 +2718,25 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA9:  //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address += get_abs_ad();
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_right(Memory[address]);
 		break;
 
 	case 0xB9: //INDEXED ABSOLUTE ADDRESSING(abs,X)
-
+			   //Get the address
 		address += Index_Registers[REGISTER_X];
 		address += get_abs_ad();
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_right(Memory[address]);
 		break;
 
 	case 0xC9: //INDEXED ABSOLUTE ADDRESSING(abs,y)
-
+			   //Get the address
 		address += Index_Registers[REGISTER_Y];
 		address += get_abs_ad();
+		//Set the address in memory to be the result of the rotate function
 		Memory[address] = rotate_right(Memory[address]);
 		break;
 
@@ -2498,6 +2748,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD9: //A
+			   //Set the register to be the result of the rotate function
 		Registers[REGISTER_A] = rotate_right(Registers[REGISTER_A]);
 		break;
 
@@ -2509,6 +2760,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE9: //B
+			   //Set the register to be the result of the rotate function
 		Registers[REGISTER_B] = rotate_right(Registers[REGISTER_B]);
 		break;
 
@@ -2520,23 +2772,28 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA4:	 //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address += get_abs_ad();
+		//Set data to be the result of the arithmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_A, 0);
-
+		//Set flag z,n,c based on the result of data
 		set_three_flags(data);
 		break;
 	case 0xB4:   //INDEXED ABSOLUTE ADDRESSING(abs,X)
+				 //Get the address
 		address += get_abs_ad();
+		//Set data to be the result of the arithmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_X, 0);
+		//Set flag z,n,c based on the result of data
 		set_three_flags(data);
 		break;
 
 	case 0xC4:  ///INDEXED ABSOLUTE ADDRESSING(abs,y)
-
+				//Get the address
 		address += get_abs_ad();
-
+		//Set data to be the result of the arithmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_Y, 0);
-
+		//Set flag z,n,c based on the result of data
 		set_three_flags(data);
 		break;
 
@@ -2548,9 +2805,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD4: //A
-
+		//Shift whats in the register 1 place to the left
 		data = Registers[REGISTER_A] << 1;
+		//Once inside data set the register to be the (BYTE) result of the shift
 		Registers[REGISTER_A] = (BYTE)data;
+		//Set the flags based on the shift
 		set_three_flags(data);
 		break;
 
@@ -2562,8 +2821,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE4: //B
+			   //Shift whats in the register 1 place to the left
 		data = Registers[REGISTER_B] << 1;
+		//Once inside data set the register to be the (BYTE) result of the shift
 		Registers[REGISTER_B] = (BYTE)data;
+		//Set the flags based on the shift
 		set_three_flags(data);
 		break;
 
@@ -2575,21 +2837,30 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA5: //ABSOLUTE ADDRESSING(abs)
+		//Grab the address
 		address += get_abs_ad();
+		//Set data to be the return of the airhtmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_A, 1);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
 	case 0xB5: ///INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Grab the address
 		address += get_abs_ad();
+		//Set data to be the return of the airhtmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_X, 1);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
 
 	case 0xC5: //INDEXED ABSOLUTE ADDRESSING(abs,y)
+			   //Grab the address
 		address += get_abs_ad();
+		//Set data to be the return of the airhtmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_Y, 1);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2601,8 +2872,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD5: //A
-			   //take out if statement for neg flag for normal shift
+			   //Set data to be the result of the  aithrmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_A, REGISTER_A, 3);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2614,7 +2886,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE5: //B
+			   //Set data to be the result of the  aithrmetic_shift function
 		data = arithmetic_shift(address, data, REGISTER_B, REGISTER_A, 3);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2626,24 +2900,30 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA6:	//ABSOLUTE ADDRESSING(abs)
+		//Grab the address
 		address += get_abs_ad();
+		//Set data based on the shift right function
 		data = shift_right(address, data, REGISTER_A, REGISTER_A, 0);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 
 		break;
 
 	case 0xB6:	//INDEXED ABSOLUTE ADDRESSING(abs,X)
-
-
+				//Grab the address
 		address += get_abs_ad();
+		//Set data based on the shift right function
 		data = shift_right(address, data, REGISTER_A, REGISTER_X, 0);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
 	case 0xC6: //INDEXED ABSOLUTE ADDRESSING(abs,Y)
-
+			   //Grab the address
 		address += get_abs_ad();
+		//Set data based on the shift right function
 		data = shift_right(address, data, REGISTER_A, REGISTER_Y, 0);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2655,7 +2935,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD6://A
+			  //Set data based on the shift right function
 		data = shift_right(address, data, REGISTER_A, REGISTER_A, 1);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2667,7 +2949,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE6://B
+			  //Set data based on the shift right function
 		data = shift_right(address, data, REGISTER_B, REGISTER_A, 1);
+		//Set the flags based on data (z,n,c)
 		set_three_flags(data);
 		break;
 
@@ -2679,15 +2963,18 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xA7: //ABSOLUTE ADDRESSING(abs)
+		//Call negation function which negates the Register (or memory)
 		negate_mem_or_accumulator(REGISTER_A, data, address, 1);
 
 		break;
 
 	case 0xB7: //INDEXED ABSOLUTE ADDRESSING(abs,X)
+			   //Call negation function which negates the Register (or memory)
 		negate_mem_or_accumulator(REGISTER_X, data, address, 0);
 		break;
 
 	case 0xC7: // INDEXED ABSOLUTE ADDRESSING(abs, Y)
+			   //Call negation function which negates the Register (or memory)
 		negate_mem_or_accumulator(REGISTER_Y, data, address, 0);
 		break;
 
@@ -2699,6 +2986,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xD7: //A
+			   //Call negation function which negates the Register (or memory)
 		negate_mem_or_accumulator(REGISTER_A, data, address, 2);
 		break;
 
@@ -2710,6 +2998,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xE7: //B 
+			   //Call negation function which negates the Register (or memory)
 		negate_mem_or_accumulator(REGISTER_B, data, address, 2);
 		break;
 
@@ -2721,27 +3010,36 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xBE: //A
-
+		//Move whatever is in the source register onto the top of the stack
 		Memory[StackPointer] = Registers[REGISTER_A];
+		//Decrement the stackpointer
 		StackPointer--;
 		break;
 
 	case 0xCE: //B
+			   //Move whatever is in the source register onto the top of the stack
 		Memory[StackPointer] = Registers[REGISTER_B];
+		//Decrement the stackpointer
 		StackPointer--;
 		break;
 
 	case 0xDE: //FL
+			   //Move whatever is in the source variable onto the top of the stack
 		Memory[StackPointer] = Flags;
+		//Decrement the stackpointer
 		StackPointer--;
 		break;
 
 	case 0xEE: //L
+			   //Move whatever is in the source variable onto the top of the stack
 		Memory[StackPointer] = Registers[REGISTER_L];
+		//Decrement the stackpointer
 		StackPointer--;
 		break;
 	case 0xFE: //H
+			   //Move whatever is in the source variable onto the top of the stack
 		Memory[StackPointer] = Registers[REGISTER_H];
+		//Decrement the stackpointer
 		StackPointer--;
 		break;
 
@@ -2754,29 +3052,37 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0xBF://A
+		//Move the stackpointer 
 		StackPointer++;
-
+		//Pop off of the top of the stack into a register
 		Registers[REGISTER_A] = Memory[StackPointer];
 
 		break;
 	case 0xCF: //B
+			   //Move the stackpointer
 		StackPointer++;
-
+		//Pop off of the top of the stack into a register
 		Registers[REGISTER_B] = Memory[StackPointer];
 		break;
 
 	case 0xDF: //FL
+			   //Move the stackpointer
 		StackPointer++;
+		//Pop off of the top of the stack into the variable
 		Flags = Memory[StackPointer];
 		break;
 
 	case 0xEF: //L
+			   //Move the stackpointer
 		StackPointer++;
+		//Pop off of the top of the stack into a register
 		Registers[REGISTER_L] = Memory[StackPointer];
 		break;
 
 	case 0xFF: //H
+			   //Move the stackpointer
 		StackPointer++;
+		//Pop off of the top of the stack into a register
 		Registers[REGISTER_H] = Memory[StackPointer];
 		break;
 
@@ -2788,7 +3094,9 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x10: //ABSOLUTE ADDRESSING(abs)
+		//Grab address
 		address = get_abs_ad();
+		//Move address into program counter
 		ProgramCounter = address;
 		break;
 
@@ -2800,17 +3108,20 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x21: //ABSOLUTE ADDRESSING(abs)
+		//Grab address
 		address += get_abs_ad();
+		//Validate the address range
 		if (address >= 0 && address < MEMORY_SIZE) {
 
 			LB = (BYTE)ProgramCounter;
 			HB = (BYTE)(ProgramCounter >> 8);
 
 			temp_word = ((WORD)HB << 8) + LB;
-
+			//Add to the stack
 			Memory[StackPointer] = temp_word;
+			//Decrement the stackpointer
 			StackPointer--;
-
+			//Set the programcounter to match the address
 			ProgramCounter = address;
 		}
 		break;
@@ -2823,8 +3134,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x4C: //IMPLIED ADDRESSING(impl)
+		//Increment the stackpointer
 		StackPointer++;
+		//Set the address to be what is on the top of the stack
 		address = Memory[StackPointer];
+		//Move the address into the ProgramCounter
 		ProgramCounter = address;
 		break;
 
@@ -2836,8 +3150,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x93: ///IMMEDIATE ADDRESSING (#)
+		//Set temp_word to be the result of the sub_to_accumulator_carry
 		temp_word = sub_to_accumulator_carry(REGISTER_A);
+		//Set flag z,n,c based on the operation
 		set_three_flags((WORD)temp_word);
+		//Move the operation result into the Register
 		Registers[REGISTER_A] = temp_word;
 		break;
 
@@ -2849,8 +3166,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x94: //IMMEDIATE ADDRESSING (#)
+			   //Set temp_word to be the result of the sub_to_accumulator_carry
 		temp_word = sub_to_accumulator_carry( REGISTER_B);
+		//Set flag z,n,c based on the operation
 		set_three_flags((WORD)temp_word);
+		//Move the operation result into the Register
 		Registers[REGISTER_B] = temp_word;
 		break;
 
@@ -2862,7 +3182,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x95://IMMEDIATE ADDRESSING (#)
-
+		//Compare the stated register using compare_accumulator function
 		compare_accumulator(REGISTER_A);
 		break;
 
@@ -2874,6 +3194,7 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x96: //IMMEDIATE ADDRESSING (#)
+			   //Compare the stated register using compare_accumulator function
 		compare_accumulator(REGISTER_B);
 
 		break;
@@ -2886,8 +3207,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x11: //ABSOLUTE ADDRESSING(abs)
+		//get address
 		address = get_abs_ad();
+		//Check if there is no carry
 		if ((Flags & FLAG_C) == 0) {
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 
@@ -2901,9 +3225,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x12: //ABSOLUTE ADDRESSING(abs)
-
+			   //get address
 		address = get_abs_ad();
+		//Check if there is a carry
 		if ((Flags & FLAG_C) != 0) {
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 
@@ -2917,11 +3243,12 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x13: //ABSOLUTE ADDRESSING(abs)
-
+		//get address
 		address = get_abs_ad();
-
+		//Check if there is no Zero flag set
 		if ((Flags & FLAG_Z) == 0)
 		{
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 
 		}
@@ -2935,11 +3262,12 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x14:  //ABSOLUTE ADDRESSING(abs)
-
+		//get address
 		address = get_abs_ad();
-
+		// check that the zero flag is set
 		if ((Flags & FLAG_Z) != 0)
 		{
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 
@@ -2953,11 +3281,12 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x15: //ABSOLUTE ADDRESSING(abs)
+		//get address
 		address = get_abs_ad();
-
+		//Check the negative flag is set
 		if ((Flags & FLAG_N) != 0)
 		{
-
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -2970,9 +3299,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x16: //ABSOLUTE ADDRESSING(abs)
+		//get address
 		address = get_abs_ad();
+		//Check there the negative flag isn't set
 		if ((Flags & FLAG_N) == 0) {
-
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 
 		}
@@ -2986,9 +3317,12 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x17: //ABSOLUTE ADDRESSING(abs)
+		//get address
 		address = get_abs_ad();
+		//Check what the result of the bitwise operations
 		if (Flags & (FLAG_C | FLAG_Z) != 0)
 		{
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 
 		}
@@ -3003,8 +3337,11 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x18: //ABSOLUTE ADDRESSING(abs)
+		//get address
 		address = get_abs_ad();
+		//Check what the result of the bitwise operations
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3017,9 +3354,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x22: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address = get_abs_ad();
+		//Check that a carry is not set
 		if ((Flags & FLAG_C) == 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3032,10 +3373,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x23: //ABSOLUTE ADDRESSING(abs)
-
+		//Get the address
 		address = get_abs_ad();
+		//Check a carry is set
 		if ((Flags & FLAG_C) != 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3048,9 +3392,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x24: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address = get_abs_ad();
+		//Check the zero flag is not set
 		if ((Flags & FLAG_Z) == 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 
@@ -3064,9 +3412,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x25: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address = get_abs_ad();
+		//Check the zero flag is set
 		if ((Flags & FLAG_Z) != 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3079,9 +3431,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x26: //ABSOLUTE ADDRESSING(abs)
+		//get the address
 		address = get_abs_ad();
+		//Check the negative flag is set
 		if ((Flags & FLAG_N) != 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3094,9 +3450,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x27: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address = get_abs_ad();
+		//Check the negative flag is not set
 		if ((Flags & FLAG_N) == 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3109,9 +3469,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x28: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address = get_abs_ad();
+		//Check what the result of the bitwise operations
 		if (Flags & (FLAG_C | FLAG_Z) != 0) {
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
@@ -3124,10 +3488,13 @@ void Group_1(BYTE opcode) {
 		*/
 
 	case 0x29: //ABSOLUTE ADDRESSING(abs)
+		//Get the address
 		address = get_abs_ad();
+		//Check what the result of the bitwise operations
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
-
+			//Push program counter onto the top of the stack
 			push(ProgramCounter);
+			//Set the program counter to have the current address
 			ProgramCounter = address;
 		}
 		break;
