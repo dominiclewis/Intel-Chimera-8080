@@ -1121,10 +1121,9 @@ void Group_1(BYTE opcode) {
 
 
 
-		//LDAA
-		/*
-		Loads Memory into accumulator
-		*/
+		////////////////
+		//    LDAA     //
+		////////////////
 	case 0x0A: //LDAA Immidiate #
 		data = fetch();
 		Registers[REGISTER_A] = data;
@@ -1159,10 +1158,9 @@ void Group_1(BYTE opcode) {
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 1);
 		break;
 
-		//LDAB
-		/*
-		Loads Memory into Accumulator
-		*/
+		////////////////
+		//    LDAB     //
+		////////////////
 	case 0x0B: //LDAB Immidiate #
 		data = fetch();
 		Registers[REGISTER_B] = data;
@@ -1198,7 +1196,9 @@ void Group_1(BYTE opcode) {
 
 
 
-		//STORA BEGINS
+		////////////////
+		//    Stora    //
+		////////////////
 
 		/*
 		Stores Accumulator
@@ -1227,7 +1227,9 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		check_address(address, REGISTER_A, REGISTER_X, HB, LB, 3);
 		break;
-
+		////////////////
+		//    MVI     //
+		////////////////
 		//MVI 
 		//L,#	
 	case 0x1C:
@@ -1256,7 +1258,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_L] = fetch();
 		break;
 
-		//CSA 
+		////////////////
+		//     CSA     //
+		////////////////
 		/*
 		Transfers Status register(Flags) to Accumulator (Reg A)
 		*/
@@ -1265,7 +1269,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//STORB 
+		////////////////
+		//     STORB     //
+		////////////////
 	case 0xBB: //STORB (abs)
 		address += get_abs_ad();
 		check_address(address, REGISTER_B, REGISTER_B, HB, LB, 2);
@@ -1291,7 +1297,9 @@ void Group_1(BYTE opcode) {
 		check_address(address, REGISTER_B, REGISTER_X, HB, LB, 3);
 		break;
 
-		//LDX Begins Here 
+		////////////////
+		//    LDX     //
+		////////////////
 	case 0x0E: //LDX Immidiate #
 		data = fetch();
 		Index_Registers[REGISTER_X] = data;
@@ -1327,9 +1335,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-
-
-		//STOX Begins
+		////////////////
+		//     STOX     //
+		////////////////
 
 
 	case 0xBC:
@@ -1360,7 +1368,9 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		index_check_address(address, REGISTER_X, REGISTER_X, HB, LB, 4);
 		break;
-		//LDY Begins Here 
+		////////////////
+		//     LDY     //
+		////////////////
 	case 0x0F: //LDY Immidiate #
 		data = fetch();
 		Index_Registers[REGISTER_Y] = data;
@@ -1395,7 +1405,9 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 1);
 		break;
-		//STOY BEGINS
+		////////////////
+		//    STOY     //
+		////////////////
 	case 0xBD:
 		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_A, HB, LB, 3);
@@ -1422,7 +1434,9 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		index_check_address(address, REGISTER_Y, REGISTER_X, HB, LB, 4);
 		break;
-		//CAY 
+		////////////////
+		//     CAY     //
+		////////////////
 		/*
 		Transfer Accumulator(REG A) to Register Y
 		*/
@@ -1430,8 +1444,9 @@ void Group_1(BYTE opcode) {
 		Index_Registers[REGISTER_Y] = Registers[REGISTER_A];
 		set_flag_n(Index_Registers[REGISTER_Y]);
 		break;
-
-		//MYA 
+		////////////////
+		//     MYA     //
+		////////////////
 		/*
 		Transfers register Y to Accumulater(Reg A)
 		*/
@@ -1439,7 +1454,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = Index_Registers[REGISTER_Y];
 		break;
 
-		//ABA 
+		////////////////
+		//     ABA     //
+		//////////////// 
 		/*
 		Adds Accumulator B into Accumlator A
 		Refer to PDF to refresh on Flags if need be
@@ -1449,7 +1466,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = (BYTE)data;
 		set_three_flags(data);
 		break;
-		//SBA
+		////////////////
+		//     SBA     //
+		////////////////
 		/*
 		Subtracts Accumulator B from Accumulator A
 		*/
@@ -1458,7 +1477,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = (BYTE)data;
 		set_three_flags(data);
 		break;
-		//AAB
+		////////////////
+		//     AAB     //
+		////////////////
 		/*
 		Adds Accumulator A into Accumulator B
 		*/
@@ -1478,7 +1499,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//LODS
+		////////////////
+		//     LODS   //
+		////////////////
 
 	case 0x20: //#
 		data = fetch();
@@ -1516,7 +1539,7 @@ void Group_1(BYTE opcode) {
 
 
 		//////////////////
-		//     STOS    ///
+		//     STOS     //
 		//////////////////
 
 	case 0x6A: //STOS (abs)
@@ -1545,7 +1568,9 @@ void Group_1(BYTE opcode) {
 		store_stackpointer(address, data, REGISTER_X, HB, LB, 1);
 		break;
 
-		//NEW ADC
+		////////////////
+		//     ADC     //
+		////////////////
 	case 0x31:  // A - L   (L moved to A) 
 		Registers[REGISTER_A] = add_with_carry(Registers[REGISTER_A], Registers[REGISTER_L]);
 		break;
@@ -1570,7 +1595,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//CMP
+		////////////////
+		//     CMP     //
+		////////////////
 		/*Register compared to Accumulator*/
 	case 0x35: // A-L
 		compare(REGISTER_A, REGISTER_L);
@@ -1598,7 +1625,9 @@ void Group_1(BYTE opcode) {
 		compare(REGISTER_B, REGISTER_M);
 		break;
 
-		//ADD
+		////////////////
+		//     ADD     //
+		////////////////
 		/*
 		Register is added to accumulator    FLAGS INVOLVED
 		*/
@@ -1626,7 +1655,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = add_regs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
-		//CLC CHECK
+		////////////////
+		//     CLC     //
+		////////////////
 		/*
 		Clears Carry flag
 		*/
@@ -1634,15 +1665,18 @@ void Group_1(BYTE opcode) {
 		Flags = (Flags & (~FLAG_C));
 		break;
 
-		//STC
+		////////////////
+		//     STC     //
+		////////////////
 		/*
 		Set Carry flag
 		*/
 	case 0x06:
 		Flags = Flags | FLAG_C;
 		break;
-
-		//CLI
+		////////////////
+		//     CLI     //
+		////////////////
 		/*
 		Clear Interrupt flag
 		*/
@@ -1650,7 +1684,9 @@ void Group_1(BYTE opcode) {
 		Flags = (Flags & (~FLAG_I));
 		break;
 
-		//STI
+		////////////////
+		//     STI     //
+		////////////////
 		/*
 		Set Interupt flag
 		*/
@@ -1659,7 +1695,9 @@ void Group_1(BYTE opcode) {
 		Flags = Flags | FLAG_I;
 		break;
 
-		//SBC
+		////////////////
+		//     SBC     //
+		////////////////
 		/*
 		Register subtracted to Accumulator with Carry
 		*/
@@ -1689,7 +1727,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = sub_with_carry(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
-		//SUB
+		////////////////
+		//     SUB     //
+		////////////////
 		/*
 		Register Subtracted to Accumulator
 		*/
@@ -1717,7 +1757,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = sub_regs(Registers[REGISTER_B], Registers[REGISTER_M]);
 		break;
 
-		//OR 
+		////////////////
+		//     OR     //
+		////////////////
 		/*
 		Register bitewise inclusive or with Accumulator
 		*/
@@ -1795,7 +1837,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
-		//AND
+		////////////////
+		//     AND     //
+		////////////////
 		/*
 		Register bitwise and with Accumulator
 		*/
@@ -1868,8 +1912,9 @@ void Group_1(BYTE opcode) {
 
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
-
-		//XOR 
+		////////////////
+		//     XOR     //
+		////////////////
 		/*
 		Register Bitwise exclusive or with Accumulator
 		*/
@@ -1939,7 +1984,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = (BYTE)temp_word;
 		break;
 
-		//BIT
+		////////////////
+		//     BIT     //
+		////////////////
 		/*
 		Register Bit tested with Accumulator
 		*/
@@ -1998,9 +2045,11 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)temp_word);
 		break;
 
-		//ORIA 
+		////////////////
+		//     ORIA    //
+		//////////////// 
 		/*
-		Data biutwise inclusive or with Accumlator
+		Data bitwise inclusive or with Accumlator
 		*/
 	case 0x97: //#
 		data = fetch();
@@ -2010,7 +2059,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//ORIB 
+		////////////////
+		//     ORIB    //
+		////////////////
 		/*
 		Data bitwise inclusive or with Accumulator
 		*/
@@ -2023,7 +2074,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//INC
+		////////////////
+		//     INC     //
+		////////////////
 		/*
 		Increment memory or Accumulator
 		*/
@@ -2048,7 +2101,9 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
-		//INCA
+		////////////////
+		//     INCA     //
+		////////////////
 		/*
 		Increment Memory or Accumulator
 		*/
@@ -2058,7 +2113,9 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)Registers[REGISTER_A]);
 		break;
 
-		//INCB 
+		////////////////
+		//     INCB     //
+		////////////////
 		/*
 		Increment Memory or Accumulator
 		*/
@@ -2068,7 +2125,9 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)Registers[REGISTER_B]);
 		break;
 
-		//INCX 
+		////////////////
+		//     INCX     //
+		//////////////// 
 		/*
 		Increments Register X
 		*/
@@ -2079,7 +2138,9 @@ void Group_1(BYTE opcode) {
 
 
 
-		//INCY
+		////////////////
+		//     INCY     //
+		////////////////
 		/*
 		Increments Register Y
 		*/
@@ -2088,7 +2149,9 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)Index_Registers[REGISTER_Y]);
 		break;
 
-		//HLT
+		////////////////
+		//     HLT     //
+		////////////////
 		/*
 		Wait for interupt
 		*/
@@ -2097,7 +2160,9 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//DEC
+		////////////////
+		//     DEC     //
+		////////////////
 		/*
 		Decrement Memory or
 		Accumulator
@@ -2124,7 +2189,9 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)Memory[address]);
 		set_flag_n((WORD)Memory[address]);
 		break;
-		//DECA
+		////////////////
+		//     DECA     //
+		////////////////
 		/*
 		Decrement Memory or Accumulator
 		*/
@@ -2134,7 +2201,9 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)Registers[REGISTER_A]);
 		break;
 
-		//DECB
+		////////////////
+		//     DECB     //
+		////////////////
 		/*
 		Increment Memory or Accumulator
 		*/
@@ -2144,7 +2213,9 @@ void Group_1(BYTE opcode) {
 		set_flag_n((WORD)Registers[REGISTER_B]);
 		break;
 
-		//DECX
+		////////////////
+		//     DECX     //
+		////////////////
 		/*
 		Decrements Register X
 		*/
@@ -2152,10 +2223,9 @@ void Group_1(BYTE opcode) {
 		Index_Registers[REGISTER_X]--;
 		set_flag_z((WORD)Index_Registers[REGISTER_X]);
 		break;
-
-
-
-		//DEY
+		////////////////
+		//     DEY     //
+		////////////////
 		/*
 		Deccrements Register Y
 		*/
@@ -2164,7 +2234,9 @@ void Group_1(BYTE opcode) {
 		set_flag_z((WORD)Index_Registers[REGISTER_Y]);
 		break;
 
-		//NOP
+		////////////////
+		//     NOP     //
+		////////////////
 		/*
 		No Operating (STOP/Halt?)
 		*/
@@ -2172,9 +2244,9 @@ void Group_1(BYTE opcode) {
 		halt = true;
 
 		break;
-
-
-		//RRC (abs)
+		////////////////
+		//     RRC     //
+		////////////////
 		/*
 		Rotate right through carry Memory or Accumulator
 		*/
@@ -2200,8 +2272,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-
-		//RRCA
+		////////////////
+		//     RRCA     //
+		////////////////
 		/*
 		Rotate right through carry memory or accumulator
 		*/
@@ -2211,10 +2284,9 @@ void Group_1(BYTE opcode) {
 
 
 		break;
-
-
-
-		//RCBB
+		////////////////
+		//     RCBB     //
+		////////////////
 		/*
 		Rotate right through carry memory or accumulator
 		*/
@@ -2223,8 +2295,9 @@ void Group_1(BYTE opcode) {
 
 		Registers[REGISTER_B] = rotate_right_carry(Registers[REGISTER_B]);
 		break;
-
-		//RLC 
+		////////////////
+		//     RLC     //
+		////////////////
 		/*
 		Rotate left through carry Memory or Accumulator
 		*/
@@ -2251,24 +2324,27 @@ void Group_1(BYTE opcode) {
 		Memory[address] = rotate_left_carry(Memory[address]);
 
 		break;
-
-		//RLCA
+		////////////////
+		//     RLCA     //
+		////////////////
 		/*
 		Rotate left through carry memory or Accumulator
 		*/
 	case 0xD3://A
 		Registers[REGISTER_A] = rotate_left_carry(Registers[REGISTER_A]);
 		break;
-
-		//RLCB
+		////////////////
+		//     RLCB     //
+		////////////////
 		/*
 		Rotate left through carry memory or accumulator
 		*/
 	case 0xE3: //B
 		Registers[REGISTER_B] = rotate_left_carry(Registers[REGISTER_B]);
 		break;
-
-		//ROL
+		////////////////
+		//     ROL     //
+		////////////////
 		/*
 		Rotate left without carry Memory or Accumlator
 		*/
@@ -2290,9 +2366,9 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		Memory[address] = rotate_left(Memory[address]);
 		break;
-
-
-		//ROLA
+		////////////////
+		//     ROLA     //
+		////////////////
 		/*
 		Rotate left without carry Memory or Accumlator
 		*/
@@ -2300,17 +2376,18 @@ void Group_1(BYTE opcode) {
 	case 0xD8: //A
 		Registers[REGISTER_A] = rotate_left(Registers[REGISTER_A]);
 		break;
-
-		//ROLB
+		////////////////
+		//     ROLB     //
+		////////////////
 		/*
 		Rotate left without carry memory or accumulator
 		*/
 	case 0xE8:
 		Registers[REGISTER_B] = rotate_left(Registers[REGISTER_B]);
 		break;
-
-
-		//RR
+		////////////////
+		//     RR     //
+		////////////////
 		/*
 		Rotate right without carry memory or Accumulator
 		*/
@@ -2318,7 +2395,6 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		Memory[address] = rotate_right(Memory[address]);
 		break;
-
 
 	case 0xB9: //abs,x
 
@@ -2333,25 +2409,27 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		Memory[address] = rotate_right(Memory[address]);
 		break;
-
-
-		//RRA 
+		////////////////
+		//     RRA     //
+		////////////////
 		/*
 		Rotate right wihtout carry memory or accumulator
 		*/
 	case 0xD9://A
 		Registers[REGISTER_A] = rotate_right(Registers[REGISTER_A]);
 		break;
-		//RRB 
+		////////////////
+		//     RRB     //
+		//////////////// 
 		/*
 		Rotate right wihtout carry memory or accumulator
 		*/
 	case 0xE9://B
 		Registers[REGISTER_B] = rotate_right(Registers[REGISTER_B]);
 		break;
-
-
-		//SAL
+		////////////////
+		//     SAL     //
+		////////////////
 		/*
 		Arithmetic Shift left Memory or Accumulator
 		*/
@@ -2382,8 +2460,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-
-		//SALA
+		////////////////
+		//     SALA     //
+		////////////////
 		/*
 		Arithmetic shift Left memory or Accumulator
 		*/
@@ -2393,8 +2472,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = (BYTE)data;
 		set_three_flags(data);
 		break;
-
-		//SALB
+		////////////////
+		//     SALB     //
+		////////////////
 		/*
 		Arithmetic shift left Memory or AAccumulator
 		*/
@@ -2403,8 +2483,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = (BYTE)data;
 		set_three_flags(data);
 		break;
-
-		//SAR
+		////////////////
+		//     SAR     //
+		////////////////
 		/*
 		Arithmetic shift right memory or accumulator
 		*/
@@ -2428,8 +2509,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-
-		//SARA
+		////////////////
+		//     SARA     //
+		////////////////
 		/*
 		Arithmetic shift right memory or Accumulator
 		*/
@@ -2440,7 +2522,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-		//SARB
+		////////////////
+		//     SARB     //
+		////////////////
 		/*
 		Arithmetic shift right Memory or Accu,ulator
 		*/
@@ -2450,7 +2534,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-		//LSR
+		////////////////
+		//     LSR     //
+		////////////////
 		/*
 		Shift right Memory or Accumulator
 		*/
@@ -2475,10 +2561,10 @@ void Group_1(BYTE opcode) {
 		address += get_abs_ad();
 		data = shift_right(address, data, REGISTER_A, REGISTER_Y, 0);
 		set_three_flags(data);
-
 		break;
-
-		//LSRA
+		////////////////
+		//     LSRA     //
+		////////////////
 		/*
 		Shif right memory or Accumulator
 		*/
@@ -2487,7 +2573,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-		//LSRB
+		////////////////
+		//     LSRB     //
+		////////////////
 		/*
 		Shift right memory or Accumualtor
 		*/
@@ -2496,8 +2584,9 @@ void Group_1(BYTE opcode) {
 		set_three_flags(data);
 		break;
 
-		//COM
-
+		////////////////
+		//     COM     //
+		////////////////	
 		/*
 		Negate memory or accumulator
 		*/
@@ -2515,10 +2604,13 @@ void Group_1(BYTE opcode) {
 		negate_mem_or_accumulator(REGISTER_Y, data, address, 0);
 		break;
 
-		//COMA
+		////////////////
+		//     COMA     //
+		////////////////
 		/*
 		Negate Memory or Accumulator
 		*/
+
 	case 0xD7: //A
 		negate_mem_or_accumulator(REGISTER_A, data, address, 2);
 		break;
@@ -2526,9 +2618,11 @@ void Group_1(BYTE opcode) {
 		//COMB
 	case 0xE7: //B 
 		negate_mem_or_accumulator(REGISTER_B, data, address, 2);
-
 		break;
-		//PUSH
+
+		////////////////
+		//     PUSH     //
+		////////////////
 		/*
 		Push Register onto the stack
 		*/
@@ -2558,7 +2652,9 @@ void Group_1(BYTE opcode) {
 		StackPointer--;
 		break;
 
-		//POP
+		////////////////
+		//     POP     //
+		////////////////
 		/*
 		Pop the top of the
 		Stack into the Register
@@ -2592,7 +2688,10 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//JUMP
+		////////////////
+		//     JUMP     //
+		////////////////
+
 	case 0x10: //abs
 		address = get_abs_ad();
 
@@ -2631,7 +2730,9 @@ void Group_1(BYTE opcode) {
 
 
 
-		//SBIA
+		////////////////
+		//     SBIA     //
+		////////////////
 
 	case 0x93: //# 
 		temp_word = sub_to_accumulator_carry(REGISTER_A);
@@ -2639,7 +2740,9 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_A] = temp_word;
 		break;
 
-		//SBIB
+		////////////////
+		//     SBIB     //
+		////////////////
 
 	case 0x94: //# 
 		temp_word = sub_to_accumulator_carry( REGISTER_B);
@@ -2647,11 +2750,13 @@ void Group_1(BYTE opcode) {
 		Registers[REGISTER_B] = temp_word;
 		break;
 
-
-		//CPIA
+		////////////////
+		//     CPIA     //
+		////////////////
 		/*
 		Data compared to accumulator
 		*/
+
 	case 0x95:// # A - Data
 
 		compare_accumulator(REGISTER_A);
@@ -2659,8 +2764,9 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-		//CPIB
-
+		////////////////
+		//     CPIB     //
+		////////////////
 		/*
 		Data compared to accumulator
 		*/
@@ -2670,10 +2776,13 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-		//JCC
+		////////////////
+		//     JCC     //
+		////////////////
 		/*
 		Jump on Carry clear
 		*/
+
 	case 0x11: //abs
 		address = get_abs_ad();
 		if ((Flags & FLAG_C) == 0) {
@@ -2682,11 +2791,13 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-		//JCC
-
+		////////////////
+		//     JCC     //
+		////////////////
 		/*
 		Jump on carry set
 		*/
+
 	case 0x12: //abs 
 
 		address = get_abs_ad();
@@ -2696,10 +2807,13 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-		//JNE
+		////////////////
+		//     JNE     //
+		////////////////
 		/*
 		Jump on result not Zero
 		*/
+
 	case 0x13: //abs
 
 		address = get_abs_ad();
@@ -2711,10 +2825,13 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-		//JEQ
+		////////////////
+		//     JEQ     //
+		////////////////
 		/*
 		Jump on result equal to Zero
 		*/
+
 	case 0x14:  //abs 
 
 		address = get_abs_ad();
@@ -2727,10 +2844,13 @@ void Group_1(BYTE opcode) {
 		break;
 
 
-		//JMI
+		////////////////
+		//     JMI     //
+		////////////////
 		/*
 		Jump on Negative Result
 		*/
+
 	case 0x15:
 		address = get_abs_ad();
 
@@ -2740,10 +2860,13 @@ void Group_1(BYTE opcode) {
 			ProgramCounter = address;
 		}
 		break;
-		// JPL 
+		////////////////
+		//     JPL     //
+		////////////////
 		/*
 		Jump on positive reuslt
 		*/
+
 	case 0x16:
 
 		address = get_abs_ad();
@@ -2754,7 +2877,9 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-		//JHI
+		////////////////
+		//     JHI     //
+		////////////////
 
 	case 0x17:
 		address = get_abs_ad();
@@ -2766,8 +2891,9 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-
-		//JLE
+		////////////////
+		//     JLE     //
+		////////////////
 	case 0x18: //JLE (abs)	
 		address = get_abs_ad();
 		if ((Flags & (FLAG_C | FLAG_Z)) == 0) {
@@ -2775,7 +2901,9 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-		//CCC
+		////////////////
+		//     CCC     //
+		////////////////
 	case 0x22: //abs R
 		address = get_abs_ad();
 		if ((Flags & FLAG_C) == 0) {
@@ -2783,7 +2911,10 @@ void Group_1(BYTE opcode) {
 			ProgramCounter = address;
 		}
 		break;
-		//CCS
+
+		////////////////
+		//     CCS     //
+		////////////////
 	case 0x23: //abs //R
 
 		address = get_abs_ad();
@@ -2793,7 +2924,9 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-		//CNE 
+		////////////////
+		//     CNE     //
+		////////////////
 		/*
 		Call on result not Zero
 		*/
@@ -2807,10 +2940,13 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-		//CEQ 
+		////////////////
+		//     CEQ     //
+		////////////////
 		/*
 		Call on result equal to Zero
 		*/
+
 	case 0x25: //RIGHT
 		address = get_abs_ad();
 		if ((Flags & FLAG_Z) != 0) {
@@ -2819,7 +2955,9 @@ void Group_1(BYTE opcode) {
 		}
 		break;
 
-		//CMI 
+		////////////////
+		//     CMI     //
+		////////////////
 		/*
 		Call on negative result
 		*/
@@ -2833,10 +2971,13 @@ void Group_1(BYTE opcode) {
 
 		break;
 
-		//CPL 
+		////////////////
+		//     CPL     //
+		//////////////// 
 		/*
 		Call on positive result
 		*/
+
 	case 0x27: //abs r 
 		address = get_abs_ad();
 		if ((Flags & FLAG_N) == 0) {
@@ -2844,7 +2985,10 @@ void Group_1(BYTE opcode) {
 			ProgramCounter = address;
 		}
 		break;
-		//CHI
+	
+		////////////////
+		//     CHI     //
+		////////////////
 		/*
 		Call on result same or lower
 		*/
@@ -2855,7 +2999,10 @@ void Group_1(BYTE opcode) {
 			ProgramCounter = address;
 		}
 		break;
-		//CLE
+
+		////////////////
+		//     CLE     //
+		////////////////
 		/*
 		Call on result higher
 		*/
