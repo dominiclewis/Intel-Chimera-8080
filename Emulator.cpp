@@ -3,7 +3,7 @@
 /*
 Author: Dominic Lewis(15024059)
 Created: 17/10/2016
-Revised: 02/11/2016 - Adding Comments
+Revised: 08/11/2016 - Adding Comments
 Description: Emulates the Intel 8080 Processor
 User advice: None
 */
@@ -383,10 +383,11 @@ Warnings: None
 BYTE fetch()
 {
 	BYTE byte = 0;
-
+	//Check for valid ProgramCounter address range
 	if ((ProgramCounter >= 0) && (ProgramCounter <= MEMORY_SIZE))
 	{
 		memory_in_range = true;
+		//Set store variable to be the address
 		byte = Memory[ProgramCounter];
 		ProgramCounter++;
 	}
@@ -394,6 +395,7 @@ BYTE fetch()
 	{
 		memory_in_range = false;
 	}
+	//returns the address if valid, if not then 0 is returned
 	return byte;
 }
 /*
@@ -405,14 +407,15 @@ Warnings: None
 */
 void set_flag_z(BYTE inReg) {
 	BYTE reg;
+	//Sets reg to equal the value for the symbolic constant of the specified register
 	reg = inReg;
-
+	//Checks if the flag should be set or cleared
 	if (reg == 0x00) {
-		Flags = Flags | FLAG_Z; //set
+		Flags = Flags | FLAG_Z; 
 	}
 	else
 	{
-		Flags = Flags & (~FLAG_Z); //reset
+		Flags = Flags & (~FLAG_Z); 
 	}
 }
 /*
@@ -423,7 +426,9 @@ Returns: none (void)
 Warnings: None
 */void set_flag_n(WORD inReg) {
 	BYTE reg;
+	//Sets reg to equal the value for the symbolic constant of the specified register
 	reg = inReg;
+	//Checks if the flag should be set or cleared
 	if ((reg & 0x80) == 0x80) {
 		Flags = Flags | FLAG_N;
 	}
@@ -440,6 +445,7 @@ Warnings: None
 */
 
 void set_flag_c(WORD result)
+//Checks if the flag should be set or cleared
 {
 	if (result >= 0x100)
 		Flags = Flags | FLAG_C;
@@ -456,6 +462,7 @@ Warnings: None
 
 void set_three_flags(WORD result)
 {
+	//Calls all three functions which sets the specified flags passing the relevant result to carry ou the operations upon
 	set_flag_c(result);
 	set_flag_n(result);
 	set_flag_z(result);
@@ -470,8 +477,11 @@ Warnings: None
 
 BYTE add_regs(BYTE inReg1, BYTE inReg2)
 {
+	//Add the specified Registers together
 	WORD result = inReg1 + inReg2;
+	//Set the flags (z,n,c) based on the operation 
 	set_three_flags(result);
+	//Return the result
 	return (BYTE)result;
 }
 /*
@@ -484,9 +494,13 @@ Warnings: None
 BYTE sub_with_carry(BYTE inReg1, BYTE inReg2)
 {
 	WORD result;
+	//Sets the carry
 	BYTE carry = Flags & FLAG_C;
+	//Carries out the subtraction 
 	result = inReg1 - inReg2 - carry;
+	//Sets the flags based on the operation
 	set_three_flags(result);
+	//Return the result
 	return (BYTE)result;
 }
 /*
@@ -500,9 +514,13 @@ Warnings: None
 BYTE add_with_carry(BYTE inReg1, BYTE inReg2)
 {
 	WORD result;
+	//Sets the carry
 	BYTE carry = Flags & FLAG_C;
+	// Carries out the addition
 	result = inReg1 + inReg2 + carry;
+	//Sets the flags based on the result
 	set_three_flags (result);
+	//Returns the result
 	return (BYTE)result;
 }
 /*
@@ -514,8 +532,11 @@ Warnings: None
 */
 BYTE sub_regs(BYTE inReg1, BYTE inReg2)
 {
+	//Subtracts one of the registers away from the other
 	WORD result = inReg1 - inReg2;
+	//Set flag z,n,c based on the result
 	set_three_flags (result);
+	//Return the result
 	return (BYTE)result;
 }
 /*
@@ -529,15 +550,20 @@ BYTE rotate_right_carry(BYTE inReg)
 {
 	BYTE result, carry = 0x00;
 	WORD data;
+	//Check if a carry is required
 	if ((Flags & FLAG_C) == 0x01)
 		carry = 0x80;
+	//Store the rotation incorporating the carry in data
 	data = (inReg >> 1) | carry;
 	if ((inReg & 0x01) == 0x01)
 	{
 		data = data | 0x100;
 	}
+	//Set result to be the result of the operation
 	result = (BYTE)data;
+	//Set the flags based on data (z,n,c)
 	set_three_flags(data);
+	//Return the result
 	return result;
 
 }
@@ -551,11 +577,15 @@ Warnings: None
 BYTE rotate_left_carry(BYTE inReg)
 {
 	BYTE result, carry;
+	//Set the carry
 	carry = Flags & FLAG_C;
+	//Carry out the rotation
 	WORD data = (WORD)(inReg << 1) | carry;
+	//Set the result to be the answer of the operation
 	result = (BYTE)data;
-
+	//Set z,n and c flag based on data
 	set_three_flags(data);
+	//Return the result
 	return result;
 }
 /*
@@ -568,14 +598,16 @@ Warnings: None
 BYTE rotate_left(BYTE inReg)
 {
 	BYTE result;
+	//Carry out the rotation
 	result = inReg << 1;
+	//Check if a carry is necessary
 	if ((inReg & 0x80) == 0x80)
 		result = result | 0x01;
 
-
+	//Set flag z and n based the the result
 	set_flag_z(result);
 	set_flag_n(result);
-
+	//Return the result
 	return result;
 }
 /*
@@ -588,12 +620,16 @@ Warnings: None
 BYTE rotate_right(BYTE inReg)
 {
 	BYTE result;
+	//Carry out the rotation
 	result = inReg >> 1;
+	//Check if a carry is necessary
 	if ((inReg & 0x01) == 0x01)
 		result = result | 0x80;
 
+	//Set flag z and n based the the result
 	set_flag_z(result);
 	set_flag_n(result);
+	//Return the result
 	return result;
 }
 /*
@@ -607,11 +643,12 @@ WORD get_abs_ad() {
 	BYTE LB = 0;
 	BYTE HB = 0;
 	WORD address = 0;
-
+	//Fetch the values for HB and LB
 	HB = fetch();
 	LB = fetch();
+	//Set the address
 	address += (WORD)((WORD)HB << 8) + LB;
-
+	//Return the address
 	return address;
 }
 /*
@@ -625,9 +662,13 @@ void compare_accumulator(BYTE inReg) {
 	BYTE param1 = 0;
 	WORD data = 0;
 	WORD temp_word;
+	//Fetch the address
 	data = fetch();
+	//Set up a paramater to have the value of a register
 	param1 = Registers[inReg];
+	//Carry out the comparison
 	temp_word = (WORD)data - (WORD)param1;
+	//Set the flags based on the operation
 	set_three_flags((WORD)temp_word);
 }
 /*
@@ -638,7 +679,9 @@ Returns: None (void)
 Warnings: None
 */
 void push(BYTE reg) {
+	//Move what's in a register onto the stack
 	Memory[StackPointer] = reg;
+	//Move the stackpointer so values aren't overwritted
 	StackPointer--;
 }
 
@@ -650,9 +693,11 @@ Returns: None (void)
 Warnings: None
 */
 void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice) {
+	//Get the address and validate it
 	if (choice == 0) {
 		address += Index_Registers[inReg];
 		address += get_abs_ad();
+		//Negate it
 		data = ~Memory[address];
 
 		if (address >= 0 && address < MEMORY_SIZE) {
@@ -663,9 +708,11 @@ void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice)
 	}
 	else if (choice == 1)
 	{
+		//Get address
 		address = get_abs_ad();
+		//Negate it
 		data = ~Memory[address];
-
+		//Check valid range/size
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = (BYTE)data;
 
@@ -673,12 +720,15 @@ void negate_mem_or_accumulator(BYTE inReg, WORD data, WORD address, BYTE choice)
 	}
 
 	else {
+		//Negate address
 		data = ~Registers[inReg];
+		//Check size of address
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Registers[inReg] = (BYTE)data;
 
 		}
 	}
+	//Set the flags based on this
 	set_three_flags(data);
 }
 /*
@@ -693,17 +743,19 @@ void compare(BYTE reg1, BYTE reg2)
 	WORD temp_word = 0;
 	BYTE param1 = 0;
 	BYTE param2 = 0;
-
+	//Create local variables thgat act as Registers
 	param1 = Registers[reg1];
 	param2 = Registers[reg2];
+	//Carry out operation upon them
 	temp_word = (WORD)param1 - (WORD)param2;
-
+	//Check if the flags must be set or cleared
 	if (temp_word >= 0x100) {
 		Flags = Flags | FLAG_C; // Set carry flag
 	}
 	else {
 		Flags = Flags & (0xFF - FLAG_C); // Clear carry flag
 	}
+	//Set the flags based on the operation, n and z. 
 	set_flag_n((BYTE)temp_word);
 	set_flag_z((BYTE)temp_word);
 
@@ -721,15 +773,17 @@ void default_switch() {
 	int sourceReg = 0;
 	WORD address = 0;
 
-
+	//Transfer the contents of the register
 	Registers[sourceReg] = Registers[destReg];
 	if (sourceReg == REGISTER_M) {
 		address = Registers[REGISTER_L];
 		address += (WORD)Registers[REGISTER_H] << 4;
+		//Check size
 		if (address >= 0 && address <= MEMORY_SIZE) {
 			Memory[address] = Registers[destReg];
 		}
 	}
+	//Transfer content
 	else {
 		Registers[sourceReg] = Registers[destReg];
 	}
@@ -742,6 +796,7 @@ Returns: None (void)
 Warnings: None
 */
 void source_as_reg_index(int destReg, int sourceReg) {
+	//Transfer content of registers
 	Registers[destReg] = Registers[sourceReg];
 }
 /*
@@ -753,7 +808,7 @@ Warnings: For reg2 if there is no appropriate Register in consideration simply p
 */
 void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
 {
-
+	//Fetch the address 
 	if ((option == 1) || (option == 3))
 	{
 		HB = Memory[address];
@@ -762,32 +817,32 @@ void check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE op
 
 	}
 
-
+	//Add the contents of the registers 
 	if (reg2 == 0) {
 		address += Index_Registers[REGISTER_X];
 	}
 	else if (reg2 == 1) {
 		address += Index_Registers[REGISTER_Y];
 	}
-
+	//Move the address into a regster
 	if ((option != 2) && (option != 3) && (option != 4) && (option != 5)) {
 		if (address >= 0 && address < MEMORY_SIZE)
 		{
 			Registers[reg1] = Memory[address];
 
 		}
-	}
+	} ///Move the register into memory
 	else if ((option == 2) || (option == 3)) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Registers[reg1];
 		}
 
-	}
+	} //Move through the stack
 	else if (option == 4) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] ++;
 		}
-	}
+	}   
 	else if (option == 5) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] --;
@@ -804,7 +859,7 @@ Warnings: For reg2 if there is no appropriate Register in consideration simply p
 void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, BYTE option)
 {
 
-
+	//Fetch the address
 	if ((option == 1) || (option == 4)) {
 		HB = Memory[address];
 		LB = Memory[address + 1];
@@ -812,21 +867,21 @@ void index_check_address(WORD address, BYTE reg1, BYTE reg2, BYTE HB, BYTE LB, B
 	}
 
 
-
+	//Add contents of registers
 	if (reg2 == 0) {
 		address += Index_Registers[REGISTER_X];
 	}
 	else if (reg2 == 1) {
 		address += Index_Registers[REGISTER_Y];
 	}
-
+	//Check size
 	if ((option == 0) || (option == 1))
 	{
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Index_Registers[reg1] = Memory[address];
 		}
 
-	}
+	} //Check size
 	else if ((option == 3) || (option == 4)) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			Memory[address] = Index_Registers[reg1];
@@ -847,11 +902,11 @@ void load_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYT
 
 
 	if (option == 1) {
-
+		//Get the address
 		HB = Memory[address];
 		LB = Memory[address + 1];
 		address = (WORD)((WORD)HB << 8) + LB;
-	}
+	}//Add the registers if necessary
 	if (reg1 == 0) {
 		address += Index_Registers[REGISTER_X];
 	}
@@ -859,7 +914,7 @@ void load_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYT
 		address += Index_Registers[REGISTER_Y];
 	}
 
-	if ((option == 0) || (option == 1)) {
+	if ((option == 0) || (option == 1)) { //Check the address size then transfer to the stackpointer
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
 			StackPointer = (WORD)Memory[address] << 8;
 			StackPointer += Memory[address + 1];
@@ -879,7 +934,7 @@ Returns: None (void)
 Warnings: For reg1 if there is no appropriate one pass in REGISTER A or REGISTER B 
 */
 void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BYTE option) {
-
+	//get the address
 	if (option == 1)
 	{
 		HB = Memory[address];
@@ -887,7 +942,7 @@ void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BY
 		address = (WORD)((WORD)HB << 8) + LB;
 
 	}
-
+	//Add the registers to the address
 	if (reg1 == 0) {
 		address += Index_Registers[REGISTER_X];
 	}
@@ -895,9 +950,9 @@ void store_stackpointer(WORD address, WORD data, BYTE reg1, BYTE HB, BYTE LB, BY
 		address += Index_Registers[REGISTER_Y];
 	}
 
-
+	//Check the address size then transfer it into memory
 	if ((option == 0) || (option == 1)) {
-
+		
 		if (address >= 0 && address < MEMORY_SIZE - 1) {
 			Memory[address] = (BYTE)(StackPointer >> 8);
 			Memory[address + 1] = (BYTE)(StackPointer);
@@ -915,7 +970,7 @@ Warnings: For reg1 if there is no appropriate one pass in REGISTER A or REGISTER
 */
 WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE option)
 {
-
+	// Add the registers into the address
 	if (reg1 == 0)
 	{
 
@@ -923,13 +978,13 @@ WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE o
 
 	}
 
-	//RRC LOGIC 
+	
 	if (reg1 == 1)
 	{
 		address += Index_Registers[REGISTER_Y];
 
 	}
-
+	//Check if a carry is required then rotate
 	if (option == 0) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			if ((Flags & FLAG_C) == 0x01) {
@@ -939,10 +994,11 @@ WORD rotate_right_through(WORD address, WORD data, BYTE reg1, BYTE carry, BYTE o
 			if ((Memory[address] & 0x01) == 0x01) {
 				data = data | 0x100;
 			}
+			//Set memory to be the the result of the rotate
 			Memory[address] = (BYTE)data;
 		}
 	}
-	//RRC END 
+	//return the result 
 	return data;
 
 }
@@ -955,6 +1011,7 @@ Warnings: For reg2 if there is no appropriate Register in consideration simply p
 */
 WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 {
+	//Add the registers if required)
 	if (reg2 == 0) {
 		address += Index_Registers[REGISTER_X];
 
@@ -969,14 +1026,14 @@ WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option
 	if (option == 0) {
 		if (address >= 0 && address < MEMORY_SIZE) {
 			data = (WORD)Memory[address] << 1; //Shift
-
+			//Set the address to be the result
 			Memory[address] = (BYTE)data;
 		}
 
 
 	} //shift left end  
 	else if (option == 1) { 	//Shift right
-
+		//Check if a carry required and carry out and also the shift 
 		if (address >= 0 && address < MEMORY_SIZE) {
 			if ((Memory[address] & 0x80) == 0x80) {
 				if ((Memory[address] & 0x01) != 0) {
@@ -1000,6 +1057,7 @@ WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option
 			Memory[address] = (BYTE)data;
 		}
 	}//shift right end
+	//Shift right option two 
 	else if (option == 3)
 	{
 		if (address >= 0 && address < MEMORY_SIZE) {
@@ -1026,18 +1084,20 @@ WORD arithmetic_shift(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option
 		}
 
 	}
+	//return result 
 	return data;
 
 }
 /*
 Function: shift_right
-Description: Carries out shift right and rectifies address in Registers if necessary
+Description: Carries out shift right and rectifies address in Registers if necessary (NONE arithmetic)
 Paramters:WORD address, BYTE reg1, BYTE reg2 : These are the registers being used, BYTE HB, BYTE LB, BYTE option: option is used to specify which control flow to utilise
 Returns: WORD data : This allows the calling block to set the flags based on this data
 Warnings:For reg2 if there is no appropriate Register in consideration simply pass it REGISTER_A as reg2 and no additonal operations will be carried out(REGISTER_B also works) 
 */
 WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 {
+	//adds the registers if required)
 	if (reg2 == 0)
 	{
 		address += Index_Registers[REGISTER_X];
@@ -1050,7 +1110,7 @@ WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 	}
 
 	if (option == 0) {
-
+		//Check the address and carry
 		if (address >= 0 && address < MEMORY_SIZE) {
 			if ((Memory[address] & 0x01) != 0) {
 				data = (Memory[address] >> 1) | 0x100;
@@ -1058,6 +1118,7 @@ WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 			else {
 				data = Memory[address] >> 1;
 			}
+			//Set the address to be the result of the operation 
 			Memory[address] = (BYTE)data;
 		}
 
@@ -1065,20 +1126,21 @@ WORD shift_right(WORD address, WORD data, BYTE reg1, BYTE reg2, BYTE option)
 	}
 
 	if (option == 1)
-	{
+	{	//Check address size
 		if (address >= 0 && address < MEMORY_SIZE) {
 			if ((Registers[reg1] & 0x01) != 0) {
 				data = (Registers[reg1] >> 1) | 0x100;
-			}
+			}   
 			else {
 				data = Registers[reg1] >> 1;
-			}
+			} //Set the register to be the result of the operation
 			Registers[reg1] = (BYTE)data;
 		}
 
 
 
 	}
+	//Return the result
 	return data;
 }
 /*
@@ -1092,15 +1154,17 @@ WORD sub_to_accumulator_carry(BYTE reg1)
 {
 	WORD data = 0, temp_word;
 	BYTE param1;
-
+	//Grab the address
 	data = fetch();
+	//set the paramater up to match the specified register
 	param1 = Registers[reg1];
+	//Carry out the operation 
 	temp_word = (WORD)data - (WORD)param1;
-
+	//Check if there is a carry
 	if ((Flags & FLAG_C) != 0) {
 		temp_word--;
 	}
-
+	//Return the result
 	return temp_word;
 
 }
@@ -3522,7 +3586,7 @@ void Group_2_Move(BYTE opcode)
 	WORD data = 0;
 
 
-	switch (destination)
+	switch (destination) //Register symbolic constant references
 	{
 	case 0x0B:
 		destReg = REGISTER_A;
@@ -3545,12 +3609,13 @@ void Group_2_Move(BYTE opcode)
 		break;
 
 	default:
+		//Sets the register with the correct data 
 		default_switch();
 		break;
 
 	}
 
-	switch (source)
+	switch (source) //Register symbolic constant references
 	{
 	case 0x06:
 		sourceReg = REGISTER_A;
@@ -3573,11 +3638,12 @@ void Group_2_Move(BYTE opcode)
 		break;
 
 	default:
+		//Sets the register with the correct data
 		default_switch();
 		break;
 
 	}
-
+	//Sets the register with the correct data 
 	source_as_reg_index(destReg, sourceReg);
 }
 
